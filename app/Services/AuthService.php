@@ -4,11 +4,13 @@ namespace App\Services;
 
 
 use App\Exceptions\ValidationException;
+use App\Models\User;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class AuthService
 {
-    public function login(ServerRequestInterface $request)
+    public function login(ServerRequestInterface $request): string
     {
 
         $data = $request->getParsedBody();
@@ -32,33 +34,153 @@ class AuthService
         // Verify password
         if (!password_verify($password, $user->password_hash)) {
             $_SESSION['error'] = 'Invalid email or password';
-            throw new ValidationException('Wrong Credentials', ['Auth error' => "Invalid email or incorresct password"]);
+            throw new ValidationException('Wrong Credentials', ['Auth error' => "Invalid email or incorrect password"]);
         }
 
         // Check if user is active
         if (!$user->is_active) {
-            $_SESSION['error'] = 'Your account has been deactivated. Please contact support.';
-            throw new ValidationException('Wrong Credentials', ['Auth error' => "Invalid email or incorresct password"]);
+            throw new ValidationException('Account Deactivated', ['Auth error' => 'Your account has been deactivated. Please contact support.']);
+        }
 
-            // Login successful - set session
+        // Login successful - set session
+        $_SESSION['user_id'] = $user->id;
+        $_SESSION['user_email'] = $user->email;
+        $_SESSION['user_name'] = $user->first_name . ' ' . $user->last_name;
+        $_SESSION['user_role'] = $user->role;
+        $_SESSION['login_time'] = time();
+
+        // Handle "remember me" functionality
+        if ($remember) {
+            $this->setRememberToken($user);
+        }
+
+        // Log the login
+        $this->logLogin($user, $request);
+
+        $_SESSION['success'] = 'Welcome back, ' . $user->name . '!';
+
+        return $this->redirectToAppropriatePage($redirectTo);
+
+    }
+
+    public function register(ServerRequestInterface $request): string
+    {
+
+        $data = $request->getParsedBody();
+
+        $first_name = trim($data['first_name'] ?? '');
+        $last_name = trim($data['last_name'] ?? '');
+        $email = trim($data['email'] ?? '');
+        $password = $data['password'] ?? '';
+        $passwordConfirmation = $data['password_confirmation'] ?? '';
+        $phone = trim($data['phone'] ?? '');
+        $agreeTerms = isset($data['agree_terms']);
+        $redirectTo = $data['redirect_to'] ?? '/';
+
+        // Validate required fields
+        if (empty($first_name) || empty($last_name) || empty($email) || empty($password) || empty($phone)) {
+            throw new ValidationException('Incomplete Form', ['Incomplete form' => 'Please fill in all required fields.']);
+        }
+
+        // Validate terms agreement
+        if (!$agreeTerms) {
+            throw new ValidationException('Terms Agreement', ['Agree terms' => 'You must agree to the terms and conditions']);
+        }
+
+        // Validate email format
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new ValidationException('Invalid Email', ['Invalid email' => 'Please enter a valid email address']);
+        }
+
+        // Validate password strength
+        if (strlen($password) < 8) {
+            $_SESSION['error'] = '';
+            throw new ValidationException('Short Password', ['Short password' => 'Password must be at least 8 characters long']);
+        }
+
+        // Validate password confirmation
+        if ($password !== $passwordConfirmation) {
+            throw new ValidationException('Password Mismatch', ['Password Mismatch' => 'Your passwords do not match']);
+        }
+
+        // Validate phone number (Kenyan format)
+        $phone = $this->formatPhoneNumber($phone);
+        if (!$this->isValidPhoneNumber($phone)) {
+            throw new ValidationException('Invalid Phone Number', ['Invalid Number' => 'Please enter a valid Kenyan phone number']);
+        }
+
+        // Check if email already exists
+        if (User::where('email', $email)->exists()) {
+            throw new ValidationException('Email Exists', ['Email exists' => 'An account with this email already exists']);
+        }
+
+        // Check if phone number already exists
+        if (User::where('phone', $phone)->exists()) {
+            throw new ValidationException('Phone Number Exists', ['Phone exists' => 'An account with this phone number already exists']);
+        }
+
+        try {
+            // Create new user
+            $user = User::create([
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'email' => $email,
+                'phone' => $phone,
+                'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+                'role' => 'customer', // Default role
+                'is_active' => true,
+                'email_verified_at' => null, // Will need verification
+            ]);
+
+            // Auto-login the user after registration
             $_SESSION['user_id'] = $user->id;
             $_SESSION['user_email'] = $user->email;
             $_SESSION['user_name'] = $user->first_name . ' ' . $user->last_name;
             $_SESSION['user_role'] = $user->role;
             $_SESSION['login_time'] = time();
 
-            // Handle "remember me" functionality
-            if ($remember) {
-                $this->setRememberToken($user);
-            }
+            // Log the registration
+            $this->logRegistration($user, $request);
 
-            // Log the login
-            $this->logLogin($user, $request);
+            $_SESSION['success'] = 'Account created successfully! Welcome to ' . (Setting::getValue('store_name') ?? 'our store') . '!';
 
-            $_SESSION['success'] = 'Welcome back, ' . $user->name . '!';
+            // Redirect to appropriate page
+            return $this->redirectToAppropriatePage( $redirectTo);
 
-            return $this->redirectToAppropriatePage($redirectTo);
+        } catch (\Exception $e) {
+            throw new ValidationException('Registration Failed', ['Registration error' => 'Registration failed. Please try again. ' . $e->getMessage()]);
         }
+
+    }
+
+    public function logout(): void
+    {
+        
+        // Clear remember token if exists
+        if (isset($_SESSION['user_id'])) {
+            $user = User::find($_SESSION['user_id']);
+            if ($user) {
+                $user->remember_token = null;
+                $user->save();
+            }
+        }
+
+        // Destroy session
+        session_destroy();
+
+        // Clear session cookie
+        $params = session_get_cookie_params();
+        setcookie(
+            session_name(),
+            '',
+            time() - 42000,
+            $params['path'],
+            $params['domain'],
+            $params['secure'],
+            $params['httponly']
+        );
+
+        $_SESSION['success'] = 'You have been logged out successfully.';
     }
 
     /**
@@ -70,7 +192,7 @@ class AuthService
 
         // If user was trying to access a specific page, redirect there
         if ($redirectTo && $redirectTo !== '/' && !$this->isAuthPage($redirectTo)) {
-            return  $redirectTo;
+            return $redirectTo;
         }
 
         // Redirect based on role
@@ -85,8 +207,9 @@ class AuthService
                 return '/staff/dashboard';
 
             case 'customer':
-            default:
                 return '/user/account/dashboard';
+            default:
+                return '/';
         }
     }
 
@@ -179,15 +302,13 @@ class AuthService
     }
 
     /**
-     * Auto-login from remember token
+     * Auto-login from remember token - this is called by javascript function from frontend with a remember token 
+     * @param ServerRequestInterface $request - request with the remember token
+     * 
+     * @return array [status {http status code}, message{string message}]
      */
-    public function autoLoginFromRememberToken(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function autoLoginFromRememberToken(ServerRequestInterface $request): array
     {
-        // Skip if already logged in
-        if (isset($_SESSION['user_id'])) {
-            return $handler->handle($request);
-        }
-
         // Check if remember token exists
         $rememberToken = $_COOKIE['remember_token'] ?? null;
 
@@ -213,7 +334,10 @@ class AuthService
             }
         }
 
-        return $handler->handle($request);
+        return [
+            'status' => 200,
+            'message' => $user->name . " Logged in successfully",
+        ];
     }
 
 }
