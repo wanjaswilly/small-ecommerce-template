@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\ValidationException;
 use App\Middleware\TrackStatsMiddleware;
 use App\Models\SiteStat;
 use Slim\Views\Twig;
@@ -61,7 +62,7 @@ foreach (
     $twig->getEnvironment()->addGlobal($key, $_ENV[$key] ?? '');
 }
 
-$app->add(new \App\Middleware\TrackStatsMiddleware());
+$app->add(new TrackStatsMiddleware());
 
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
@@ -79,6 +80,26 @@ $errorMiddleware->setErrorHandler(HttpNotFoundException::class, function (
     $message = $_ENV['APP_ENVIRONMENT'] === 'DEV' ? $exception : $exception->getMessage();
 
     return $view->render($response->withStatus(404), 'errors/404.twig', ['message' => $message]);
+});
+
+$errorMiddleware->setErrorHandler(ValidationException::class, function (
+    Request $request,
+    Throwable $exception,
+    bool $displayErrorDetails
+) {
+
+    $response = new \Slim\Psr7\Response();
+
+    # store errors & old data in session
+    $_SESSION['errors'] = $exception->errors ?? null;
+    $_SESSION['old'] = $request->getParsedBody() ?? null;
+
+    # redirect back
+    $referer = $request->getHeaderLine('Referer') ?: '/';
+
+    return $response
+        ->withHeader('Location', $referer)
+        ->withStatus(302, $exception->getMessage());
 });
 
 $errorMiddleware->setDefaultErrorHandler(function (
