@@ -1,0 +1,11 @@
+vendor/
+.git/
+.git
+.env
+.vscode/
+node_modules/
+database/database.sqlite
+public/images/
+storage/
+public/build/index.php
+

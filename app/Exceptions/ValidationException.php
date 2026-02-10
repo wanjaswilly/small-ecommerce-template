@@ -3,7 +3,6 @@
 namespace App\Exceptions;
 
 use Exception;
-use Slim\Logger;
 
 /**
  * This class formats validation errors so that they can
