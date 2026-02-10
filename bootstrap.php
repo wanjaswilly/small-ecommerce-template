@@ -63,6 +63,12 @@ foreach (
 }
 
 $app->add(new TrackStatsMiddleware());
+$app->add(new App\Middleware\CsrfMiddleware());
+$app->add(new \App\Middleware\SessionMiddleware());
+
+# add sessions to twig
+$twig->getEnvironment()->addGlobal('session', $_SESSION);
+$twig->addExtension(new App\Extensions\CsrfExtension());
 
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
