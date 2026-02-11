@@ -44,4 +44,11 @@ class UsersController extends BaseController
 
         return $this->render($request, $response, 'users/profile.twig', $this->usersService->user());
     }
+    
+
+    public function updateProfile(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $this->usersService->updateProfile($request);
+        return $this->redirect($response, '/user/account/profile', 302);
+    }
 }
