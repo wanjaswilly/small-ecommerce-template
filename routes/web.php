@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\AuthController;
+use App\Controllers\UsersController;
 use Slim\App;
 use App\Controllers\HomeController;
 
@@ -20,6 +21,16 @@ return function (App $app) {
     $app->post('/register', [AuthController::class, 'register'])->setName('register');
     $app->get('/logout', [AuthController::class, 'logout'])->setName('logout');
     $app->post('/logout', [AuthController::class, 'logout'])->setName('logout');
+
+    # user account routes
+    $app->group('/user/account', function($group){
+        $group->get('',[UsersController::class, 'dashboard'])->setName('user');
+        $group->get('/dashboard',[UsersController::class, 'dashboard'])->setName('user.dashboard');
+        $group->get('/orders',[UsersController::class, 'orders'])->setName('user.orders');
+        $group->get('/{id}/details',[UsersController::class, 'orderDetails'])->setName('user.order.detail');
+        $group->get('/profile',[UsersController::class, 'profile'])->setName('user.profile');
+        $group->post('/profile',[UsersController::class, 'updateProfile'])->setName('user.profile');
+    });
 
     // Test 500 error
     $app->get('/test-500', function () {
