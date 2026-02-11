@@ -30,7 +30,7 @@
 								<i class="fas fa-exclamation-circle text-red-400"></i>
 							</div>
 							<div class="ml-3">
-								<p class="text-sm text-red-700 dark:text-red-300">{{ session.error }}</p>
+								<p class="text-sm text-red-700 dark:text-red-300">{{ session.error | json_encode()}}</p>
 							</div>
 						</div>
 					</div>
@@ -61,7 +61,7 @@
 							First Name *
 						</label>
 						<div class="mt-1">
-							<input id="first_name" name="first_name" type="text" autocomplete="name" required class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm" placeholder="John" value="{{ session.old_register.first_name ?? '' }}">
+							<input id="first_name" name="first_name" type="text" autocomplete="name" required class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm" placeholder="John" value="{{ session.old.first_name ?? '' }}">
 						</div>
 					</div>
 
@@ -70,7 +70,7 @@
 							Last Name *
 						</label>
 						<div class="mt-1">
-							<input id="last_name" name="last_name" type="text" autocomplete="name" required class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm" placeholder="Doe" value="{{ session.old_register.last_name ?? '' }}">
+							<input id="last_name" name="last_name" type="text" autocomplete="name" required class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm" placeholder="Doe" value="{{ session.old.last_name ?? '' }}">
 						</div>
 					</div>
 
@@ -79,7 +79,7 @@
 							Email Address *
 						</label>
 						<div class="mt-1">
-							<input id="email" name="email" type="email" autocomplete="email" required class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm" placeholder="Enter your email address" value="{{ session.old_register.email ?? '' }}">
+							<input id="email" name="email" type="email" autocomplete="email" required class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm" placeholder="Enter your email address" value="{{ session.old.email ?? '' }}">
 						</div>
 					</div>
 
@@ -89,13 +89,10 @@
 						</label>
 						<div class="mt-1">
 							<div class="relative rounded-md shadow-sm">
-								<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-									<span class="text-gray-500 dark:text-gray-400 sm:text-sm">+254</span>
-								</div>
-								<input id="phone" name="phone" type="tel" autocomplete="tel" required class="block w-full pl-14 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm" placeholder="712 345 678" value="{{ session.old_register.phone ?? '' }}">
+								<input id="phone" name="phone" type="tel" autocomplete="tel" required class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm" placeholder="0712 345 678" value="{{ session.old.phone ?? '' }}">
 							</div>
 						</div>
-						<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Enter your 9-digit Kenyan phone number</p>
+						<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Enter your 10-digit Kenyan phone number</p>
 					</div>
 
 					<div>
@@ -127,7 +124,7 @@
 					</div>
 
 					<div>
-						<button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800">
+						<button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800">
 							Create Account
 						</button>
 					</div>
