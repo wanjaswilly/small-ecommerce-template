@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\UnAuthenticatedAccessException;
 use App\Exceptions\ValidationException;
+use App\Models\Order;
 use App\Models\User;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -22,8 +23,7 @@ class UsersService
 
         return [
             'orders' => Order::where('user_id', $this->userId)
-                ->latests()
-                ->orderBy('created_at', 'desc')
+                ->latest()
                 ->limit(5)
                 ->get()
                 ->toArray(),
