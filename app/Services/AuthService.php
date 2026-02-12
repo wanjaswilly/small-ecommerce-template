@@ -49,6 +49,7 @@ class AuthService
         $_SESSION['user_name'] = $user->first_name . ' ' . $user->last_name;
         $_SESSION['user_role'] = $user->role;
         $_SESSION['login_time'] = time();
+        $_SESSION['user'] = $user;
 
         // Handle "remember me" functionality
         if ($remember) {
