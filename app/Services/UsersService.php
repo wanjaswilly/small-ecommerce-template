@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Exceptions\UnAuthenticatedAccessException;
 use App\Exceptions\ValidationException;
+use App\Models\Favourite;
 use App\Models\Order;
 use App\Models\User;
+use Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
 
@@ -124,4 +126,101 @@ class UsersService
             throw new ValidationException('Profile Update Failed', ['Update error' => 'Failed to update profile. Please try again. :' . $e->getMessage()]);
         }
     }
+
+    public function wishlistData(): array
+    {
+        $user = User::with(['favourites', 'favourites.product'])->find($this->userId);
+
+        if (!$user) {
+            // User not found (shouldn't happen if session exists)
+            session_destroy();
+            throw new UnAuthenticatedAccessException("Kindly login to view your favorite products");
+        }
+
+        return ['user' => $user];
+    }
+
+    // AddToWishlist
+    public function AddToWishlist(ServerRequestInterface $request): array
+    {
+        $data = $request->getParsedBody();
+
+        # check if user is logged in
+        if (!$this->userId || empty($this->userId)) {
+            return [
+                'status' => 400,
+                'message' => ['error' => 'Kindly login to add this product to your favourite']
+            ];
+        }
+
+        if (!User::find($_SESSION['user_id'])) {
+            return [
+                'status' => 400,
+                'message' => ['error' => 'Kindly login or refresh to add this product to your favourite']
+            ];
+        }
+
+        if (Favourite::where('product_id', $data['product_id'])->where('user_id', $_SESSION['user_id'])->first()) {
+            return [
+                'status' => 200,
+                'message' => ['sucess' => 'Product already in your wishlist']
+            ];
+        }
+
+        $favourite = Favourite::create([
+            'product_id' => $data['product_id'],
+            'user_id' => $_SESSION['user_id']
+        ]);
+
+        if ($favourite) {
+            return [
+                'status' => 200,
+                'message' => ['success' => 'Product added to your wishlist']
+            ];
+        }
+
+        return [
+            'status' => 400,
+            'message' => ['error' => 'Some error occurred while adding product to your favourite']
+        ];
+    }
+
+    public function removeFromWishlist(int $favouriteId): array
+    {
+        # check if user is logged in
+        if (!$_SESSION['user_id'] || empty($_SESSION['user_id'])) {
+            throw new UnAuthenticatedAccessException("You are not logged in", ['error' => 'Kindly login to manage your favourites']);
+        }
+        if (!$favourite = Favourite::find($favouriteId)) {
+            throw new ValidationException("Product Not In your Wishlist", ['error' => 'This product is not in your favourites']);
+        }
+
+        if ($favourite->delete()) {
+            return [
+                'status' => 200,
+                'message' => ['success' => "Product removed from Wishlist"]
+            ];
+        }
+
+        throw new Exception("Error removing product from your Wishlist");
+    }
+
+    public function clearWishlist(): array
+    {
+        if (!$favourites = Favourite::where('user_id', $_SESSION['user_id'])->get()) {
+            return ['error' => "Product not on your Wishlist"];
+        }
+
+        if ($favourites->delete()) {
+            return [
+                'status' => 400,
+                'message' => ['success' => "Product removed from Wishlist"]
+            ];
+        }
+        return [
+            'status' => 400,
+            'message' => ['error' => "Error removing product from your Wishlist"]
+        ];
+    }
+
 }
