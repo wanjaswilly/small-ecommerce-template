@@ -198,9 +198,9 @@ class Setting extends Model
         return [
 
             # General Settings
-            'store_name' => $_ENV['STORE_NAME'] ?? 'Corey Electronics',
-            'store_email' => $_ENV['STORE_EMAIL'] ?? 'info@corey.co.ke',
-            'store_phone' => $_ENV['STORE_PHONE'] ?? '+254 712 345 678',
+            'store_name' => $_ENV['STORE_NAME'] ?? 'Small Ecommerce',
+            'store_email' => $_ENV['STORE_EMAIL'] ?? 'info@smallecommerce.co.ke',
+            'store_phone' => $_ENV['STORE_PHONE'] ?? '+254 7414 00 006',
             'store_active' => filter_var($_ENV['STORE_ACTIVE'] ?? true, FILTER_VALIDATE_BOOLEAN),
             'currency' => $_ENV['STORE_CURRENCY'] ?? 'KES',
 
