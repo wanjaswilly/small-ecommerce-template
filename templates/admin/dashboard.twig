@@ -1,0 +1,360 @@
+{% extends "admin.twig" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+
+{% block page_breadcrumb %}
+    <span class="mx-2">/</span>
+    <span class="text-gray-800 dark:text-gray-200">Dashboard</span>
+{% endblock %}
+
+{% block page_description %}Welcome to Small Ecommerce Admin Panel{% endblock %}
+
+{% block page_actions %}
+    <div class="flex space-x-3">
+        <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center">
+            <i class="fas fa-plus mr-2"></i>
+            Quick Add
+        </button>
+        <button class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors duration-300 flex items-center">
+            <i class="fas fa-download mr-2"></i>
+            Export
+        </button>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <!-- Stats Overview Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Products -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Products</p>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                        {{ stats.total_products |default(0) }}
+                    </p>
+                    <p class="text-sm text-green-600 dark:text-green-400 mt-1">
+                        <i class="fas fa-arrow-up mr-1"></i>
+                        {{ stats.product_growth|default(0) }}% this month
+                    </p>
+                </div>
+                <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                    <i class="fas fa-boxes text-blue-600 dark:text-blue-400 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Electronics -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Electronics</p>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                        {{ stats.electronics_count|default(0) }}
+                    </p>
+                    <p class="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                        <i class="fas fa-mobile-alt mr-1"></i>
+                        {{ stats.electronics_categories|default(0) }} categories
+                    </p>
+                </div>
+                <div class="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
+                    <i class="fas fa-mobile-alt text-green-600 dark:text-green-400 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Car Parts -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Car Parts</p>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                        {{ stats.car_parts_count|default(0) }}
+                    </p>
+                    <p class="text-sm text-orange-600 dark:text-orange-400 mt-1">
+                        <i class="fas fa-car mr-1"></i>
+                        {{ stats.car_part_categories|default(0) }} categories
+                    </p>
+                </div>
+                <div class="p-3 bg-orange-100 dark:bg-orange-900 rounded-lg">
+                    <i class="fas fa-car text-orange-600 dark:text-orange-400 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Alert -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Low Stock</p>
+                    <p class="text-3xl font-bold text-red-600 dark:text-red-400 mt-2">
+                        {{ stats.low_stock_count|default(0) }}
+                    </p>
+                    <p class="text-sm text-red-600 dark:text-red-400 mt-1">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                        Needs attention
+                    </p>
+                </div>
+                <div class="p-3 bg-red-100 dark:bg-red-900 rounded-lg">
+                    <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Website Traffic Stats -->
+        <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Website Traffic Analytics</h3>
+                <div class="flex space-x-2">
+                    <select class="text-sm border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        <option>Last 7 days</option>
+                        <option>Last 30 days</option>
+                        <option selected>Last 90 days</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Traffic Overview -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.total_visits|default(0) }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Total Visits</p>
+                </div>
+                <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.unique_visitors|default(0) }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Unique Visitors</p>
+                </div>
+                <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.page_views|default(0) }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Page Views</p>
+                </div>
+                <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.avg_session_duration|default('0:00') }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Avg. Session</p>
+                </div>
+            </div>
+
+            <!-- Device & Platform Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Device Distribution -->
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Device Distribution</h4>
+                    <div class="space-y-3">
+                        {% for device in stats.device_stats|default([]) %}
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full 
+                                    {% if device.device == 'Mobile' %}bg-blue-500
+                                    {% elseif device.device == 'Desktop' %}bg-green-500
+                                    {% elseif device.device == 'Tablet' %}bg-purple-500
+                                    {% else %}bg-gray-500{% endif %} mr-3">
+                                </div>
+                                <span class="text-sm text-gray-700 dark:text-gray-300">{{ device.device }}</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ device.count }}</span>
+                                <span class="text-xs text-gray-500">({{ device.percentage }}%)</span>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No device data available</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Browser Usage -->
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Top Browsers</h4>
+                    <div class="space-y-3">
+                        {% for browser in stats.browser_stats|default([]) %}
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fab 
+                                    {% if browser.browser == 'Chrome' %}fa-chrome text-red-500
+                                    {% elseif browser.browser == 'Firefox' %}fa-firefox text-orange-500
+                                    {% elseif browser.browser == 'Safari' %}fa-safari text-blue-500
+                                    {% elseif browser.browser == 'Edge' %}fa-edge text-blue-600
+                                    {% else %}fa-globe text-gray-500{% endif %} mr-3">
+                                </i>
+                                <span class="text-sm text-gray-700 dark:text-gray-300">{{ browser.browser }}</span>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ browser.count }}</span>
+                        </div>
+                        {% else %}
+                        <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No browser data available</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity & Quick Stats -->
+        <div class="space-y-6">
+            <!-- Recent Visitors -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Visitors</h3>
+                <div class="space-y-3">
+                    {% for visit in stats.recent_visits|default([]) %}
+                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-primary-600 dark:text-primary-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ visit.ip }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ visit.device }} • {{ visit.platform }}
+                                </p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-gray-500">{{ visit.visited_at|date('H:i') }}</span>
+                    </div>
+                    {% else %}
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No recent visits</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
+                <div class="space-y-2">
+                    <a href="/admin/products/create" class="flex items-center p-3 bg-blue-50 dark:bg-blue-900 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors duration-300">
+                        <i class="fas fa-plus-circle text-blue-600 dark:text-blue-400 mr-3"></i>
+                        <span class="text-sm font-medium text-blue-900 dark:text-blue-100">Add Product</span>
+                    </a>
+                    <a href="/admin/categories/create" class="flex items-center p-3 bg-green-50 dark:bg-green-900 rounded-lg hover:bg-green-100 dark:hover:bg-green-800 transition-colors duration-300">
+                        <i class="fas fa-plus-circle text-green-600 dark:text-green-400 mr-3"></i>
+                        <span class="text-sm font-medium text-green-900 dark:text-green-100">Add Category</span>
+                    </a>
+                    <a href="/admin/inventory" class="flex items-center p-3 bg-orange-50 dark:bg-orange-900 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-800 transition-colors duration-300">
+                        <i class="fas fa-boxes text-orange-600 dark:text-orange-400 mr-3"></i>
+                        <span class="text-sm font-medium text-orange-900 dark:text-orange-100">Manage Inventory</span>
+                    </a>
+                    <a href="/admin/categories" class="flex items-center p-3 bg-purple-50 dark:bg-purple-900 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-800 transition-colors duration-300">
+                        <i class="fas fa-tags text-purple-600 dark:text-purple-400 mr-3"></i>
+                        <span class="text-sm font-medium text-purple-900 dark:text-purple-100">Categories</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Products & Low Stock -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Products -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Products</h3>
+                <a href="/admin/products" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">
+                    View All
+                </a>
+            </div>
+            <div class="space-y-4">
+                {% for product in stats.recent_products|default([]) %}
+                <div class="flex items-center space-x-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+                        {% if product.images and product.images|length > 0 %}
+                            <img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-12 h-12 object-cover rounded-lg">
+                        {% else %}
+                            <i class="fas 
+                                {% if product.type == 'electronics' %}fa-mobile-alt
+                                {% else %}fa-car
+                                {% endif %} text-gray-400">
+                            </i>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ product.name }}</h4>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            KSh {{ product.price|number_format }} • 
+                            {{ product.category.name|default('Uncategorized') }}
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs px-2 py-1 rounded-full 
+                            {% if product.stock_quantity > 10 %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                            {% elseif product.stock_quantity > 0 %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                            {% else %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200{% endif %}">
+                            {{ product.stock_quantity }} in stock
+                        </span>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No products found</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Low Stock Products -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Low Stock Alert</h3>
+                <span class="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-sm px-3 py-1 rounded-full">
+                    {{ stats.low_stock_products.count|default(0) }} items
+                </span>
+            </div>
+            <div class="space-y-4">
+                {% for product in stats.low_stock_products|default([]) %}
+                <div class="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900 rounded-lg border border-red-200 dark:border-red-700">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-red-100 dark:bg-red-800 rounded-lg flex items-center justify-center">
+                            <i class="fas 
+                                {% if product.type == 'electronics' %}fa-mobile-alt
+                                {% else %}fa-car
+                                {% endif %} text-red-600 dark:text-red-400">
+                            </i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-red-900 dark:text-red-100">{{ product.name }}</h4>
+                            <p class="text-xs text-red-700 dark:text-red-300">
+                                Only {{ product.stock_quantity }} left • Min: {{ product.min_stock_level }}
+                            </p>
+                        </div>
+                    </div>
+                    <a href="/admin/products/{{ product.id }}/edit" class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </div>
+                {% else %}
+                <div class="text-center py-6">
+                    <i class="fas fa-check-circle text-green-500 text-3xl mb-2"></i>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">All products are well stocked</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Platform Statistics -->
+    <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Platform Statistics</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <i class="fab fa-windows text-blue-500 text-2xl mb-2"></i>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ stats.platform_stats.windows|default(0) }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Windows</p>
+            </div>
+            <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <i class="fab fa-apple text-gray-700 dark:text-gray-300 text-2xl mb-2"></i>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ stats.platform_stats.mac|default(0) }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Mac</p>
+            </div>
+            <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <i class="fab fa-linux text-orange-500 text-2xl mb-2"></i>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ stats.platform_stats.linux|default(0) }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Linux</p>
+            </div>
+            <div class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <i class="fas fa-mobile-alt text-purple-500 text-2xl mb-2"></i>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ stats.platform_stats.mobile|default(0) }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Mobile</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

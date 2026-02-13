@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+		<title>
+			{% block title %}
+				Admin Dashboard
+			{% endblock %}
+			| Small Ecommerce Admin
+		</title>
+
+		<meta name="description" content="{% block description %}Small Ecommerce Admin - Manage electronics and car parts inventory{% endblock %}"/>
+		<meta name="author" content="Small Ecommerce"/>
+		<meta
+		name="keywords" content="Small Ecommerce, Electronics, Car Parts, Admin, Inventory Management"/>
+
+		<!-- Open Graph (OG) Tags -->
+		<meta property="og:title" content="{% block og_title %}Small Ecommerce Admin{% endblock %}"/>
+		<meta property="og:description" content="{% block og_description %}Admin dashboard for managing Small Ecommerce inventory and operations.{% endblock %}"/>
+		<meta property="og:type" content="website"/>
+		<meta property="og:url" content="{{ app_url|default('https://smallecommerce.co.ke') }}"/>
+		<meta
+		property="og:image" content="{{ app_url|default('https://smallecommerce.co.ke') }}/assets/og-image.jpg"/>
+
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image"/>
+		<meta name="twitter:title" content="{% block twitter_title %}Small Ecommerce Admin{% endblock %}"/>
+		<meta name="twitter:description" content="{% block twitter_description %}Admin dashboard for Small Ecommerce.{% endblock %}"/>
+		<meta
+		name="twitter:image" content="{{ app_url|default('https://smallecommerce.co.ke') }}/assets/twitter-card.jpg"/>
+
+		<!-- Google Font -->
+		<link
+		href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+		<!-- Font Awesome -->
+		<link
+		rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+		<!-- Tailwind CSS -->
+		<link rel="stylesheet" href="{{ asset('/build/assets/app.css') }}"/>
+		<script type="module" src="{{ asset('/build/assets/app-CQBL56Kt.js ') }}"></script>
+
+		<script>
+			tailwind.config = {
+darkMode: 'class',
+theme: {
+extend: {
+colors: {
+primary: {
+50: '#eff6ff',
+100: '#dbeafe',
+500: '#3b82f6',
+600: '#2563eb',
+700: '#1d4ed8',
+800: '#1e40af',
+900: '#1e3a8a'
+}
+}
+}
+}
+}
+		</script>
+
+		<!-- Favicon -->
+		<link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+	</head>
+	<body class="bg-gray-100 dark:bg-gray-800 font-sans antialiased">
+		<div
+			class="flex h-screen overflow-hidden">
+			<!-- Mobile sidebar backdrop -->
+			<div id="sidebarBackdrop" class="fixed inset-0 z-20 bg-black bg-opacity-50 hidden md:hidden"></div>
+
+			<!-- Sidebar -->
+			<aside id="sidebar" class="fixed md:relative z-30 w-64 bg-primary-800 dark:bg-gray-900 text-white shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out h-full">
+				<div class="p-4 border-b border-primary-700 dark:border-gray-700 flex justify-between items-center">
+					<a href="/admin" class="flex items-center space-x-2">
+						<div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+							<span class="text-primary-800 font-bold text-sm">CE</span>
+						</div>
+						<span class="text-xl font-bold">Small Ecommerce</span>
+					</a>
+					<button id="closeSidebar" class="md:hidden text-white">
+						<i class="fas fa-times"></i>
+					</button>
+				</div>
+
+				<nav
+					class="p-4 overflow-y-auto h-[calc(100%-64px)]">
+					<!-- Main Navigation -->
+					<div class="mb-6">
+						<p class="text-xs uppercase text-primary-300 font-semibold mb-2">Main</p>
+						<ul>
+							<li class="mb-1">
+								<a href="/admin" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'dashboard' %}bg-primary-700{% endif %}">
+									<i class="fas fa-tachometer-alt mr-3"></i>
+									<span>Dashboard</span>
+								</a>
+							</li>
+							<li class="mb-1">
+								<a href="/admin/orders" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'orders' %}bg-primary-700{% endif %}">
+									<i class="fas fa-shopping-cart mr-3"></i>
+									<span>Orders</span>
+									{# <span class="ml-auto bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">12</span> #}
+								</a>
+							</li>
+							<li class="mb-1">
+								<a href="/admin/sales" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'orders' %}bg-primary-700{% endif %}">
+									<i class="fas fa-shopping-cart mr-3"></i>
+									<span>Sales & Offers</span>
+									{# <span class="ml-auto bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">12</span> #}
+								</a>
+							</li>
+						</ul>
+					</div>
+
+					<!-- Quick Actions -->
+					<div class="mb-6">
+						<p class="text-xs uppercase text-primary-300 font-semibold mb-2">Quick Actions</p>
+						<ul>
+							<li class="mb-1">
+								<a href="/admin/products/create" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300">
+									<i class="fas fa-plus-circle mr-3"></i>
+									<span>Add Product</span>
+								</a>
+							</li>
+							<li class="mb-1">
+								<a href="/admin/categories/create" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300">
+									<i class="fas fa-plus-circle mr-3"></i>
+									<span>Add Category</span>
+								</a>
+							</li>
+							{# <li class="mb-1">
+																													<a href="/admin/brands/create" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300">
+																														<i class="fas fa-plus-circle mr-3"></i>
+																														<span>Add Brand</span>
+																													</a>
+																												</li> #}
+						</ul>
+					</div>
+
+
+					<!-- Product Management -->
+					<div class="mb-6">
+						<p class="text-xs uppercase text-primary-300 font-semibold mb-2">Products</p>
+						<ul>
+							<li class="mb-1">
+								<a href="/admin/categories" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'categories' %}bg-primary-700{% endif %}">
+									<i class="fas fa-tags mr-3"></i>
+									<span>Categories</span>
+								</a>
+							</li>
+							{# <li class="mb-1">
+																													<a href="/admin/brands" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'categories' %}bg-primary-700{% endif %}">
+																														<i class="fas fa-tags mr-3"></i>
+																														<span>Brands</span>
+																													</a>
+																												</li> #}
+							<li class="mb-1">
+								<a href="/admin/products" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'electronics' %}bg-primary-700{% endif %}">
+									<i class="fas fa-mobile-alt mr-3"></i>
+									<span>Products</span>
+									{# <span class="ml-auto bg-green-500 text-white text-xs px-2 py-1 rounded-full">45</span> #}
+								</a>
+							</li>
+							<li class="mb-1">
+								<a href="/admin/inventory" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'inventory' %}bg-primary-700{% endif %}">
+									<i class="fas fa-boxes mr-3"></i>
+									<span>Inventory</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+					
+					<!-- System -->
+					<div class="mb-6">
+						<p class="text-xs uppercase text-primary-300 font-semibold mb-2">System</p>
+						<ul>
+							<li class="mb-1">
+								<a href="/admin/staff" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'users' %}bg-primary-700{% endif %}">
+									<i class="fas fa-user-shield mr-3"></i>
+									<span>Staff</span>
+								</a>
+							</li>
+							<li class="mb-1">
+								<a href="/admin/riders" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'users' %}bg-primary-700{% endif %}">
+									<i class="fas fa-user-shield mr-3"></i>
+									<span>Riders</span>
+								</a>
+							</li>
+							<li class="mb-1">
+								<a href="/admin/analytics" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'stats' %}bg-primary-700{% endif %}">
+									<i class="fas fa-chart-simple mr-3"></i>
+									<span>Analytics</span>
+								</a>
+							</li>
+							<li class="mb-1">
+								<a href="/admin/settings" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'settings' %}bg-primary-700{% endif %}">
+									<i class="fas fa-cog mr-3"></i>
+									<span>Settings</span>
+								</a>
+							</li>
+							<li class="mb-1">
+								<a href="/admin/reset-password" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'settings' %}bg-primary-700{% endif %}">
+									<i class="fas fa-cog mr-3"></i>
+									<span>Reset Password</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+
+					<!-- Customer Management -->
+					<div class="mb-6">
+						<p class="text-xs uppercase text-primary-300 font-semibold mb-2">Customers</p>
+						<ul>
+							<li class="mb-1">
+								<a href="/admin/contact-messages" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'customers' %}bg-primary-700{% endif %}">
+									<i class="fas fa-users mr-3"></i>
+									<span>Contact Messages</span>
+									{# <span class="ml-auto bg-blue-500 text-white text-xs px-2 py-1 rounded-full">234</span> #}
+								</a>
+							</li>
+							<li class="mb-1">
+								<a href="/admin/customers" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'customers' %}bg-primary-700{% endif %}">
+									<i class="fas fa-users mr-3"></i>
+									<span>Customers</span>
+									{# <span class="ml-auto bg-blue-500 text-white text-xs px-2 py-1 rounded-full">234</span> #}
+								</a>
+							</li>
+							<li class="mb-1">
+								<a href="/admin/reviews" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300 {% if current_page == 'reviews' %}bg-primary-700{% endif %}">
+									<i class="fas fa-star mr-3"></i>
+									<span>Reviews</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+
+					<!-- Public Site -->
+					<div class="mb-6">
+						<p class="text-xs uppercase text-primary-300 font-semibold mb-2">Public Site</p>
+						<ul>
+							<li class="mb-1">
+								<a href="/" target="_blank" class="flex items-center p-2 rounded hover:bg-primary-700 dark:hover:bg-gray-700 transition-colors duration-300">
+									<i class="fas fa-globe mr-3"></i>
+									<span>View Website</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</nav>
+			</aside>
+
+			<!-- Main Content -->
+			<div
+				class="flex-1 flex flex-col overflow-hidden">
+				<!-- Top Navigation -->
+				<header class="bg-white dark:bg-gray-900 shadow-sm z-10 border-b border-gray-200 dark:border-gray-700">
+					<div
+						class="flex items-center justify-between px-6 py-3">
+						<!-- Mobile menu button -->
+						<button id="toggleSidebar" class="md:hidden text-gray-500 dark:text-gray-400 focus:outline-none">
+							<i class="fas fa-bars text-xl"></i>
+						</button>
+
+						<!-- Breadcrumb -->
+						<div class="hidden md:flex items-center text-sm text-gray-600 dark:text-gray-400">
+							<a href="/admin" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-300">
+								<i class="fas fa-home mr-1"></i>
+								Admin
+							</a>
+							{% block page_breadcrumb %}
+								<span class="mx-2">/</span>
+								<span class="text-gray-800 dark:text-gray-200"></span>
+							{% endblock %}
+						</div>
+
+						<!-- Right side actions -->
+						<div class="flex items-center space-x-4">
+							<!-- Notifications -->
+							<div class="relative">
+								<button class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-300 relative">
+									<i class="fas fa-bell text-xl"></i>
+									<span class="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+								</button>
+							</div>
+
+							{# <!-- Dark Mode Toggle -->
+																												                        <button id="darkModeToggle" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-300">
+																												                            <i class="fas fa-moon text-xl" id="darkIcon"></i>
+																												                            <i class="fas fa-sun text-xl hidden" id="lightIcon"></i>
+																												                        </button> #}
+
+							<!-- User menu -->
+							<div class="relative">
+								<button id="userMenuButton" class="flex items-center space-x-2 focus:outline-none">
+									<div class="h-10 w-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-semibold">
+										<i class="fas fa-user"></i>
+									</div>
+									<span class="hidden md:inline text-gray-700 dark:text-gray-300">{{session.user_name}}</span>
+									<i class="fas fa-chevron-down text-xs text-gray-500 dark:text-gray-400"></i>
+								</button>
+								<div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-20 hidden border border-gray-200 dark:border-gray-700">
+									<a href="/admin/profile" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300">
+										<i class="fas fa-user mr-2"></i>Profile
+									</a>
+									<a href="/admin/settings" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300">
+										<i class="fas fa-cog mr-2"></i>Settings
+									</a>
+									<div class="border-t border-gray-200 dark:border-gray-600 my-1"></div>
+									{# <a href="/auth/logout" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300">
+																																				                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+																																				                                </a> #}
+
+									<form method="POST" action="/logout">
+										{{ csrf_field() | raw }}
+										<button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300">
+											<i class="fas fa-sign-out-alt mr-2"></i>Logout
+										</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</header>
+
+				<!-- Main Content Area -->
+				<main class="flex-1 overflow-y-auto p-1 sm:p-6 bg-gray-50 dark:bg-gray-800">
+
+					{% if session.success or session.error %}
+						<div
+							class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+							<!-- Flash Messages -->
+							{% if session.success %}
+								<div class="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+									<div class="flex items-center">
+										<i class="fas fa-check-circle text-green-400 mr-2"></i>
+										<span class="text-green-700 dark:text-green-300">{{ session.success }}</span>
+									</div>
+								</div>
+							{% endif %}
+
+							{% if session.error %}
+								<div class="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+									<div class="flex items-center">
+										<i class="fas fa-exclamation-circle text-red-400 mr-2"></i>
+										<span class="text-red-700 dark:text-red-300">{{ session.error }}</span>
+									</div>
+								</div>
+							{% endif %}
+						</div>
+					{% endif %}
+
+					<style>
+						.animate-slide-in-right {
+							animation: slideInRight 0.3s ease-out;
+						}
+
+						@keyframes slideInRight {
+							from {
+								transform: translateX(100%);
+								opacity: 0;
+							}
+							to {
+								transform: translateX(0);
+								opacity: 1;
+							}
+						}
+					</style>
+
+
+					{# Main content block #}
+					{% block content %}{% endblock %}
+				</main>
+
+				<!-- Footer -->
+				<footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 py-4 px-6">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<p class="text-sm text-gray-600 dark:text-gray-400">
+							&copy;
+							{{ "now"|date("Y") }}
+							Small Ecommerce. All rights reserved.
+						</p>
+						<div class="flex space-x-4 mt-2 md:mt-0">
+							<span class="text-sm text-gray-600 dark:text-gray-400">Ngara, Nairobi</span>
+							<span class="text-sm text-gray-600 dark:text-gray-400">•</span>
+							<span class="text-sm text-gray-600 dark:text-gray-400">0725211952</span>
+						</div>
+					</div>
+				</footer>
+			</div>
+		</div>
+
+		<!-- Custom Admin JS -->
+		<script>
+			document.addEventListener('DOMContentLoaded', function () { // Toggle sidebar on mobile
+const toggleSidebar = document.getElementById('toggleSidebar');
+const closeSidebar = document.getElementById('closeSidebar');
+const sidebar = document.getElementById('sidebar');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+if (toggleSidebar) {
+toggleSidebar.addEventListener('click', function () {
+sidebar.classList.remove('-translate-x-full');
+sidebarBackdrop.classList.remove('hidden');
+});
+}
+
+if (closeSidebar) {
+closeSidebar.addEventListener('click', function () {
+sidebar.classList.add('-translate-x-full');
+sidebarBackdrop.classList.add('hidden');
+});
+}
+
+if (sidebarBackdrop) {
+sidebarBackdrop.addEventListener('click', function () {
+sidebar.classList.add('-translate-x-full');
+sidebarBackdrop.classList.add('hidden');
+});
+}
+
+// Close sidebar when clicking a nav link (on mobile)
+document.querySelectorAll('#sidebar a').forEach(link => {
+link.addEventListener('click', function () {
+if (window.innerWidth < 768) {
+sidebar.classList.add('-translate-x-full');
+sidebarBackdrop.classList.add('hidden');
+}
+});
+});
+
+// User dropdown menu
+const userMenuButton = document.getElementById('userMenuButton');
+const userMenuDropdown = document.getElementById('userMenuDropdown');
+
+if (userMenuButton && userMenuDropdown) {
+userMenuButton.addEventListener('click', function () {
+userMenuDropdown.classList.toggle('hidden');
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function (event) {
+if (! userMenuButton.contains(event.target) && ! userMenuDropdown.contains(event.target)) {
+userMenuDropdown.classList.add('hidden');
+}
+});
+}
+
+// Dark mode toggle
+const darkModeToggle = document.getElementById('darkModeToggle');
+const darkIcon = document.getElementById('darkIcon');
+const lightIcon = document.getElementById('lightIcon');
+
+if (darkModeToggle) {
+darkModeToggle.addEventListener('click', function () {
+document.documentElement.classList.toggle('dark');
+const isDark = document.documentElement.classList.contains('dark');
+localStorage.setItem('darkMode', isDark);
+
+if (isDark) {
+darkIcon.classList.add('hidden');
+lightIcon.classList.remove('hidden');
+} else {
+darkIcon.classList.remove('hidden');
+lightIcon.classList.add('hidden');
+}
+});
+
+// Initialize dark mode
+const savedDarkMode = localStorage.getItem('darkMode');
+if (savedDarkMode === 'true') {
+document.documentElement.classList.add('dark');
+darkIcon.classList.add('hidden');
+lightIcon.classList.remove('hidden');
+}
+}
+
+// Handle window resize
+window.addEventListener('resize', function () {
+if (window.innerWidth >= 768) {
+sidebar.classList.remove('-translate-x-full');
+sidebarBackdrop.classList.add('hidden');
+}
+});
+});
+		</script>
+	</body>
+</html>
