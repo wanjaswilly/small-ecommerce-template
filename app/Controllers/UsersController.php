@@ -41,7 +41,6 @@ class UsersController extends BaseController
 
     public function profile(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-
         return $this->render($request, $response, 'users/profile.twig', $this->usersService->user());
     }
 

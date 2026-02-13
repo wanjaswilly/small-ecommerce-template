@@ -23,13 +23,18 @@ return function (App $app) {
     $app->post('/logout', [AuthController::class, 'logout'])->setName('logout');
 
     # user account routes
-    $app->group('/user/account', function($group){
-        $group->get('',[UsersController::class, 'dashboard'])->setName('user');
-        $group->get('/dashboard',[UsersController::class, 'dashboard'])->setName('user.dashboard');
-        $group->get('/orders',[UsersController::class, 'orders'])->setName('user.orders');
-        $group->get('/{id}/details',[UsersController::class, 'orderDetails'])->setName('user.order.detail');
-        $group->get('/profile',[UsersController::class, 'profile'])->setName('user.profile');
-        $group->post('/profile',[UsersController::class, 'updateProfile'])->setName('user.profile');
+    $app->group('/user/account', function ($group) {
+        $group->get('', [UsersController::class, 'dashboard'])->setName('user');
+        $group->get('/dashboard', [UsersController::class, 'dashboard'])->setName('user.dashboard');
+        $group->get('/orders', [UsersController::class, 'orders'])->setName('user.orders');
+        $group->get('/{id}/details', [UsersController::class, 'orderDetails'])->setName('user.order.detail');
+        $group->get('/profile', [UsersController::class, 'profile'])->setName('user.profile');
+        $group->post('/profile', [UsersController::class, 'updateProfile'])->setName('user.profile');
+        $group->get('/wishlist ', [UsersController::class, 'Wishlist'])->setName('user.add.wishlist');
+        $group->get('/wishlist/clear', [UsersController::class, 'clearWishlist'])->setName('account.wishlist');
+        $group->post('/wishlist/add/{id}', [UsersController::class, 'AddToWishlist'])->setName('account.wishlist.add');
+        $group->post('/wishlist/remove/{id}', [UsersController::class, 'removeFromWishlist'])->setName('account.wishlist.remove');
+
     });
 
     // Test 500 error
