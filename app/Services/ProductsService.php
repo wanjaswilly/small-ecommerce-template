@@ -107,7 +107,7 @@ class ProductsService
         $category = Category::where('slug', $categorySlug)->first();
 
         if (!$category) {
-            return ['error' => 'Category not found'];
+            throw new ValidationException('Category not Found', ['error' => 'Category not found']);
         }
 
         # Get query parameters for filtering
@@ -188,6 +188,13 @@ class ProductsService
         ];
     }
 
+    public function parentCategories()
+    {
+        return [
+            'parent_categories' => Category::whereNull('parent_id')->orderBy('name')->get()
+        ];
+    }
+
     public function singleProductData(string $slug): array
     {
         $product = Product::with(['category', 'tags'])
@@ -196,9 +203,7 @@ class ProductsService
             ->first();
 
         if (!$product) {
-            return [
-                'error' => 'Product not found'
-            ];
+            throw new ValidationException("Product Not Found", ['error' => 'Product not found']);
         }
 
         $product->increment('product_views');
@@ -391,7 +396,7 @@ class ProductsService
 
     }
 
-    public function destroyProduct(int $productId) : array 
+    public function destroyProduct(int $productId): array
     {
         DB::beginTransaction();
 
@@ -422,7 +427,7 @@ class ProductsService
             DB::rollBack();
 
             throw new ValidationException("Error While Updating Product", ['error' => 'Failed to delete the product: ' . $e->getMessage()]);
-        }    
+        }
     }
 
     # Handle image upload
@@ -437,7 +442,9 @@ class ProductsService
         $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/images/products/' . $categorySlug . '/';
 
         # Create directory if it doesn't exist
-        if (!is_dir($uploadDir)) { mkdir($uploadDir, 0755, true); }
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
 
         $images = $_FILES['images'];
 
@@ -519,7 +526,7 @@ class ProductsService
 
 
     # Slugify helper
-    public function slugify($text, string $divider = '-')
+    public function slugify($text, string $divider = '-'): string
     {
         # replace non letter or digits by divider
         $text = preg_replace('~[^\pL\d]+~u', $divider, $text);
@@ -541,13 +548,12 @@ class ProductsService
 
     public function productSearch(ServerRequestInterface $request): array
     {
-        $searchQuery = $request->getQueryParams()['query'];
+        $searchQuery = trim($request->getQueryParams()['query'] ?? $request->getQueryParams()['q']);
         return [
             'products' => Product::where('is_active', true)
                 ->where(function ($query) use ($searchQuery) {
                     $query->where('name', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('description', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('sku', 'like', '%' . $searchQuery . '%');
+                        ->orWhere('description', 'like', '%' . $searchQuery . '%');
                 })->limit(12)->get(['id', 'name', 'price'])->toArray()
         ];
     }
