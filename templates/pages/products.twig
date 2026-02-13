@@ -1,0 +1,203 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+	<section class="py-12 bg-white">
+		<div class="container mx-auto px-4">
+			<div class="flex items-center justify-between mb-8">
+				<div>
+					<h1 class="text-3xl lg:text-4xl font-black text-gray-900">All Products</h1>
+					<p class="text-gray-600">Browse our complete collection</p>
+				</div>
+				<!-- Filter Toggle Button -->
+				<button id="filter-toggle" class="lg:hidden bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition duration-300">
+					<i class="fas fa-filter mr-2"></i>Filters
+				</button>
+			</div>
+
+			<div
+				class="flex flex-col lg:flex-row gap-8">
+				<!-- Filters Sidebar -->
+				<div id="filters-sidebar" class="lg:w-1/4 bg-gray-50 p-4 lg:p-6 rounded-xl hidden lg:block">
+					<h3 class="text-lg font-bold text-gray-900 mb-4">Filters</h3>
+					<form
+						method="GET" class="space-y-4">
+						<!-- Search -->
+						<div>
+							<label class="block text-sm font-bold text-gray-700 mb-2">Search</label>
+							<input type="text" name="search" value="{{ search_query }}" placeholder="Search products..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+						</div>
+
+						<!-- Category Filter -->
+						<div>
+							<label class="block text-sm font-bold text-gray-700 mb-2">Category</label>
+							<select name="category" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+								<option value="">All Categories</option>
+								{% for category in categories %}
+									<option value="{{ category.slug }}" {% if selected_category == category.slug %} selected {% endif %}>{{ category.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+
+						<!-- Brand Filter -->
+						<div>
+							<label class="block text-sm font-bold text-gray-700 mb-2">Brand</label>
+							<input type="text" name="brand" value="{{ selected_brand }}" placeholder="Brand name..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+						</div>
+
+						<!-- Price Range -->
+						<div>
+							<label class="block text-sm font-bold text-gray-700 mb-2">Price Range</label>
+							<select name="price" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+								<option value="">All Prices</option>
+								<option value="0-10000" {% if selected_price == '0-10000' %} selected {% endif %}>Under KSh 10,000</option>
+								<option value="10000-30000" {% if selected_price == '10000-30000' %} selected {% endif %}>KSh 10,000 - 30,000</option>
+								<option value="30000-60000" {% if selected_price == '30000-60000' %} selected {% endif %}>KSh 30,000 - 60,000</option>
+								<option value="60000-100000" {% if selected_price == '60000-100000' %} selected {% endif %}>KSh 60,000 - 100,000</option>
+								<option value="100000-" {% if selected_price == '100000-' %} selected {% endif %}>Over KSh 100,000</option>
+							</select>
+						</div>
+
+						<!-- Sort -->
+						<div>
+							<label class="block text-sm font-bold text-gray-700 mb-2">Sort By</label>
+							<select name="sort" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+								<option value="newest" {% if selected_sort == 'newest' %} selected {% endif %}>Newest First</option>
+								<option value="price_low" {% if selected_sort == 'price_low' %} selected {% endif %}>Price: Low to High</option>
+								<option value="price_high" {% if selected_sort == 'price_high' %} selected {% endif %}>Price: High to Low</option>
+								<option value="name" {% if selected_sort == 'name' %} selected {% endif %}>Name A-Z</option>
+							</select>
+						</div>
+
+						<!-- Submit Button -->
+						<div>
+							<button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-bold hover:bg-blue-700 transition duration-300">
+								<i class="fas fa-search mr-2"></i>Apply Filters
+							</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Products Section -->
+				<div
+					class="lg:w-3/4">
+					<!-- Results Count -->
+					<div class="mb-6">
+						<p class="text-gray-600">Showing
+							{{ products.total }}
+							products</p>
+					</div>
+
+					<!-- Products Grid -->
+					<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+						{% for product in products %}
+							<div class="bg-white shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
+								<a href="/products/{{ product.slug }}">
+									<div class="relative">
+										<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-32 sm:h-40 lg:h-48 object-cover ">
+										{% if product.has_active_offers %}
+											<div class="absolute top-2 lg:top-3 left-2 lg:left-3 bg-green-500 text-white px-2 lg:px-3 py-1 rounded-full text-xs lg:text-sm font-bold">
+												-{{ product.discount_percentage|round }}% OFF
+											</div>
+										{% endif %}
+									</div>
+									<div class="p-1 lg:px-1 py-2 ">
+										<h3 class="font-bold text-[12px] lg:text-sm line-clamp-2 min-h-3">{{ product.name }}</h3>
+										{# <div class="flex items-center">
+											<div class="flex text-yellow-400 text-xs lg:text-sm mr-2">
+												<i class="fas fa-star"></i>
+												<i class="fas fa-star"></i>
+												<i class="fas fa-star"></i>
+												<i class="fas fa-star"></i>
+												<i class="fas fa-star-half-alt"></i>
+											</div>
+											<span class="text-xs lg:text-sm text-gray-600">({{ random(100, 500) }})</span>
+										</div> #}
+										<div class="flex items-center justify-between mb-1">
+											<div>
+												{% if product.has_active_offers %}
+													<span class="text-[12px] lg:text-sm font-black text-gray-900">KSh
+														{{ product.final_price|number_format }}</span>
+													<span class="text-[10px] sm:text-[12px] text-gray-500 line-through ml-2">KSh
+														{{ product.price|number_format }}</span>
+												{% else %}
+													<span class="text-[12px] lg:text-md font-black text-gray-900">KSh
+														{{ product.price|number_format }}</span>
+												{% endif %}
+											</div>
+										</div>
+									</div>
+								</a>
+							</div>
+						{% endfor %}
+					</div>
+
+					<!-- Pagination -->
+					{% if products.hasPages() %}
+						<div class="mt-12 flex justify-center">
+							<div class="flex space-x-2">
+								{% if products.onFirstPage %}
+									<span class="px-3 py-2 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed">Previous</span>
+								{% else %}
+									<a href="?page={{ products.currentPage - 1 }}{{ query_string }}" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">Previous</a>
+								{% endif %}
+
+								{% if (products.lastPage - 1) > 3 %}
+									<span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ products.currentPage }}</span>
+									{% if  products.currentPage != products.lastPage %}
+										<a href="?page={{ products.currentPage + 1 }}{{ query_string }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">{{ products.currentPage + 1 }}</a>
+									{% endif %}
+
+									{% if products.currentPage < products.lastPage - 2 %}
+										<a class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">...</a>
+										<a href="?page={{ products.lastPage - 2 }}{{ query_string }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">{{ products.lastPage - 1 }}</a>
+									{% endif %}
+									{% if products.currentPage < products.lastPage - 1 %}
+										<a href="?page={{ products.lastPage - 1 }}{{ query_string }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">{{ products.lastPage }}</a>
+									{% endif %}
+								{% else %}
+									{{products.lastPage}}
+									{% for page in 1..products.lastPage %}
+										{% if page == products.currentPage %}
+											<span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ page }}</span>
+										{% else %}
+											<a href="?page={{ page }}{{ query_string }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">{{ page }}</a>
+										{% endif %}
+									{% endfor %}
+
+								{% endif %}
+
+
+								{# {% for page in 1..products.lastPage %}
+																	{% if page == products.currentPage %}
+																		<span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ page }}</span>
+																	{% else %}
+																		<a href="?page={{ page }}{{ query_string }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">{{ page }}</a>
+																	{% endif %}
+																{% endfor %} #}
+
+								{% if products.hasMorePages %}
+									<a href="?page={{ products.currentPage + 1 }}{{ query_string }}" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">Next</a>
+								{% else %}
+									<span class="px-3 py-2 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed">Next</span>
+								{% endif %}
+							</div>
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const filterToggle = document.getElementById('filter-toggle');
+const filtersSidebar = document.getElementById('filters-sidebar');
+
+if (filterToggle && filtersSidebar) {
+filterToggle.addEventListener('click', function () {
+filtersSidebar.classList.toggle('hidden');
+});
+}
+});
+	</script>
+{% endblock %}
