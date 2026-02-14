@@ -1,0 +1,75 @@
+{% extends "admin.twig" %}
+
+{% block title %}Add Category{% endblock %}
+
+{% block page_title %}Add New Category{% endblock %}
+
+{% block page_description %}Create a new product category{% endblock %}
+
+{% block page_breadcrumb %}
+    <span class="mx-2">/</span>
+    <a href="/admin/categories" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-300">Categories</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-800 dark:text-gray-200">Add New</span>
+{% endblock %}
+
+{% block content %}
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 max-w-2xl mx-auto">
+    <form action="/admin/categories/store" method="POST" enctype="multipart/form-data">
+        <div class="space-y-6">
+        {{ csrf_field() | raw }}
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category Name *</label>
+                <input type="text" name="name" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="e.g., Smartphones">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Slug *</label>
+                <input type="text" name="slug" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="e.g., smartphones">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">URL-friendly version of the name (lowercase, hyphens)</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                <textarea name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Category description..."></textarea>
+            </div>
+
+            <div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Parent Category</label>
+                    <select name="parent_id" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <option value="">No Parent (Top Level)</option>
+                        {% for category in parent_categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category Image</label>
+                <input type="file" name="image" accept="image/*" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Recommended: 400x400px PNG or JPG</p>
+            </div>
+
+            <div class="flex items-center">
+                <input type="checkbox" name="is_active" checked class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label class="ml-2 text-sm text-gray-700 dark:text-gray-300">Category is active</label>
+            </div>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="mt-8 flex justify-end space-x-4">
+            <a href="/admin/categories" class="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">
+                Cancel
+            </a>
+            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg transition-colors duration-300 flex items-center">
+                <i class="fas fa-save mr-2"></i>
+                Save Category
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
