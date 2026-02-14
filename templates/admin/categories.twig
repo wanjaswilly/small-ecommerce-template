@@ -1,0 +1,73 @@
+{% extends "admin.twig" %}
+
+{% block title %}Categories Management{% endblock %}
+
+{% block page_title %}Categories Management{% endblock %}
+
+{% block page_description %}Manage product categories for electronics and car parts{% endblock %}
+
+{% block page_breadcrumb %}
+    <span class="mx-2">/</span>
+    <span class="text-gray-800 dark:text-gray-200">Categories</span>
+{% endblock %}
+
+{% block page_actions %}
+    <div class="flex space-x-3">
+        <a href="/admin/categories/create" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center">
+            <i class="fas fa-plus mr-2"></i>
+            Add Category
+        </a>
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-3">
+    <!-- All Categories -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                <i class="fas fa-mobile-alt text-blue-500 mr-2"></i>
+                All Categories
+                <span class="ml-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full">
+                    {{ categories|length }}
+                </span>
+            </h3>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 space-y-3">
+                {% for category in categories %}
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        {% if category.image_url %}
+                        <img src="{{ category.image_url }}" alt="{{ category.name }}" class="w-10 h-10 rounded-lg object-cover">
+                        {% else %}
+                        <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-mobile-alt text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                        {% endif %}
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ category.name }}</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ category.products_count }} products</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <a href="/admin/categories/{{ category.id }}/edit" class="text-blue-600 hover:text-blue-900 dark:hover:text-blue-400">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="/admin/categories/{{ category.id }}/delete" method="POST" class="inline">
+                            {{ csrf_field() }}
+                            
+                            <button type="submit" class="text-red-600 hover:text-red-900 dark:hover:text-red-400" onclick="return confirm('Are you sure?')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No categories found</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
