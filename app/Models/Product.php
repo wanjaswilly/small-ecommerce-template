@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Capsule\Manager as DB;
 
 class Product extends Model
 {
@@ -45,15 +46,14 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function tags()
+    public function tags():HasMany
     {
         return $this->hasMany(ProductTag::class, 'product_id');
     }
 
     public function scopeFeatured($query)
     {
-        return $query->where('featured', true)
-            ->where('is_active', true);
+        return $query->where('is_active', true)->where('featured', true);
     }
 
     public function scopeActive($query)
@@ -92,5 +92,16 @@ class Product extends Model
             return (($this->price - $this->discount_price) / $this->price) * 100;
         }
         return 0;
+    }
+
+    public function lowStock():product
+    {
+        return $this->where('is_active', true)
+            ->where('stock_quantity', '<=', DB::raw('min_stock_level'));
+    }
+
+    public function outOfStock():Product
+    {
+        return $this->where('is_active', true)->where('stock_quantity', 0);
     }
 }
