@@ -57,17 +57,6 @@ class User extends Model
         return $this->status === 'active';
     }
 
-    // Relationships
-    public function staffProfile()
-    {
-        return $this->hasOne(Staff::class);
-    }
-
-    public function riderProfile()
-    {
-        return $this->hasOne(Rider::class);
-    }
-
     public function assignedOrders()
     {
         return $this->hasMany(Order::class, 'assigned_staff_id');
@@ -76,5 +65,16 @@ class User extends Model
     public function dispatchedOrders()
     {
         return $this->hasMany(Order::class, 'rider_id');
+    }
+
+    public function newCustomers():User
+    {
+        return $this->where('role', 'customer')
+            ->where('created_at', '>=', \Carbon\Carbon::now()->subDays(30));
+    }
+
+    public function customer():User
+    {
+        return $this->where('role', 'customer');
     }
 }
