@@ -1,0 +1,272 @@
+{% extends "admin.twig" %}
+
+{% block title %}Edit Product
+{% endblock %}
+
+{% block page_title %}Edit Product
+{% endblock %}
+
+{% block page_description %}Update product information
+{% endblock %}
+
+{% block page_breadcrumb %}
+	<span class="mx-2">/</span>
+	<a href="/admin/products" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-300">Products</a>
+	<span class="mx-2">/</span>
+	<span class="text-gray-800 dark:text-gray-200">Edit</span>
+{% endblock %}
+
+{% block content %}
+	<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+		<form action="/admin/products/{{ product.id }}" method="POST" enctype="multipart/form-data">
+			<input type="hidden" name="_METHOD" value="PUT">
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+				{{ csrf_field() | raw }}
+				<!-- Basic Information -->
+				<div class="space-y-6">
+					<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Basic Information</h3>
+
+					<div>
+						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Product Name *</label>
+						<input type="text" name="name" value="{{ product.name }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+					</div>
+
+
+					<div>
+						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description *</label>
+						{% include 'partials/editor.twig' with { content: product.description ?? '' } %}
+					</div>
+
+					<div class="grid grid-cols-2 gap-4">
+						<div>
+							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price (KSh) *</label>
+							<input type="number" name="price" value="{{ product.price }}" required step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+						</div>
+						<div>
+							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">SKU *</label>
+							<input type="text" name="sku" value="{{ product.sku }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+						</div>
+					</div>
+
+					<div class="grid grid-cols-2 gap-4">
+						<div>
+							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Stock Quantity *</label>
+							<input type="number" name="stock_quantity" value="{{ product.stock_quantity }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+						</div>
+						<div>
+							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Min Stock Level</label>
+							<input type="number" name="min_stock_level" value="{{ product.min_stock_level }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+						</div>
+					</div>
+
+					<div>
+						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category *</label>
+						<select name="category_id" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+							<option value="">Select Category</option>
+							{% for category in categories %}
+								<option value="{{ category.id }}" {% if category.id == product.category_id %} selected {% endif %}>{{ category.name }}</option>
+							{% endfor %}
+						</select>
+					</div>
+
+					<div class="flex items-center">
+						<input type="checkbox" name="is_active" id="is_active" {% if product.is_active %} checked {% endif %} class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+						<label for="is_active" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">Active</label>
+					</div>
+					<div class="flex items-center">
+						<input type="checkbox" name="featured" id="featured" checked class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+						<label for="featured" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">Featured</label>
+					</div>
+				</div>
+
+				<!-- Attributes & Images -->
+				<div class="space-y-6">
+					<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Brand & Model</h3>
+
+					<div id="attributes-container">
+						{% if product.attributes %}
+							{% for key, value in product.attributes %}
+								<div class="attribute-row flex gap-2 mb-2">
+									<input type="text" name="attributes[{{ key }}]" value="{{ value }}" placeholder="{{ key }}" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+								</div>
+							{% endfor %}
+						{% endif %}
+					</div>
+					<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Current Images</h3>
+
+					{# {% if product.images %}
+						<div class="grid grid-cols-3 gap-4 mb-4">
+							{% for image in product.images %}
+								<div class="relative">
+									<img src="{{ image }}" alt="Product Image" class="w-full h-24 object-cover rounded-lg">
+								</div>
+							{% endfor %}
+						</div>
+					{% endif %} #}
+
+					<div>
+						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Add More Images</label>
+						<input type="file" name="images[]" multiple accept="image/*" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+						<p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Upload additional images (JPG, PNG, etc.)</p>
+					</div>
+
+					<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Tags</h3>
+
+					<div id="tags-container">
+						{% if product.tags %}
+							{% for tag in product.tags %}
+								<div class="tag-row flex gap-2 mb-2">
+									<input type="text" name="tags[{{ loop.index0 }}][name]" value="{{ tag.tag_name }}" placeholder="Tag Name" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+									<input type="text" name="tags[{{ loop.index0 }}][value]" value="{{ tag.tag_value }}" placeholder="Tag Value" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+									<button type="button" class="remove-tag px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+								</div>
+							{% endfor %}
+						{% endif %}
+					</div>
+
+					<button type="button" id="add-tag" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">Add Tag</button>
+				</div>
+			</div>
+
+			<div class="mt-8 flex justify-end space-x-4">
+				<a href="/admin/products" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">Cancel</a>
+				<button type="submit" class="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">Update Product</button>
+			</div>
+		</form>
+	</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+
+<script>
+// ---------------- TAG SYSTEM ----------------
+document.getElementById('add-tag').addEventListener('click', function () {
+    const container = document.getElementById('tags-container');
+    const rowCount = container.children.length;
+    const newRow = document.createElement('div');
+    newRow.className = 'tag-row flex gap-2 mb-2';
+    newRow.innerHTML = `
+        <input type="text" name="tags[${rowCount}][name]" placeholder="Tag Name" class="flex-1 px-3 py-2 border rounded-lg">
+        <input type="text" name="tags[${rowCount}][value]" placeholder="Tag Value" class="flex-1 px-3 py-2 border rounded-lg">
+        <button type="button" class="remove-tag px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Remove</button>
+    `;
+    container.appendChild(newRow);
+});
+
+document.addEventListener('click', function(e) {
+    if(e.target.classList.contains('remove-tag')) e.target.parentElement.remove();
+});
+
+// ---------------- IMAGE SYSTEM ----------------
+const imageInput = document.querySelector('input[name="images[]"]');
+const previewContainer = document.createElement('div');
+previewContainer.className = "grid grid-cols-3 gap-4 mt-2 mb-4";
+imageInput.parentNode.insertBefore(previewContainer, imageInput.nextSibling);
+
+let storedFiles = [];
+
+// Load existing images
+{% if product.images %}
+{% for image in product.images %}
+storedFiles.push({ url: '{{ image }}', file: null, existing: true });
+{% endfor %}
+{% endif %}
+
+renderPreviews();
+
+// Handle new uploads
+imageInput.addEventListener('change', async function() {
+    const files = Array.from(this.files);
+    for (let f of files) {
+        if(!f.type.startsWith('image/')) continue;
+        const compressedFile = await compressImage(f);
+        storedFiles.push({ url: URL.createObjectURL(compressedFile), file: compressedFile, existing: false });
+    }
+    this.value = '';
+    renderPreviews();
+    syncFileInput();
+});
+
+// Remove image
+previewContainer.addEventListener('click', function(e) {
+    if(!e.target.classList.contains('remove-btn')) return;
+    const index = e.target.dataset.index;
+    storedFiles.splice(index, 1);
+    renderPreviews();
+    syncFileInput();
+});
+
+// Render previews
+function renderPreviews() {
+    previewContainer.innerHTML = '';
+    storedFiles.forEach((item, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = "relative group";
+        wrapper.innerHTML = `
+            <img src="${item.url}" class="w-full h-32 object-cover rounded-lg shadow">
+            <span class="absolute top-1 left-1 bg-blue-500 text-white text-xs px-2 py-1 rounded">${index === 0 ? 'Featured' : index+1}</span>
+            <button type="button" data-index="${index}" class="remove-btn absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">Remove</button>
+        `;
+        previewContainer.appendChild(wrapper);
+    });
+}
+
+// Drag & drop
+Sortable.create(previewContainer, {
+    animation: 150,
+    onEnd: function(evt) {
+        const moved = storedFiles.splice(evt.oldIndex, 1)[0];
+        storedFiles.splice(evt.newIndex, 0, moved);
+        renderPreviews();
+        syncFileInput();
+    }
+});
+
+// Image compression
+function compressImage(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(event) {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = function() {
+                const maxWidth = 800;
+                let width = img.width;
+                let height = img.height;
+                if(width > maxWidth){
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                canvas.toBlob(blob => {
+                    resolve(new File([blob], file.name, { type: file.type }));
+                }, file.type, 0.7);
+            }
+        }
+    });
+}
+
+function syncFileInput() {
+    const dt = new DataTransfer();
+
+    storedFiles.forEach(item => {
+        if(item.file){
+            dt.items.add(item.file);
+        }
+    });
+
+    imageInput.files = dt.files;
+}
+
+
+</script>
+
+{% endblock %}

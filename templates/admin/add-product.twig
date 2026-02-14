@@ -1,0 +1,342 @@
+{% extends "admin.twig" %}
+
+{% block title %}Add Product
+{% endblock %}
+
+{% block page_title %}Add New Product
+{% endblock %}
+
+{% block page_description %}Create a new product entry
+{% endblock %}
+
+{% block page_breadcrumb %}
+	<span class="mx-2">/</span>
+	<a href="/admin/products" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-300">Products</a>
+	<span class="mx-2">/</span>
+	<span class="text-gray-800 dark:text-gray-200">Add New</span>
+{% endblock %}
+
+{% block content %}
+	<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+		<form action="/admin/products" method="POST" enctype="multipart/form-data">
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+				{{ csrf_field() | raw }}
+				<!-- Basic Information -->
+				<div class="space-y-6">
+					<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Basic Information</h3>
+					<div>
+						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Product Name *</label>
+						<input type="text" name="name" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="e.g., Wireless Headphones">
+					</div>
+
+					<div>
+						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description *</label>
+						{% include 'partials/editor.twig' with { content: old.description ?? '' } %}
+					</div>
+
+					<div class="grid grid-cols-2 gap-4">
+						<div>
+							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price (KSh) *</label>
+							<input type="number" name="price" required step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="0.00">
+						</div>
+						<div>
+							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">SKU *</label>
+							<input type="text" name="sku" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="e.g., HP-WRL-001">
+						</div>
+					</div>
+
+					<div class="grid grid-cols-2 gap-4">
+						<div>
+							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Stock Quantity *</label>
+							<input type="number" name="stock_quantity" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" value="0">
+						</div>
+						<div>
+							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Min Stock Level</label>
+							<input type="number" name="min_stock_level" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" value="5">
+						</div>
+					</div>
+
+					<div>
+						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category *</label>
+						<select name="category_id" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+							<option value="">Select Category</option>
+							{% for category in categories %}
+								<option value="{{ category.id }}">{{ category.name }}</option>
+							{% endfor %}
+						</select>
+					</div>
+
+					<div class="flex items-center">
+						<input type="checkbox" name="is_active" id="is_active" checked class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+						<label for="is_active" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">Active</label>
+					</div>
+
+					<div class="flex items-center">
+						<input type="checkbox" name="featured" id="featured" checked class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+						<label for="featured" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">Featured</label>
+					</div>
+				</div>
+
+				<!-- Attributes & Images -->
+				<div class="space-y-6">
+					<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Brand & Model</h3>
+
+					<div id="attributes-container">
+						<div class="attribute-row flex gap-2 mb-2">
+							<input type="text" name="attributes[brand]" placeholder="Brand" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+							<input type="text" name="attributes[model]" placeholder="Model" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+						</div>
+					</div>
+
+
+					<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Images</h3>
+
+					<div>
+						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+							Product Images
+						</label>
+
+						<!-- Preview Container -->
+						<div id="imagePreviewContainer" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3"></div>
+
+						<!-- Hidden File Input -->
+						<input
+						type="file" id="images" name="images[]" multiple accept="image/*" class="hidden">
+
+						<!-- Button -->
+						<button type="button" onclick="document.getElementById('images').click()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+							Choose Images
+						</button>
+
+						<p class="text-sm text-gray-500 mt-1">
+							Upload multiple images (JPG, PNG, etc.)
+						</p>
+					</div>
+
+
+					<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Specifications</h3>
+
+					<div id="tags-container">
+						<div class="tag-row flex gap-2 mb-2">
+							<input type="text" name="tags[0][name]" placeholder="Specs Name" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+							<input type="text" name="tags[0][value]" placeholder="Specs Value" class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+							<button type="button" class="remove-tag px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+								<i class="fas fa-times"></i>
+							</button>
+						</div>
+					</div>
+
+					<button type="button" id="add-tag" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">Add Spec</button>
+				</div>
+			</div>
+
+			<div class="mt-8 flex justify-end space-x-4">
+				<a href="/admin/products" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">Cancel</a>
+				<button type="submit" class="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">Create Product</button>
+			</div>
+		</form>
+	</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+
+<script>
+
+// ---------------- TAG SYSTEM ----------------
+
+document.getElementById('add-tag').addEventListener('click', function () {
+    const container = document.getElementById('tags-container');
+    const rowCount = container.children.length;
+
+    const newRow = document.createElement('div');
+    newRow.className = 'tag-row flex gap-2 mb-2';
+
+    newRow.innerHTML = `
+        <input type="text" name="tags[${rowCount}][name]" placeholder="Tag Name"
+            class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg">
+
+        <input type="text" name="tags[${rowCount}][value]" placeholder="Tag Value"
+            class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg">
+
+        <button type="button"
+            class="remove-tag px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+            Remove
+        </button>
+    `;
+
+    container.appendChild(newRow);
+});
+
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('remove-tag')) {
+        e.target.parentElement.remove();
+    }
+});
+
+
+// ---------------- IMAGE SYSTEM (UPGRADED) ----------------
+
+const imageInput = document.getElementById('images');
+const previewContainer = document.getElementById('imagePreviewContainer');
+
+let storedFiles = [];
+
+const MAX_WIDTH = 1600;
+const QUALITY = 0.75;
+
+
+// Compression Engine
+function compressImage(file){
+
+    return new Promise((resolve) => {
+
+        const reader = new FileReader();
+        const img = new Image();
+
+        reader.onload = e => img.src = e.target.result;
+
+        img.onload = () => {
+
+            let width = img.width;
+            let height = img.height;
+
+            // resize large images
+            if(width > MAX_WIDTH){
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(blob => {
+
+                const compressedFile = new File(
+                    [blob],
+                    file.name.replace(/\.\w+$/, ".webp"),
+                    { type: "image/webp" }
+                );
+
+                resolve(compressedFile);
+
+            }, 'image/webp', QUALITY);
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
+
+
+// Sync stored files back to input
+function syncInputFiles(){
+
+    const dt = new DataTransfer();
+
+    storedFiles.forEach(file => dt.items.add(file));
+
+    imageInput.files = dt.files;
+}
+
+
+
+// Render previews
+function renderPreviews(){
+
+    previewContainer.innerHTML = '';
+
+    storedFiles.forEach((file, index) => {
+
+        const url = URL.createObjectURL(file);
+
+        const wrapper = document.createElement('div');
+        wrapper.className = "relative group";
+
+        wrapper.innerHTML = `
+
+            ${index === 0 ? `
+                <span class="absolute top-1 left-1 bg-green-600 text-white text-xs px-2 py-1 rounded">
+                    Featured
+                </span>` : ''}
+
+            <img src="${url}"
+                 class="w-full h-32 object-cover rounded-lg shadow">
+
+            <button type="button"
+                data-index="${index}"
+                class="remove-btn absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+                Remove
+            </button>
+        `;
+
+        previewContainer.appendChild(wrapper);
+
+        // prevent memory leaks
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
+
+    syncInputFiles();
+}
+
+
+
+// Handle uploads WITH compression
+imageInput.addEventListener('change', async function () {
+
+    const files = Array.from(this.files);
+
+    previewContainer.innerHTML = "Optimizing images...";
+
+    storedFiles = [];
+
+    for(const file of files){
+
+        if(!file.type.startsWith('image/')) continue;
+
+        // block absurd camera files
+        if(file.size > 10 * 1024 * 1024){
+            alert(`${file.name} is too large. Max 10MB.`);
+            continue;
+        }
+
+        const compressed = await compressImage(file);
+
+        storedFiles.push(compressed);
+    }
+
+    renderPreviews();
+});
+
+
+
+// Remove button
+previewContainer.addEventListener('click', function(e){
+
+    if(!e.target.classList.contains('remove-btn')) return;
+
+    const index = e.target.dataset.index;
+
+    storedFiles.splice(index, 1);
+
+    renderPreviews();
+});
+
+// Initialize Sortable for drag-and-drop
+Sortable.create(previewContainer, {
+    animation: 150,
+    onEnd: function (evt) {
+        const movedItem = storedFiles.splice(evt.oldIndex, 1)[0];
+        storedFiles.splice(evt.newIndex, 0, movedItem);
+        renderPreviews();
+    }
+});
+
+</script>
+
+
+{% endblock %}
