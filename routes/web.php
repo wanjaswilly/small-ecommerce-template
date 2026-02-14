@@ -1,6 +1,8 @@
 <?php
 
+use App\Controllers\AdminController;
 use App\Controllers\AuthController;
+use App\Controllers\ProductController;
 use App\Controllers\UsersController;
 use Slim\App;
 use App\Controllers\HomeController;
@@ -35,7 +37,45 @@ return function (App $app) {
         $group->post('/wishlist/add/{id}', [UsersController::class, 'AddToWishlist'])->setName('account.wishlist.add');
         $group->post('/wishlist/remove/{id}', [UsersController::class, 'removeFromWishlist'])->setName('account.wishlist.remove');
 
+
+        $group->post('/profile/update', [UsersController::class, 'updateProfile'])->setName('account.profile.update');
+
     });
+
+    # Admin routes
+    $app->group('/admin', function ($group) {
+        $group->get('', [AdminController::class, 'dashboard'])->setName('admin.dashboard');
+        $group->get('/dashboard', [AdminController::class, 'dashboard'])->setName('admin.dashboard');
+
+        # Products management
+        $group->get('/products', [ProductController::class, 'index'])->setName('admin.products');
+        $group->get('/products/create', [ProductController::class, 'create'])->setName('admin.products.add');
+        $group->get('/products/{id}/edit', [ProductController::class, 'edit'])->setName('admin.products.edit');
+        $group->post('/products', [ProductController::class, 'store'])->setName('admin.products.store');
+        $group->post('/products/{id}', [ProductController::class, 'update'])->setName('admin.products.update');
+        $group->post('/products/{id}/delete', [ProductController::class, 'destroy'])->setName('admin.products.destroy');
+
+        # Contact Messages Management
+        $group->get('/contact-messages', [AdminController::class, 'contactMessages'])->setName('admin.contact.messages');
+        $group->get('/contact-message/{id}/view', [AdminController::class, 'viewContactMessage'])->setName('admin.contact.message.view');
+        $group->get('/contact-message/{id}/reply', [AdminController::class, 'replyContactMessage'])->setName('admin.contact.message.reply');
+        $group->post('/contact-message/{id}/reply', [AdminController::class, 'saveReplyToContactMessage'])->setName('admin.contact.message.reply.save');
+
+        # reset passwords for users & staff
+        $group->get('/reset-password', [AdminController::class, 'resetPasswords'])->setName('admin.reset.passwords');
+        $group->post('/reset-password', [AdminController::class, 'resetPasswords'])->setName('admin.reset.passwords');
+
+        # inventory section
+        $group->get('/inventory', [AdminController::class, 'inventory'])->setName('admin.inventory');
+
+        # customers
+        $group->get('/customers', [AdminController::class, 'customers'])->setName('admin.customers');
+
+
+
+    });
+
+
 
     // Test 500 error
     $app->get('/test-500', function () {
