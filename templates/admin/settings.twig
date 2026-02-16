@@ -1,0 +1,473 @@
+{% extends "admin.twig" %}
+
+{% block title %}Store Settings{% endblock %}
+
+{% block page_title %}Store Settings{% endblock %}
+
+{% block page_description %}Configure your Small Ecommerce store settings{% endblock %}
+
+{% block page_breadcrumb %}
+    <span class="mx-2">/</span>
+    <span class="text-gray-800 dark:text-gray-200">Settings</span>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+
+    <!-- Settings Navigation -->
+    <div class="lg:col-span-1">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <nav class="space-y-2" id="settings-nav">
+                <a href="#general" class="nav-item block px-3 py-2 rounded-lg bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 font-medium" data-section="general">
+                    <i class="fas fa-cog mr-2"></i>General
+                </a>
+                <a href="#store" class="nav-item block px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-section="store">
+                    <i class="fas fa-store mr-2"></i>Store Information
+                </a>
+                <a href="#shipping" class="nav-item block px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-section="shipping">
+                    <i class="fas fa-truck mr-2"></i>Shipping & Delivery
+                </a>
+                <a href="#payment" class="nav-item block px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-section="payment">
+                    <i class="fas fa-credit-card mr-2"></i>Payment Methods
+                </a>
+                <a href="#notifications" class="nav-item block px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-section="notifications">
+                    <i class="fas fa-bell mr-2"></i>Notifications
+                </a>
+                <a href="#seo" class="nav-item block px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-section="seo">
+                    <i class="fas fa-search mr-2"></i>SEO & Social
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Settings Content -->
+    <div class="lg:col-span-3">
+        <form id="settings-form" method="POST" action="/admin/settings">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                
+                {{ csrf_field() | raw }}
+                
+                <!-- General Settings -->
+                <div id="general" class="settings-section p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">General Settings</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Store Name *</label>
+                            <input type="text" name="store_name" value="{{ settings.store_name }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Store Email *</label>
+                            <input type="email" name="store_email" value="{{ settings.store_email }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Store Phone *</label>
+                            <input type="tel" name="store_phone" value="{{ settings.store_phone }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Store Status</label>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Enable or disable your store</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="store_active" {{ settings.store_active ? 'checked' : '' }} class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Currency</label>
+                            <select name="currency" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <option value="KES" {{ settings.currency == 'KES' ? 'selected' : '' }}>Kenyan Shilling (KSh)</option>
+                                <option value="USD" {{ settings.currency == 'USD' ? 'selected' : '' }}>US Dollar ($)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Store Information -->
+                <div id="store" class="settings-section p-6 border-b border-gray-200 dark:border-gray-700" style="display: none;">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Store Information</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Address *</label>
+                            <textarea name="store_address" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" rows="3">{{ settings.store_address }}</textarea>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">City *</label>
+                                <input type="text" name="store_city" value="{{ settings.store_city }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Opening Hours *</label>
+                                <input type="text" name="opening_hours" value="{{ settings.opening_hours }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">About Store</label>
+                            <textarea name="store_description" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" rows="4">{{ settings.store_description }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping & Delivery -->
+                <div id="shipping" class="settings-section p-6 border-b border-gray-200 dark:border-gray-700" style="display: none;">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Shipping & Delivery</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Free CBD Delivery</label>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Enable free delivery within Nairobi CBD</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="free_cbd_delivery" {{ settings.free_cbd_delivery ? 'checked' : '' }} class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CBD Delivery Fee (KSh)</label>
+                            <input type="number" name="cbd_delivery_fee" value="{{ settings.cbd_delivery_fee }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Outside CBD Delivery Fee (KSh)</label>
+                            <input type="number" name="outside_cbd_delivery_fee" value="{{ settings.outside_cbd_delivery_fee }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Delivery Time Estimate</label>
+                            <input type="text" name="delivery_time" value="{{ settings.delivery_time }}" placeholder="e.g., 2-3 business days" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+                    </div>
+                </div>
+
+              
+
+
+                {# decode payment_methods json #}
+                {% set payment_methods = settings.payment_methods|json_decode %}
+
+                <!-- Payment Methods -->
+                <div id="payment" class="settings-section p-6 border-b border-gray-200 dark:border-gray-700" style="display: none;">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Payment Methods</h3>
+                    <div class="space-y-6">
+                        
+                        <!-- M-Pesa Configuration -->
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-mobile-alt text-green-600 dark:text-green-400"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">M-Pesa Configuration</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Configure M-Pesa STK Push payments</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="mpesa_enabled" {{ settings.mpesa_enabled ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                                </label>
+                            </div>
+
+                            <!-- M-Pesa Detailed Configuration -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Environment</label>
+                                    <select name="mpesa_environment" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                        <option value="sandbox" {{ (payment_methods.mpesa.environment ?? 'sandbox') == 'sandbox' ? 'selected' : '' }}>Sandbox (Testing)</option>
+                                        <option value="production" {{ (payment_methods.mpesa.environment ?? 'sandbox') == 'production' ? 'selected' : '' }}>Production (Live)</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Shortcode</label>
+                                    <input type="text" name="mpesa_shortcode" value="{{ payment_methods.mpesa.shortcode ?? 'your_shortcode' }}" 
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        placeholder="174379">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Consumer Key</label>
+                                    <input type="password" name="mpesa_consumer_key" value="{{ payment_methods.mpesa.consumer_key ?? 'your_consumer_key' }}" 
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        placeholder="Your M-Pesa consumer key">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Consumer Secret</label>
+                                    <input type="password" name="mpesa_consumer_secret" value="{{ payment_methods.mpesa.consumer_secret ?? 'your_consumer_secret' }}" 
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        placeholder="Your M-Pesa consumer secret">
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Passkey</label>
+                                    <input type="password" name="mpesa_passkey" value="{{ payment_methods.mpesa.passkey ?? 'your_passkey' }}" 
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        placeholder="Your M-Pesa passkey">
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Callback URL</label>
+                                    <input type="url" name="mpesa_callback_url" value="{{ payment_methods.mpesa.callback_url ?? 'https://yourdomain.com/payment/callback?method=mpesa' }}" 
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        placeholder="https://yourdomain.com/payment/callback?method=mpesa">
+                                </div>
+                            </div>
+
+                            <!-- M-Pesa Test Section -->
+                            <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                                <h5 class="font-medium text-blue-800 dark:text-blue-300 mb-2">M-Pesa Test</h5>
+                                <p class="text-sm text-blue-700 dark:text-blue-400 mb-3">
+                                    Test your M-Pesa configuration to ensure payments will work correctly.
+                                </p>
+                                <a href="/admin/payments/test/mpesa">
+                                    <button type="button" id="test-mpesa" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition-colors">
+                                        <i class="fas fa-bolt mr-2"></i>Test M-Pesa Connection
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Pesapal Configuration -->
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-mobile-alt text-green-600 dark:text-green-400"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">Pesapal Configuration</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Configure Pesapal M-Pesa STK Push payments</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="pesapal_enabled" {{ settings.pesapal_enabled ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                                </label>
+                            </div>
+
+                            <!-- Pesapal Detailed Configuration -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Environment</label>
+                                    <select name="pesapal_environment" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                        <option value="sandbox" {{ (payment_methods.pesapal.environment ?? 'sandbox') == 'sandbox' ? 'selected' : '' }}>Sandbox (Testing)</option>
+                                        <option value="production" {{ (payment_methods.pesapal.environment ?? 'sandbox') == 'production' ? 'selected' : '' }}>Production (Live)</option>
+                                    </select>
+                                </div>                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Consumer Key</label>
+                                    <input type="password" name="pesapal_consumer_key" value="{{ payment_methods.pesapal.consumer_key ?? 'your_consumer_key' }}" 
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        placeholder="Your Pesapal consumer key">
+                                </div>                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Consumer Secret</label>
+                                    <input type="password" name="pesapal_consumer_secret" value="{{ payment_methods.pesapal.consumer_secret ?? 'your_consumer_secret' }}" 
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        placeholder="Your Pesapal consumer secret">
+                                </div>                                
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Callback URL</label>
+                                    <input type="url" name="pesapal_callback_url" value="{{ payment_methods.pesapal.callback_url }}" 
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        placeholder="https://yourdomain.com/payment/callback?method=pesapal">
+                                </div>
+                            </div>
+
+                            <!-- M-Pesa Test Section -->
+                            <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                                <h5 class="font-medium text-blue-800 dark:text-blue-300 mb-2">Pesapal Test</h5>
+                                <p class="text-sm text-blue-700 dark:text-blue-400 mb-3">
+                                    Test your Pesapal configuration to ensure payments will work correctly.
+                                </p>
+                                <a href="/admin/payments/test/pesapal">
+                                    <button type="button" id="test-pesapal" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition-colors">
+                                        <i class="fas fa-bolt mr-2"></i>Test Pesapal Connection
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Cash on Delivery -->
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-money-bill-wave text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">Cash on Delivery</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Allow customers to pay when they receive orders</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="cash_on_delivery" {{ settings.cash_on_delivery ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                                </label>
+                            </div>
+
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cash on Delivery Fee (KSh)</label>
+                                <input type="text" name="cod_fee" value="{{ payment_methods.cash_on_delivery.fee }}" 
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    min="0" step="50">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Set to 0 for free cash on delivery</p>
+                            </div>
+                        </div>
+
+                        <!-- Card Payments -->
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-credit-card text-purple-600 dark:text-purple-400"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">Credit/Debit Cards</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Enable card payments (Coming Soon)</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="card_payments" {{ settings.card_payments ? 'checked' : '' }} class="sr-only peer" disabled>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                                </label>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                Card payments integration is coming soon. Contact support for early access.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div id="notifications" class="settings-section p-6 border-b border-gray-200 dark:border-gray-700" style="display: none;">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Notifications</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Notifications</label>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Receive email alerts for new orders</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="email_notifications" {{ settings.email_notifications ? 'checked' : '' }} class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">SMS Notifications</label>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Receive SMS alerts for new orders</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="sms_notifications" {{ settings.sms_notifications ? 'checked' : '' }} class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Low Stock Alerts</label>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Get notified when stock is low</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="low_stock_alerts" {{ settings.low_stock_alerts ? 'checked' : '' }} class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEO & Social -->
+                <div id="seo" class="settings-section p-6 border-b border-gray-200 dark:border-gray-700" style="display: none;">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">SEO & Social Media</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Meta Description</label>
+                            <textarea name="meta_description" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" rows="3">{{ settings.meta_description }}</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Facebook Page</label>
+                            <input type="url" name="facebook_url" value="{{ settings.facebook_url }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Instagram Handle</label>
+                            <input type="text" name="instagram_handle" value="{{ settings.instagram_handle }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Twitter Handle</label>
+                            <input type="text" name="twitter_handle" value="{{ settings.twitter_handle }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="p-6">
+                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg transition-colors duration-300 flex items-center">
+                        <i class="fas fa-save mr-2"></i>
+                        Save All Changes
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Navigation handling
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('.settings-section');
+    
+    // Show first section by default
+    if (sections.length > 0) {
+        sections[0].style.display = 'block';
+    }
+    
+    navItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Update active nav item
+            navItems.forEach(nav => {
+                nav.classList.remove('bg-primary-100', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-primary-300', 'font-medium');
+                nav.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-gray-700');
+            });
+            
+            this.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-gray-700');
+            this.classList.add('bg-primary-100', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-primary-300', 'font-medium');
+            
+            // Show selected section
+            const targetSection = this.getAttribute('data-section');
+            sections.forEach(section => {
+                section.style.display = section.id === targetSection ? 'block' : 'none';
+            });
+        });
+    });
+    
+    // Form submission
+    const form = document.getElementById('settings-form');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Add loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+        submitBtn.disabled = true;
+        
+        // Submit form via AJAX or standard form submission
+        this.submit();
+    });
+});
+</script>
+
+<style>
+.nav-item {
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}
