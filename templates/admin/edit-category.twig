@@ -1,0 +1,230 @@
+{% extends "admin.twig" %}
+
+{% block title %}Edit Category - {{ category.name }}{% endblock %}
+
+{% block page_title %}Edit Category{% endblock %}
+
+{% block page_description %}Update category information{% endblock %}
+
+{% block page_breadcrumb %}
+    <span class="mx-2">/</span>
+    <a href="/admin/categories" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-300">Categories</a>
+    <span class="mx-2">/</span>
+    <span class="text-gray-800 dark:text-gray-200">Edit {{ category.name }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 max-w-2xl mx-auto">
+    <form action="/admin/categories/{{ category.id }}/update" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="POST">
+        {{ csrf_field() | raw }}
+        
+        <div class="space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category Name *</label>
+                <input type="text" name="name" value="{{ category.name }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="e.g., Smartphones">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Slug *</label>
+                <input type="text" name="slug" value="{{ category.slug }}" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="e.g., smartphones">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">URL-friendly version of the name (lowercase, hyphens)</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                <textarea name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Category description...">{{ category.description }}</textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Parent Category</label>
+                    <select name="parent_id" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <option value="">No Parent (Top Level)</option>
+                        {% for parent in parent_categories %}
+                            {% if parent.id != category.id %} {# Prevent selecting self as parent #}
+                            <option value="{{ parent.id }}" {{ category.parent_id == parent.id ? 'selected' : '' }}>
+                                {{ parent.name }}
+                            </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Current Image Display -->
+            {% if category.image_url %}
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Image</label>
+                <div class="flex items-center space-x-4">
+                    <div class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                        <img src="{{ category.image_url }}" alt="{{ category.name }}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <a href="{{ category.image_url }}" target="_blank" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                            View Full Size
+                        </a>
+                        <span class="text-gray-400">|</span>
+                        <button type="button" onclick="removeImage()" class="text-red-600 hover:text-red-700 text-sm font-medium">
+                            Remove Image
+                        </button>
+                    </div>
+                </div>
+                <input type="hidden" name="current_image" value="{{ category.image_url }}">
+            </div>
+            {% endif %}
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {% if category.image_url %}Replace Image{% else %}Category Image{% endif %}
+                </label>
+                <input type="file" name="image" accept="image/*" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Recommended: 400x400px PNG or JPG</p>
+            </div>
+
+            <div class="flex items-center">
+                <input type="checkbox" name="is_active" {{ category.is_active ? 'checked' : '' }} class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label class="ml-2 text-sm text-gray-700 dark:text-gray-300">Category is active</label>
+            </div>
+
+            <!-- Category Stats (Read-only) -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Category Statistics</h3>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                        <p class="text-gray-600 dark:text-gray-400">Total Products</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ product_count ?? 0 }}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                        <p class="text-gray-600 dark:text-gray-400">Created Date</p>
+                        <p class="text-sm text-gray-900 dark:text-white">{{ category.created_at|date('M j, Y g:i A') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="mt-8 flex justify-between items-center">
+            <div>
+                <button type="button" onclick="confirmDelete()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 flex items-center text-sm">
+                    <i class="fas fa-trash mr-2"></i>
+                    Delete Category
+                </button>
+            </div>
+            <div class="flex space-x-4">
+                <a href="/admin/categories" class="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">
+                    Cancel
+                </a>
+                <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg transition-colors duration-300 flex items-center">
+                    <i class="fas fa-save mr-2"></i>
+                    Update Category
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Delete Category</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">This action cannot be undone.</p>
+            </div>
+        </div>
+        
+        <p class="text-gray-700 dark:text-gray-300 mb-6">
+            Are you sure you want to delete the category "<strong>{{ category.name }}</strong>"?
+            {% if product_count > 0 %}
+            <br><span class="text-red-600 dark:text-red-400 text-sm mt-1 block">
+                Warning: This category contains {{ product_count }} product(s). Deleting it will remove these products from this category.
+            </span>
+            {% endif %}
+        </p>
+        
+        <div class="flex justify-end space-x-3">
+            <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">
+                Cancel
+            </button>
+            <form action="/admin/categories/{{ category.id }}/delete" method="POST" class="inline">
+                <input type="hidden" name="_method" value="DELETE">
+                {{ csrf_field() | raw }}
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300">
+                    Delete Category
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function removeImage() {
+        if (confirm('Are you sure you want to remove the current image?')) {
+            // Add a hidden input to indicate image removal
+            const form = document.querySelector('form');
+            const removeInput = document.createElement('input');
+            removeInput.type = 'hidden';
+            removeInput.name = 'remove_image';
+            removeInput.value = '1';
+            form.appendChild(removeInput);
+            
+            // Hide the current image section
+            const imageSection = document.querySelector('div:has(> label:contains("Current Image"))');
+            if (imageSection) {
+                imageSection.style.display = 'none';
+            }
+            
+            // Update the file input label
+            const fileLabel = document.querySelector('label:contains("Replace Image")');
+            if (fileLabel) {
+                fileLabel.textContent = 'Category Image';
+            }
+        }
+    }
+
+    function confirmDelete() {
+        document.getElementById('delete-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('delete-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('delete-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteModal();
+        }
+    });
+
+    // Auto-generate slug from name
+    document.querySelector('input[name="name"]').addEventListener('blur', function() {
+        const slugInput = document.querySelector('input[name="slug"]');
+        if (!slugInput.value) {
+            const slug = this.value
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/[\s_-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            slugInput.value = slug;
+        }
+    });
+
+    // Prevent self-referencing parent selection
+    document.querySelector('select[name="parent_id"]').addEventListener('change', function() {
+        if (this.value === '{{ category.id }}') {
+            alert('A category cannot be its own parent.');
+            this.value = '';
+        }
+    });
+</script>
+{% endblock %}
