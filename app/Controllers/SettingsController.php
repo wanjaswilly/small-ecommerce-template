@@ -13,6 +13,12 @@ class SettingsController extends BaseController
 {
 
     private SettingsService $settingsService;
+
+    public function __construct()
+    {
+        $this->settingsService = new SettingsService();
+    }
+
     /**
      * Show settings page
      */
