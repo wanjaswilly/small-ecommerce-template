@@ -15,6 +15,12 @@ class AdminService
     private StatsService $statsService;
     private ProductsService $productsService;
 
+    public function __construct()
+    {
+        $this->statsService = new StatsService();
+        $this->productsService = new ProductsService();
+    }
+
     public function dashboardData(): array
     {
         return array_merge([
