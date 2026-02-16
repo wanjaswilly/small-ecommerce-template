@@ -132,7 +132,7 @@ class UsersService
         $user = User::with(['favourites', 'favourites.product'])->find($this->userId);
 
         if (!$user) {
-            // User not found (shouldn't happen if session exists)
+            # User not found (shouldn't happen if session exists)
             session_destroy();
             throw new UnAuthenticatedAccessException("Kindly login to view your favorite products");
         }
@@ -140,7 +140,7 @@ class UsersService
         return ['user' => $user];
     }
 
-    // AddToWishlist
+    # AddToWishlist
     public function AddToWishlist(ServerRequestInterface $request): array
     {
         $data = $request->getParsedBody();

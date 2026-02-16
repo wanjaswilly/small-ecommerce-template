@@ -20,30 +20,30 @@ class AuthService
         $remember = isset($data['remember']);
         $redirectTo = $data['redirect_to'] ?? '/';
 
-        // Validate input
+        # Validate input
         if (empty($email) || empty($password)) {
             throw new ValidationException('Incomplete Form', ['Incomplete form' => "Please enter both email and password"]);
         }
 
-        // Find user by email
+        # Find user by email
         $user = User::where('email', $email)->first();
 
         if (!$user) {
             throw new ValidationException('Wrong Credentials', ['Auth error' => "Invalid email or incorresct password"]);
         }
 
-        // Verify password
+        # Verify password
         if (!password_verify($password, $user->password_hash)) {
             $_SESSION['error'] = 'Invalid email or password';
             throw new ValidationException('Wrong Credentials', ['Auth error' => "Invalid email or incorrect password"]);
         }
 
-        // Check if user is active
+        # Check if user is active
         if (!$user->is_active) {
             throw new ValidationException('Account Deactivated', ['Auth error' => 'Your account has been deactivated. Please contact support.']);
         }
 
-        // Login successful - set session
+        # Login successful - set session
         $_SESSION['user_id'] = $user->id;
         $_SESSION['user_email'] = $user->email;
         $_SESSION['user_name'] = $user->first_name . ' ' . $user->last_name;
@@ -51,12 +51,12 @@ class AuthService
         $_SESSION['login_time'] = time();
         $_SESSION['user'] = $user;
 
-        // Handle "remember me" functionality
+        # Handle "remember me" functionality
         if ($remember) {
             $this->setRememberToken($user);
         }
 
-        // Log the login
+        # Log the login
         $this->logLogin($user, $request);
 
         $_SESSION['success'] = 'Welcome back, ' . $user->name . '!';
@@ -79,74 +79,74 @@ class AuthService
         $agreeTerms = isset($data['agree_terms']);
         $redirectTo = $data['redirect_to'] ?? '/';
 
-        // Validate required fields
+        # Validate required fields
         if (empty($first_name) || empty($last_name) || empty($email) || empty($password) || empty($phone)) {
             throw new ValidationException('Incomplete Form', ['Incomplete form' => 'Please fill in all required fields.']);
         }
 
-        // Validate terms agreement
+        # Validate terms agreement
         if (!$agreeTerms) {
             throw new ValidationException('Terms Agreement', ['Agree terms' => 'You must agree to the terms and conditions']);
         }
 
-        // Validate email format
+        # Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new ValidationException('Invalid Email', ['Invalid email' => 'Please enter a valid email address']);
         }
 
-        // Validate password strength
+        # Validate password strength
         if (strlen($password) < 8) {
             $_SESSION['error'] = '';
             throw new ValidationException('Short Password', ['Short password' => 'Password must be at least 8 characters long']);
         }
 
-        // Validate password confirmation
+        # Validate password confirmation
         if ($password !== $passwordConfirmation) {
             throw new ValidationException('Password Mismatch', ['Password Mismatch' => 'Your passwords do not match']);
         }
 
-        // Validate phone number (Kenyan format)
+        # Validate phone number (Kenyan format)
         $phone = $this->formatPhoneNumber($phone);
         if (!$this->isValidPhoneNumber($phone)) {
             throw new ValidationException('Invalid Phone Number', ['Invalid Number' => 'Please enter a valid Kenyan phone number']);
         }
 
-        // Check if email already exists
+        # Check if email already exists
         if (User::where('email', $email)->exists()) {
             throw new ValidationException('Email Exists', ['Email exists' => 'An account with this email already exists']);
         }
 
-        // Check if phone number already exists
+        # Check if phone number already exists
         if (User::where('phone', $phone)->exists()) {
             throw new ValidationException('Phone Number Exists', ['Phone exists' => 'An account with this phone number already exists']);
         }
 
         try {
-            // Create new user
+            # Create new user
             $user = User::create([
                 'first_name' => $first_name,
                 'last_name' => $last_name,
                 'email' => $email,
                 'phone' => $phone,
                 'password_hash' => password_hash($password, PASSWORD_DEFAULT),
-                'role' => 'customer', // Default role
+                'role' => 'customer', # Default role
                 'is_active' => true,
-                'email_verified_at' => null, // Will need verification
+                'email_verified_at' => null, # Will need verification
             ]);
 
-            // Auto-login the user after registration
+            # Auto-login the user after registration
             $_SESSION['user_id'] = $user->id;
             $_SESSION['user_email'] = $user->email;
             $_SESSION['user_name'] = $user->first_name . ' ' . $user->last_name;
             $_SESSION['user_role'] = $user->role;
             $_SESSION['login_time'] = time();
 
-            // Log the registration
+            # Log the registration
             $this->logRegistration($user, $request);
 
             $_SESSION['success'] = 'Account created successfully! Welcome to ' . (Setting::getValue('store_name') ?? 'our store') . '!';
 
-            // Redirect to appropriate page
+            # Redirect to appropriate page
             return $this->redirectToAppropriatePage( $redirectTo);
 
         } catch (\Exception $e) {
@@ -158,7 +158,7 @@ class AuthService
     public function logout(): void
     {
         
-        // Clear remember token if exists
+        # Clear remember token if exists
         if (isset($_SESSION['user_id'])) {
             $user = User::find($_SESSION['user_id']);
             if ($user) {
@@ -167,10 +167,10 @@ class AuthService
             }
         }
 
-        // Destroy session
+        # Destroy session
         session_destroy();
 
-        // Clear session cookie
+        # Clear session cookie
         $params = session_get_cookie_params();
         setcookie(
             session_name(),
@@ -192,12 +192,12 @@ class AuthService
     {
         $userRole = $_SESSION['user_role'] ?? 'customer';
 
-        // If user was trying to access a specific page, redirect there
+        # If user was trying to access a specific page, redirect there
         if ($redirectTo && $redirectTo !== '/' && !$this->isAuthPage($redirectTo)) {
             return $redirectTo;
         }
 
-        // Redirect based on role
+        # Redirect based on role
         switch ($userRole) {
             case 'admin':
             case 'super_admin':
@@ -233,7 +233,7 @@ class AuthService
         $user->remember_token = password_hash($token, PASSWORD_DEFAULT);
         $user->save();
 
-        // Set cookie for 30 days
+        # Set cookie for 30 days
         setcookie(
             'remember_token',
             $token,
@@ -253,10 +253,10 @@ class AuthService
         $ip = $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
         $userAgent = $request->getHeaderLine('User-Agent');
 
-        // You can save this to a login_logs table or just log it
+        # You can save this to a login_logs table or just log it
         error_log("User login: {$user->email} from IP: {$ip}");
 
-        // Update last login time
+        # Update last login time
         $user->last_login_at = date('Y-m-d H:i:s');
         $user->last_login_ip = $ip;
         $user->save();
@@ -272,8 +272,8 @@ class AuthService
 
         error_log("New user registration: {$user->email} from IP: {$ip}");
 
-        // You could send a welcome email here
-        // $this->sendWelcomeEmail($user);
+        # You could send a welcome email here
+        # $this->sendWelcomeEmail($user);
     }
 
     /**
@@ -281,10 +281,10 @@ class AuthService
      */
     private function formatPhoneNumber(string $phone): string
     {
-        // Remove any non-digit characters
+        # Remove any non-digit characters
         $phone = preg_replace('/\D/', '', $phone);
 
-        // Convert to 254 format if it's in local format
+        # Convert to 254 format if it's in local format
         if (strlen($phone) === 9 && str_starts_with($phone, '7')) {
             $phone = '254' . $phone;
         } elseif (strlen($phone) === 10 && str_starts_with($phone, '07')) {
@@ -299,7 +299,7 @@ class AuthService
      */
     private function isValidPhoneNumber(string $phone): bool
     {
-        // Kenyan phone numbers: 2547XXXXXXXX
+        # Kenyan phone numbers: 2547XXXXXXXX
         return preg_match('/^2547\d{8}$/', $phone) === 1;
     }
 
@@ -311,27 +311,27 @@ class AuthService
      */
     public function autoLoginFromRememberToken(ServerRequestInterface $request): array
     {
-        // Check if remember token exists
+        # Check if remember token exists
         $rememberToken = $_COOKIE['remember_token'] ?? null;
 
         if ($rememberToken) {
             $user = User::where('remember_token', $rememberToken)->first();
 
-            // if ($user && password_verify($rememberToken, $user->remember_token)) {
+            # if ($user && password_verify($rememberToken, $user->remember_token)) {
             if ($user) {
-                // Login user
+                # Login user
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['user_email'] = $user->email;
                 $_SESSION['user_name'] = $user->name;
                 $_SESSION['user_role'] = $user->role;
                 $_SESSION['login_time'] = time();
 
-                // Update last login
+                # Update last login
                 $user->last_login_at = date('Y-m-d H:i:s');
                 $user->last_login_ip = $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
                 $user->save();
             } else {
-                // Invalid token, clear cookie
+                # Invalid token, clear cookie
                 setcookie('remember_token', '', time() - 3600, '/');
             }
         }

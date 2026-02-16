@@ -1,5 +1,5 @@
 <?php
-// app/Models/ProductTag.php
+# app/Models/ProductTag.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;

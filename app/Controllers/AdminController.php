@@ -1,5 +1,5 @@
 <?php
-// app/Controllers/AdminViewController.php
+# app/Controllers/AdminViewController.php
 
 namespace App\Controllers;
 
@@ -19,67 +19,67 @@ class AdminController extends BaseController
     {
 
     }
-    // Dashboard
+    # Dashboard
     public function dashboard(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/dashboard.twig', $this->adminService->dashboardData());
     }
 
-    // Categories List
+    # Categories List
     public function categories(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/categories.twig', $this->productsService->categoryData($request));
     }
 
-    // Add Category Form
+    # Add Category Form
     public function addCategory(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/add-category.twig', $this->productsService->parentCategories());
     }
 
-    // Products List
+    # Products List
     public function products(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/products.twig', $this->adminService->productsList());
     }
 
-    // Add Product Form
+    # Add Product Form
     public function addProduct(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/add-product.twig', $this->productsService->categoryData($request));
     }
 
-    // Orders List
+    # Orders List
     public function orders(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/orders.twig', $this->adminService->allOrders());
     }
 
-    // Customers List
+    # Customers List
     public function customers(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/customers.twig',$this->adminService->allCustomers() );
     }
 
-    // Inventory Management
+    # Inventory Management
     public function inventory(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/inventory.twig', $this->adminService->inventoryData($request));
     }
 
-    // Analytics
+    # Analytics
     public function analytics(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/analytics.twig', $this->adminService->analyticsData());
     }
 
-    // Settings
+    # Settings
     public function settings(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/settings.twig', $this->adminService->settingsData());
     }
 
-    // Edit Product Form
+    # Edit Product Form
     public function editProduct(Request $request, Response $response, $id): Response
     {
         return $this->render($request, $response, 'admin/edit-product.twig', $this->productsService->singleProductById($id));

@@ -13,12 +13,12 @@ class SessionMiddleware implements MiddlewareInterface
     {
         $path = $request->getUri()->getPath();
 
-        // Skip session for static resources
+        # Skip session for static resources
         if ($this->isStaticResource($path)) {
             return $handler->handle($request);
         }
 
-        // Start the session
+        # Start the session
         if (session_status() === PHP_SESSION_NONE) {
             session_start([
                 'cookie_httponly' => true,
@@ -31,7 +31,7 @@ class SessionMiddleware implements MiddlewareInterface
         $_SESSION['error'] = [];
         $_SESSION['success'] = [];
 
-        // Regenerate session ID periodically for security
+        # Regenerate session ID periodically for security
         if (!isset($_SESSION['created'])) {
             $_SESSION['created'] = time();
         } elseif (time() - $_SESSION['created'] > 3600) {
@@ -41,7 +41,7 @@ class SessionMiddleware implements MiddlewareInterface
 
         $response = $handler->handle($request);
 
-        // Ensure session is written
+        # Ensure session is written
         session_write_close();
 
         return $response;

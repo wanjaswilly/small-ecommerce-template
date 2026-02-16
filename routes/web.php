@@ -77,7 +77,7 @@ return function (App $app) {
 
 
 
-    // Test 500 error
+    # Test 500 error
     $app->get('/test-500', function () {
         throw new \Exception("Intentional test error");
     });

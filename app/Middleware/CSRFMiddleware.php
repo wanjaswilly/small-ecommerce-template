@@ -16,19 +16,19 @@ class CSRFMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // Ensure session is started
+        # Ensure session is started
         $this->ensureSessionStarted();
 
-        // Skip CSRF for safe methods
+        # Skip CSRF for safe methods
         if (in_array($request->getMethod(), ['GET', 'HEAD', 'OPTIONS'])) {
-            // Generate token for forms if it doesn't exist
+            # Generate token for forms if it doesn't exist
             if (empty($_SESSION[$this->sessionKey])) {
                 $this->generateToken();
             }
             return $handler->handle($request);
         }
 
-        // Validate token for unsafe methods
+        # Validate token for unsafe methods
         $token = $this->getTokenFromRequest($request);
 
         if (!$token) {
@@ -39,7 +39,7 @@ class CSRFMiddleware implements MiddlewareInterface
             throw new HttpBadRequestException($request, 'Invalid CSRF token');
         }
 
-        // Regenerate token after successful validation (optional but recommended)
+        # Regenerate token after successful validation (optional but recommended)
         $this->generateToken();
         
         $response = $handler->handle($request);
@@ -55,21 +55,21 @@ class CSRFMiddleware implements MiddlewareInterface
 
     private function getTokenFromRequest(ServerRequestInterface $request): ?string
     {
-        // Check header first
+        # Check header first
         $token = $request->getHeaderLine($this->headerName);
 
         if (!empty($token)) {
             return $token;
         }
 
-        // Check body for form submissions
+        # Check body for form submissions
         $body = $request->getParsedBody();
 
         if (is_array($body) && isset($body[$this->formFieldName])) {
             return $body[$this->formFieldName];
         }
 
-        // Check query parameters (less common)
+        # Check query parameters (less common)
         $queryParams = $request->getQueryParams();
         if (isset($queryParams[$this->formFieldName])) {
             return $queryParams[$this->formFieldName];

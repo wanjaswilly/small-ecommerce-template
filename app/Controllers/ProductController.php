@@ -1,5 +1,5 @@
 <?php
-// app/Controllers/ProductController.php
+# app/Controllers/ProductController.php
 
 namespace App\Controllers;
 
@@ -16,56 +16,56 @@ class ProductController extends BaseController
         $this->productService = new ProductsService();
     }
 
-    // Display products by category
+    # Display products by category
     public function category(Request $request, Response $response, $args): Response
     {
         return $this->render($request, $response, 'pages/category.twig', $this->productService->categoryData($request));
     }
 
-    // Display all products
+    # Display all products
     public function allProducts(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'pages/products.twig', $this->productService->allProductsData($request));
     }
 
-    // Index products (admin)
+    # Index products (admin)
     public function index(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/products.twig', $this->productService->allProductsData($request));
     }
 
-    // Show single product
+    # Show single product
     public function show(Request $request, Response $response, $args): Response
     {
         return $this->render($request, $response, 'pages/product.twig', $this->productService->singleProductData($args['slug']));
     }
 
-    // Show create product form (admin)
+    # Show create product form (admin)
     public function create(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/add-product.twig', $this->productService->activeCategories());
     }
 
-    // Show edit product form (admin)
+    # Show edit product form (admin)
     public function edit(Request $request, Response $response, $args): Response
     {
         return $this->render($request, $response, 'admin/edit-product.twig', $this->productService->singleProductById($args['id']));
     }
 
-    // Create new product (admin)
+    # Create new product (admin)
     public function store(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'admin/products.twig', $this->productService->saveProduct($request));
     }
 
 
-    // Update product (admin)
+    # Update product (admin)
     public function update(Request $request, Response $response, $id): Response
     {
         return $this->render($request, $response, 'admin/products.twig', $this->productService->updateProduct($request, $id));
     }
 
-    // Delete product (admin)
+    # Delete product (admin)
     public function destroy(Request $request, Response $response, $id): Response
     {
         $this->productService->destroyProduct($id);

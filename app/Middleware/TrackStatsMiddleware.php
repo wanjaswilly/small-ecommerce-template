@@ -25,7 +25,7 @@ class TrackStatsMiddleware implements MiddlewareInterface
             $deviceType = 'Mobile';
         }
 
-        // Get platform/browser info from user agent
+        # Get platform/browser info from user agent
         $platform = 'Unknown';
         $browser = 'Unknown';
 
@@ -65,7 +65,7 @@ class TrackStatsMiddleware implements MiddlewareInterface
             ?: $request->getHeaderLine('X-Real-IP')
             ?: ($serverParams['REMOTE_ADDR'] ?? null);
 
-        // If X-Forwarded-For contains multiple IPs
+        # If X-Forwarded-For contains multiple IPs
         if ($ip && str_contains($ip, ',')) {
             $ip = trim(explode(',', $ip)[0]);
         }

@@ -31,7 +31,7 @@ class User extends Model
         return $this->hasMany(Favourite::class, 'user_id');
     }
 
-    // Role Check Methods
+    # Role Check Methods
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

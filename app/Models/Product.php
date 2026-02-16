@@ -72,7 +72,7 @@ class Product extends Model
         return $attributes ? json_decode($attributes, true) : [];
     }
 
-    // Removed electronics and carPart relationships - now using attributes field
+    # Removed electronics and carPart relationships - now using attributes field
 
     public function cartItems(): HasMany
     {
@@ -85,7 +85,7 @@ class Product extends Model
     }
 
 
-    // Get discount percentage
+    # Get discount percentage
     public function getDiscountPercentageAttribute(): float
     {
         if ($this->price > 0) {

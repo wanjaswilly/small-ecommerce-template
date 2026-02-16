@@ -17,7 +17,7 @@ class CreateProductsTable
             $table->string('sku')->unique();
             $table->integer('stock_quantity')->default(0);
             $table->integer('min_stock_level')->default(5);
-            $table->json('images')->nullable(); // Array of image URLs
+            $table->json('images')->nullable(); # Array of image URLs
             $table->boolean('is_active')->default(true);
             $table->boolean('featured')->default(false);
             $table->boolean('new_arrival')->default(false);

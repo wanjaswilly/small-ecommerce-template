@@ -83,11 +83,11 @@ class AdminService
         $newCustomers = User::newCustomers()->count();
         $totalCustomers = User::customer()->count();
 
-        // Calculate conversion rate: customers with orders vs total customers
+        # Calculate conversion rate: customers with orders vs total customers
         $customersWithOrders = User::customer()->whereHas('orders')->count();
         $conversionRate = $totalCustomers > 0 ? ($customersWithOrders / $totalCustomers) * 100 : 0;
 
-        // Calculate total revenue for percentage calculations
+        # Calculate total revenue for percentage calculations
         $totalRevenueForPercentage = $totalRevenue > 0 ? $totalRevenue : 1;
 
         $salesByCategory = Category::withCount(['products'])
@@ -106,7 +106,7 @@ class AdminService
                 ];
             })
             ->filter(function ($category) {
-                return $category['revenue'] > 0; // Only show categories with sales
+                return $category['revenue'] > 0; # Only show categories with sales
             })
             ->sortByDesc('revenue')
             ->values();
@@ -114,7 +114,7 @@ class AdminService
         $topProducts = Product::with(['category'])
             ->withSum('orderItems', 'quantity')
             ->withSum('orderItems', 'total_price')
-            ->whereHas('orderItems') // Only products that have been sold
+            ->whereHas('orderItems') # Only products that have been sold
             ->orderBy('order_items_sum_quantity', 'desc')
             ->limit(5)
             ->get()

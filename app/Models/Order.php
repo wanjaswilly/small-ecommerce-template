@@ -98,7 +98,7 @@ class Order extends Model
      */
     public static function createFromCheckout(array $checkoutData, array $cartData): Order
     {
-        // Calculate delivery fee based on location and total
+        # Calculate delivery fee based on location and total
         $deliveryFee = self::calculateDeliveryFee(
             $cartData['total_price'],
             $checkoutData['location']
@@ -106,7 +106,7 @@ class Order extends Model
 
         $totalAmount = $cartData['total_price'] + $deliveryFee;
 
-        // Create order
+        # Create order
         $order = self::create([
             'user_id' => $_SESSION['id'] ? $_SESSION['id'] : null,
             'customer_name' => $checkoutData['full_name'],
@@ -124,7 +124,7 @@ class Order extends Model
             'status' => 'pending'
         ]);
 
-        // Create order items
+        # Create order items
         foreach ($cartData['items'] as $item) {
             OrderItem::create([
                 'order_id' => $order->id,
@@ -145,13 +145,13 @@ class Order extends Model
     {
         $settings = Setting::getByGroup('shipping');
 
-        // Free delivery for orders above threshold
+        # Free delivery for orders above threshold
         $freeDeliveryThreshold = (float) ($settings['free_delivery_threshold'] ?? 20000);
         if ($subtotal >= $freeDeliveryThreshold) {
             return 0;
         }
 
-        // Check if location is in CBD areas
+        # Check if location is in CBD areas
         $cbdAreas = ['Nairobi CBD', 'Westlands', 'Kilimani', 'Kileleshwa', 'Lavington', 'Karen', 'Langata'];
         $isCBD = in_array($location, $cbdAreas);
 
@@ -171,7 +171,7 @@ class Order extends Model
 
         if ($status === 'paid') {
             $this->paid_at = Carbon::now();
-            $this->status = 'confirmed'; // Move to confirmed when paid
+            $this->status = 'confirmed'; # Move to confirmed when paid
 
             if (!empty($paymentData['mpesa_receipt_number'])) {
                 $this->mpesa_receipt_number = $paymentData['mpesa_receipt_number'];
@@ -196,7 +196,7 @@ class Order extends Model
             $this->delivered_at = Carbon::now();
         }
 
-        // You could log status changes here
+        # You could log status changes here
         return $this->save();
     }
 

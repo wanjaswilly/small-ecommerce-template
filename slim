@@ -5,10 +5,10 @@ require __DIR__ . '/vendor/autoload.php';
 
 $command = $argv[1] ?? null;
 $name = $argv[2] ?? null;
-$flags = array_slice($argv, 3); // gets everything after command + name
+$flags = array_slice($argv, 3); # gets everything after command + name
 $makeMigration = in_array('-m', $flags);
 
-// Required directories
+# Required directories
 $paths = [
     'routesFile'     => __DIR__ . '/routes/web.php',
     'templatesDir'   => __DIR__ . '/templates/pages',
@@ -18,14 +18,14 @@ $paths = [
     'migrationsDir'  => __DIR__ . '/database/migrations',
 ];
 
-// Ensure folders exist
+# Ensure folders exist
 foreach (['templatesDir', 'partialsDir', 'controllerDir', 'modelDir', 'migrationsDir'] as $dirKey) {
     if (!is_dir($paths[$dirKey])) {
         mkdir($paths[$dirKey], 0777, true);
     }
 }
 
-// Helper to check required package
+# Helper to check required package
 function ensurePackageInstalled($class, $install)
 {
     if (!class_exists($class)) {
@@ -211,9 +211,9 @@ PHP
 
         $className = ucfirst($name);
         $path = "{$paths['modelDir']}/$className.php";
-        $tableName = strtolower($className) . 's'; // crude pluralization
+        $tableName = strtolower($className) . 's'; # crude pluralization
 
-        // Create model
+        # Create model
         if (!file_exists($path)) {
             file_put_contents(
                 $path,
@@ -228,7 +228,7 @@ class $className extends Model
 {
     protected \$table = '$tableName';
     
-    // protected \$fillable = [];
+    # protected \$fillable = [];
 }
 PHP
             );
@@ -237,7 +237,7 @@ PHP
             echo "  Model '$className' already exists.\n";
         }
 
-        // If -m flag is present, generate matching migration
+        # If -m flag is present, generate matching migration
         if ($makeMigration) {
             ensurePackageInstalled('Illuminate\\Database\\Capsule\\Manager', 'composer require illuminate/database');
 
@@ -289,7 +289,7 @@ PHP
         $timestamp = date('Y_m_d_His');
         $filename = "{$timestamp}_{$name}.php";
         $path = "{$paths['migrationsDir']}/$filename";
-        $tableName = strtolower($className) . 's'; // crude pluralization
+        $tableName = strtolower($className) . 's'; # crude pluralization
 
         file_put_contents(
             $path,
@@ -334,7 +334,7 @@ PHP
         $modelName   = ucfirst($name);
         $modelClass  = "App\\Models\\$modelName";
 
-        // Check if model exists
+        # Check if model exists
         if (!class_exists($modelClass)) {
             exit("Model '$modelClass' not found. Create the model first using make:model.\n");
         }
@@ -342,7 +342,7 @@ PHP
         $className   = "{$modelName}Factory";
         $factoryPath = __DIR__ . "/database/factories/{$className}.php";
 
-        // Ensure factories directory exists
+        # Ensure factories directory exists
         if (!is_dir(dirname($factoryPath))) {
             mkdir(dirname($factoryPath), 0777, true);
         }
@@ -352,7 +352,7 @@ PHP
             break;
         }
 
-        // Generate factory file
+        # Generate factory file
         $factoryStub = <<<PHP
 <?php
 
@@ -367,7 +367,7 @@ class {$className}
         \$faker = Faker::create();
 
         return [
-            // TODO: adjust fields to match your model
+            # TODO: adjust fields to match your model
             'name' => \$faker->name,
             'email' => \$faker->unique()->safeEmail,
             'password' => password_hash('password', PASSWORD_DEFAULT),
@@ -382,16 +382,16 @@ PHP;
         file_put_contents($factoryPath, $factoryStub);
         echo "Factory '$className' created in database/factories/.\n";
 
-        // Ensure seeders.php exists
+        # Ensure seeders.php exists
         $seederFile = __DIR__ . '/database/seeders.php';
         if (!file_exists($seederFile)) {
             file_put_contents($seederFile, "<?php\n\nreturn [];\n");
         }
 
-        // Load seeders
+        # Load seeders
         $seeders = require $seederFile;
 
-        // Add model entry if missing
+        # Add model entry if missing
         if (!isset($seeders[$modelName])) {
             $seeders[$modelName] = [
                 'model' => $modelClass,
@@ -399,7 +399,7 @@ PHP;
                 'file'  => $factoryPath,
             ];
 
-            // Rewrite seeders.php with updated array
+            # Rewrite seeders.php with updated array
             $export = var_export($seeders, true);
             file_put_contents($seederFile, "<?php\n\nreturn $export;\n");
             echo "Seeder entry for '$modelName' added to database/seeders.php.\n";
@@ -420,7 +420,7 @@ PHP;
 
 
 
-        // Bootstrap Eloquent
+        # Bootstrap Eloquent
         $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
         $dotenv->safeLoad();
         $dbConfig = require __DIR__ . '/config/database.php';
@@ -442,10 +442,10 @@ PHP;
 
         $seeder = $seeders[$modelName];
 
-        // Require factory file
+        # Require factory file
         require_once $seeder['file'];
 
-        // Check classes
+        # Check classes
         if (!class_exists($seeder['class'])) {
             exit("Factory class {$seeder['class']} not found.\n");
         }
@@ -454,7 +454,7 @@ PHP;
             exit("Model class {$seeder['model']} not found.\n");
         }
 
-        // Seed
+        # Seed
         for ($i = 0; $i < $count; $i++) {
             $data = $seeder['class']::make();
             $seeder['model']::create($data);
@@ -467,17 +467,17 @@ PHP;
     case 'migrate':
         echo " Running all migrations...\n";
 
-        // Load environment variables
+        # Load environment variables
         $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
         $dotenv->safeLoad();
 
-        // Load DB config
+        # Load DB config
         $dbConfig = require __DIR__ . '/config/database.php';
 
-        // Initialize Eloquent Capsule with explicit paths
+        # Initialize Eloquent Capsule with explicit paths
         $capsule = new \Illuminate\Database\Capsule\Manager;
 
-        // For SQLite connections, ensure database file exists
+        # For SQLite connections, ensure database file exists
         if ($dbConfig['default'] === 'sqlite') {
             $databasePath = __DIR__ . "/database/database.sqlite";
             if (!file_exists($databasePath)) {
@@ -490,21 +490,21 @@ PHP;
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
 
-        // Get all migration files
+        # Get all migration files
         $migrations = glob(__DIR__ . '/database/migrations/*.php');
         if (!$migrations) {
             echo " No migration files found.\n";
             break;
         }
 
-        // Sort migrations by filename
+        # Sort migrations by filename
         sort($migrations);
 
         foreach ($migrations as $file) {
             $filename = basename($file, '.php');
             echo " - $filename\n";
 
-            // Convert filename to class name
+            # Convert filename to class name
             $className = str_replace(
                 ' ',
                 '',
@@ -512,7 +512,7 @@ PHP;
                     str_replace(
                         '_',
                         ' ',
-                        substr($filename, 18) // Remove timestamp
+                        substr($filename, 18) # Remove timestamp
                     )
                 )
             );
