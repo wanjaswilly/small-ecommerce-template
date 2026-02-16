@@ -1,0 +1,208 @@
+{% extends "admin.twig" %}
+
+{% block title %}Inventory Management
+{% endblock %}
+
+{% block page_title %}Inventory Management
+{% endblock %}
+
+{% block page_description %}Monitor and manage product stock levels
+{% endblock %}
+
+{% block page_breadcrumb %}
+	<span class="mx-2">/</span>
+	<span class="text-gray-800 dark:text-gray-200">Inventory</span>
+{% endblock %}
+
+{% block page_actions %}
+	<div class="flex space-x-3">
+		<a href="/admin/stock/add">
+			<button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center">
+				<i class="fas fa-sync-alt mr-2"></i>
+				Update Stock
+			</button>
+		</a>
+		<button class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors duration-300 flex items-center">
+			<i class="fas fa-download mr-2"></i>
+			Export Report
+		</button>
+	</div>
+{% endblock %}
+
+{% block content %}
+	<div
+		class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+		<!-- Stock Overview -->
+		<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+			<div class="flex items-center justify-between">
+				<div>
+					<p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Products</p>
+					<p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">{{ total_products|default(0) }}</p>
+				</div>
+				<div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
+					<i class="fas fa-boxes text-blue-600 dark:text-blue-400 text-2xl"></i>
+				</div>
+			</div>
+		</div>
+
+		<!-- Low Stock -->
+		<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+			<div class="flex items-center justify-between">
+				<div>
+					<p class="text-sm font-medium text-gray-600 dark:text-gray-400">Low Stock</p>
+					<p class="text-3xl font-bold text-red-600 dark:text-red-400 mt-2">{{ low_stock_count|default(0) }}</p>
+					<p class="text-sm text-red-600 dark:text-red-400 mt-1">Needs attention</p>
+				</div>
+				<div class="p-3 bg-red-100 dark:bg-red-900 rounded-lg">
+					<i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-2xl"></i>
+				</div>
+			</div>
+		</div>
+
+		<!-- Out of Stock -->
+		<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+			<div class="flex items-center justify-between">
+				<div>
+					<p class="text-sm font-medium text-gray-600 dark:text-gray-400">Out of Stock</p>
+					<p class="text-3xl font-bold text-orange-600 dark:text-orange-400 mt-2">{{ out_of_stock_count|default(0) }}</p>
+					<p class="text-sm text-orange-600 dark:text-orange-400 mt-1">Restock needed</p>
+				</div>
+				<div class="p-3 bg-orange-100 dark:bg-orange-900 rounded-lg">
+					<i class="fas fa-times-circle text-orange-600 dark:text-orange-400 text-2xl"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+		<div class="p-6 border-b border-gray-200 dark:border-gray-700">
+			<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Stock Levels</h3>
+		</div>
+		<div class="overflow-x-auto">
+			<table class="w-full">
+				<thead class="bg-gray-50 dark:bg-gray-700">
+					<tr>
+						<th class="text-left p-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase  ">Product</th>
+						<th class="text-left p-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase  ">SKU</th>
+						<th class="text-left p-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase  ">Category</th>
+						<th class="text-left p-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase  ">Current Stock</th>
+						<th class="text-left p-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase  ">Min Level</th>
+						<th class="text-left p-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase  ">Status</th>
+						<th class="text-left p-2 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase  ">Actions</th>
+					</tr>
+				</thead>
+				<tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+					{% for product in inventory %}
+						<tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+							<td class="p-2">
+								<div class="flex items-center">
+									<div class="h-10 w-10 flex-shrink-0">
+										{% if product.images and product.images|length > 0 %}
+											<img class="h-10 w-10 rounded-lg object-cover" src="{{ product.images[0] }}" alt="{{ product.name }}">
+										{% else %}
+											<div class="h-10 w-10 bg-gray-200 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+												<i class="fas {{ product.type == 'electronics' ? 'fa-mobile-alt' : 'fa-car' }} text-gray-400"></i>
+											</div>
+										{% endif %}
+									</div>
+									<div class="ml-4">
+										<div class="text-sm font-medium text-gray-900 dark:text-white">{{ product.name }}</div>
+									</div>
+								</div>
+							</td>
+							<td class=" p-2 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+								{{ product.sku }}
+							</td>
+							<td class=" p-2 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+								{{ product.category.name }}
+							</td>
+							<td class=" p-2 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+								{{ product.stock_quantity }}
+							</td>
+							<td class=" p-2 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+								{{ product.min_stock_level }}
+							</td>
+							<td class=" p-2 whitespace-nowrap">
+								{% if product.stock_quantity == 0 %}
+									<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+										Out of Stock
+									</span>
+								{% elseif product.stock_quantity <= product.min_stock_level %}
+									<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+										Low Stock
+									</span>
+								{% else %}
+									<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+										In Stock
+									</span>
+								{% endif %}
+							</td>
+							<td class=" p-2 whitespace-nowrap text-sm font-medium">
+								<button class="text-primary-600 hover:text-primary-900 dark:hover:text-primary-400 mr-3">Update</button>
+								<a href="/admin/inventory/{{ product.id }}/edit" class="text-green-600 hover:text-green-900 dark:hover:text-green-400">Edit</a>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="7" class=" p-2 text-center text-sm text-gray-500 dark:text-gray-400">
+								No inventory data found
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<!-- Pagination -->
+		{% if inventory.hasPages() %}
+			<div class="mt-12 flex justify-center">
+				<div class="flex space-x-2">
+					{% if inventory.onFirstPage %}
+						<span class="px-3 py-2 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed">Previous</span>
+					{% else %}
+						<a href="?page={{ inventory.currentPage - 1 }}{{ query_string }}" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">Previous</a>
+					{% endif %}
+
+					{% if (inventory.lastPage - 1) > 3 %}
+						<span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ inventory.currentPage }}</span>
+						{% if  inventory.currentPage != inventory.lastPage %}
+							<a href="?page={{ inventory.currentPage + 1 }}{{ query_string }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">{{ inventory.currentPage + 1 }}</a>
+						{% endif %}
+
+						{% if inventory.currentPage < inventory.lastPage - 2 %}
+							<a class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">...</a>
+							<a href="?page={{ inventory.lastPage - 2 }}{{ query_string }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">{{ inventory.lastPage - 1 }}</a>
+						{% endif %}
+						{% if inventory.currentPage < inventory.lastPage - 1 %}
+							<a href="?page={{ inventory.lastPage - 1 }}{{ query_string }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">{{ inventory.lastPage }}</a>
+						{% endif %}
+					{% else %}
+						{{inventory.lastPage}}
+						{% for page in 1..inventory.lastPage %}
+							{% if page == inventory.currentPage %}
+								<span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ page }}</span>
+							{% else %}
+								<a href="?page={{ page }}{{ query_string }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">{{ page }}</a>
+							{% endif %}
+						{% endfor %}
+
+					{% endif %}
+
+
+					{# {% for page in 1..inventory.lastPage %}
+																											{% if page == inventory.currentPage %}
+																												<span class="px-3 py-2 bg-blue-600 text-white rounded-lg">{{ page }}</span>
+																											{% else %}
+																												<a href="?page={{ page }}{{ query_string }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">{{ page }}</a>
+																											{% endif %}
+																										{% endfor %} #}
+
+					{% if inventory.hasMorePages %}
+						<a href="?page={{ inventory.currentPage + 1 }}{{ query_string }}" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">Next</a>
+					{% else %}
+						<span class="px-3 py-2 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed">Next</span>
+					{% endif %}
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}
