@@ -94,14 +94,14 @@ class Product extends Model
         return 0;
     }
 
-    public function lowStock():product
+    public static function lowStock()
     {
-        return $this->where('is_active', true)
+        return self::where('is_active', true)
             ->where('stock_quantity', '<=', DB::raw('min_stock_level'));
     }
 
-    public function outOfStock():Product
+    public static function outOfStock()
     {
-        return $this->where('is_active', true)->where('stock_quantity', 0);
+        return self::where('is_active', true)->where('stock_quantity', 0);
     }
 }
