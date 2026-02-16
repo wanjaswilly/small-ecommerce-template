@@ -17,6 +17,9 @@ class AdminController extends BaseController
 
     public function __construct()
     {
+        $this->adminService = new AdminService();
+        $this->productsService = new ProductsService();
+        $this->contactMessageService = new ContactMessageService();
 
     }
     # Dashboard
