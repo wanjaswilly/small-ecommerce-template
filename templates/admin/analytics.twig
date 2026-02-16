@@ -1,0 +1,147 @@
+{% extends "admin.twig" %}
+
+{% block title %}Analytics & Reports{% endblock %}
+
+{% block page_title %}Analytics & Reports{% endblock %}
+
+{% block page_description %}Business insights and performance metrics{% endblock %}
+
+{% block page_breadcrumb %}
+    <span class="mx-2">/</span>
+    <span class="text-gray-800 dark:text-gray-200">Analytics</span>
+{% endblock %}
+
+{% block page_actions %}
+    <div class="flex space-x-3">
+        <select class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option>Last 7 days</option>
+            <option>Last 30 days</option>
+            <option selected>Last 90 days</option>
+            <option>Last year</option>
+        </select>
+        <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center">
+            <i class="fas fa-download mr-2"></i>
+            Export Report
+        </button>
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    <!-- Total Revenue -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">KSh {{ total_revenue|default(0)|number_format }}</p>
+                <p class="text-sm text-green-600 dark:text-green-400 mt-1">
+                    <i class="fas fa-arrow-up mr-1"></i>
+                    12.5% increase
+                </p>
+            </div>
+            <div class="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
+                <i class="fas fa-dollar-sign text-green-600 dark:text-green-400 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Orders -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Orders</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ total_orders|default(0) }}</p>
+                <p class="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                    <i class="fas fa-shopping-cart mr-1"></i>
+                    {{ avg_order_value|default(0) }} avg
+                </p>
+            </div>
+            <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                <i class="fas fa-shopping-cart text-blue-600 dark:text-blue-400 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customers -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">New Customers</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ new_customers|default(0) }}</p>
+                <p class="text-sm text-purple-600 dark:text-purple-400 mt-1">
+                    <i class="fas fa-users mr-1"></i>
+                    {{ total_customers|default(0) }} total
+                </p>
+            </div>
+            <div class="p-3 bg-purple-100 dark:bg-purple-900 rounded-lg">
+                <i class="fas fa-users text-purple-600 dark:text-purple-400 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conversion Rate -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Conversion Rate</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ conversion_rate|default(0) }}%</p>
+                <p class="text-sm text-orange-600 dark:text-orange-400 mt-1">
+                    <i class="fas fa-chart-line mr-1"></i>
+                    2.1% increase
+                </p>
+            </div>
+            <div class="p-3 bg-orange-100 dark:bg-orange-900 rounded-lg">
+                <i class="fas fa-chart-line text-orange-600 dark:text-orange-400 text-xl"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Sales by Category -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sales by Category</h3>
+        <div class="space-y-4">
+            {% for category in sales_by_category %}
+            <div>
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-sm font-medium text-gray-900 dark:text-white">{{ category.name }}</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">KSh {{ category.revenue|number_format }}</span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div class="bg-primary-600 h-2 rounded-full" style="width: {{ category.percentage }}%"></div>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No sales data available</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Top Products -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Selling Products</h3>
+        <div class="space-y-3">
+            {% for product in top_products %}
+            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-200 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+                        <i class="fas {{ product.type == 'electronics' ? 'fa-mobile-alt' : 'fa-car' }} text-gray-400"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ product.name }}</h4>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ product.category }}</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ product.sales }} sold</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">KSh {{ product.revenue|number_format }}</p>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No product data available</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
