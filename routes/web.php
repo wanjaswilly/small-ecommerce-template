@@ -3,6 +3,7 @@
 use App\Controllers\AdminController;
 use App\Controllers\AuthController;
 use App\Controllers\ProductController;
+use App\Controllers\SettingsController;
 use App\Controllers\UsersController;
 use Slim\App;
 use App\Controllers\HomeController;
@@ -70,6 +71,11 @@ return function (App $app) {
 
         # customers
         $group->get('/customers', [AdminController::class, 'customers'])->setName('admin.customers');
+        
+        # settings section
+        $group->get('/settings', [SettingsController::class, 'index'])->setName('admin.settings');
+        $group->post('/settings', [SettingsController::class, 'update'])->setName('admin.settings.update');
+        $group->post('/settings/reset', [SettingsController::class, 'reset'])->setName('admin.settings.reset');
 
 
 
