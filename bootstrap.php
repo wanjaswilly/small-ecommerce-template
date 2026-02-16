@@ -11,6 +11,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use Slim\Exception\HttpInternalServerErrorException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 require __DIR__ . '/vendor/autoload.php';
@@ -61,6 +62,26 @@ foreach (
 ) {
     $twig->getEnvironment()->addGlobal($key, $_ENV[$key] ?? '');
 }
+
+
+$twig->getEnvironment()->addFilter(
+    new TwigFilter('json_decode', function ($value) {
+        // Already an array → return as-is
+        if (is_array($value)) return $value;
+
+        // Non-string (int, bool, null) → return as-is
+        if (!is_string($value)) return $value; 
+
+        // Try JSON decode
+        $decoded = json_decode($value, true);
+
+        // If valid JSON → return decoded array
+        if (json_last_error() === JSON_ERROR_NONE) return $decoded; 
+
+        // Not JSON → return original string
+        return $value;
+    })
+);
 
 $app->add(new TrackStatsMiddleware());
 $app->add(new App\Middleware\CsrfMiddleware());
