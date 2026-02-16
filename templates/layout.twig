@@ -1,55 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <title>
-      {% block title %}
-        {{ APP_NAME }}
-      {% endblock %}
-    </title>
+		<title>
+			{% block title %}
+				Small Ecommerce - Premium Products Such as Electronics & Car Parts
+			{% endblock %}
+		</title>
 
-    <meta name="description"
-      content="{% block description %}
-      {% endblock %}" />
-    <meta name="author" content="Wilson Wanja" />
-    <meta name="keywords" content="Wilson Wanja, Full-stack Developer, Slim PHP, Flask, Linux, Portfolio" />
+		<meta name="description" content="{% block description %}Your trusted partner for quality products and genuine car spare parts in Ngara, Nairobi. CBD delivery available.{% endblock %}"/>
+		<meta name="author" content="Small Ecommerce"/>
+		<meta
+		name="keywords" content="electronics, car parts, Nairobi, Ngara, smartphones, laptops, car spare parts, Kenya"/>
 
-    <!-- Open Graph (OG) Tags for social media -->
-    <meta property="og:title"
-      content="{% block og_title %}
-      {% endblock %}" />
-    <meta property="og:description"
-      content="{% block og_description %}
-      {% endblock %}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{ app_url|default('https://example.com') }}" />
-    <meta property="og:image" content="{{ app_url|default('https://example.com') }}/assets/og-image.jpg" />
+		<!-- Open Graph (OG) Tags for social media -->
+		<meta property="og:title" content="{% block og_title %}Small Ecommerce - Quality Products for day to day use{% endblock %}"/>
+		<meta property="og:description" content="{% block og_description %}Your trusted partner for quality electronics and genuine car spare parts in Ngara, Nairobi. Free CBD delivery available.{% endblock %}"/>
+		<meta property="og:type" content="website"/>
+		<meta property="og:url" content="{{ app_url|default('https://smallecommerce.co.ke') }}"/>
+		<meta property="og:image" content="{% block og_image %}{{ app_url }}/assets/og-image.jpg{% endblock %}"/>
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title"
-      content="{% block twitter_title %}
-      {% endblock %}" />
-    <meta name="twitter:description"
-      content="{% block twitter_description %}
-      {% endblock %}" />
-    <meta name="twitter:image" content="{{ app_url|default('https://example.com') }}/assets/twitter-card.jpg" />
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image"/>
+		<meta name="twitter:title" content="{% block twitter_title %}Small Ecommerce - Quality Products for day to day use{% endblock %}"/>
+		<meta name="twitter:description" content="{% block twitter_description %}Your trusted partner for quality electronics and genuine car spare parts in Ngara, Nairobi. Free CBD delivery available.{% endblock %}"/>
+		<meta name="twitter:image" content="{% block twitter_image %}{{ app_url }}/assets/twitter-card.jpg{% endblock %}"/>
 
-    <!-- Tailwind CSS -->
-      <link rel="stylesheet" href="{{ asset('/build/assets/app.css') }}" />
-      <script type="module" src="{{ asset('/build/assets/app-DPY58IMw.js') }}"></script>
+		<!-- Canonical URL -->
+		<link rel="canonical" href="{% block canonical %}{{ app_url }}{{ request_uri }}{% endblock %}"/>
 
-    <!-- Favicon -->
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-  </head>
-  <body class="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-sans">
-    {% include 'partials/header.twig' %}
-    <main>
-      {% block content %}
-      {% endblock %}
-    </main>
-    {% include 'partials/footer.twig' %}
-  </body>
-</html>
+		<!-- Structured Data -->
+		
+<script type="application/ld+json">{% block structured_data %}{% endblock %}</script>	
+
+		<meta name="csrf-token" content="{{ csrf_token() | raw  }}">
+		<!-- Tailwind CSS -->
+		<link rel="stylesheet" href="{{ asset('/build/assets/app.css') }}"/>
+		<script type="module" src="{{ asset('/build/assets/app-CQBL56Kt.js') }}"></script>
+
+		<!-- Additional Styles -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		<link
+		href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+		<!-- Favicon -->
+		<link rel="icon" href="/favicon.ico" type="image/x-icon"/> {% block styles %}{% endblock %}
+		</head>
+		<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans  pb-15 sm:pb-0">
+			{% include 'partials/header.twig' %}
+
+			<main>
+				{% block content %}{% endblock %}
+			</main>
+
+			{% include 'partials/footer.twig' %}
+
+			{% block scripts %}{% endblock %}
+		</body>
+	</html>

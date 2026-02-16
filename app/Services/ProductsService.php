@@ -72,8 +72,12 @@ class ProductsService
                 break;
         }
 
-        # Get paginated products
-        $products = $productsQuery->paginate($perPage, ['*'], 'page', $page);
+        # Get paginated products 
+        // TODO: uncoment this line below
+        // $products = $productsQuery->paginate($perPage, ['*'], 'page', $page);
+
+        // todo: remove this once paginator is installed
+        $products = $productsQuery->limit(24)->get();
 
         # Build query string for pagination links
         $queryString = '';
