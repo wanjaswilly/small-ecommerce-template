@@ -1,57 +1,195 @@
-<nav class="bg-white border-b shadow-sm dark:bg-gray-800 dark:text-white">
-	<div class="max-w-6xl mx-auto px-4">
-		<div class="flex justify-between items-center h-16">
-			<a href="/" class="text-xl font-semibold text-gray-800 dark:text-white hover:text-blue-600">Simple Site Skeleton</a>
+<!-- Top Announcement Bar -->
+<div class="bg-orange-500 text-white py-2 px-4 text-center text-[10px] sm:text-sm font-bold">
+	<a href="/sale/corey-black-friday">
+		🎉 Small Ecom BLACK FRIDAY: Up to 13% OFF! Shop Now →
+	</a>
+</div>
 
-			<!-- Mobile menu button -->
-			<button id="mobile-menu-button" class="md:hidden text-gray-700 dark:text-white focus:outline-none">
-				<svg id="menu-open" class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-				</svg>
-				<svg id="menu-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-				</svg>
-			</button>
+<!-- Top Bar -->
+<header class="bg-white border-b">
+	<div
+		class="container mx-auto px-4">
+		<!-- Desktop Top Bar -->
+		<div
+			class="hidden md:flex items-center justify-between py-3">
+			<!-- Logo -->
+			<a href="/" class="text-2xl font-black text-orange-500">
+				Small Ecom<span class="text-gray-800">®</span>
+			</a>
 
-			<!-- Desktop menu -->
-			<div class="hidden md:flex space-x-6 dark:text-white">
-				<a href="/" class="text-gray-700 dark:text-white hover:text-blue-600">Home</a>
-				<a href="/developer" class="text-gray-700 dark:text-white hover:text-blue-600">Developer</a>
-				<a href="/support" class="text-gray-700 dark:text-white hover:text-blue-600">Support</a>
-				<a href="https://github.com/wanjaswilly" class="text-gray-500 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
-					<span class="sr-only">GitHub</span>
-					<svg class="h-7 w-7" fill="currentColor" viewbox="0 0 24 24">
-						<path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.09.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd"></path>
-					</svg>
+			<!-- Search Bar -->
+			<div class="flex-1 max-w-2xl mx-8">
+				<div class="relative">
+					<form action="/search" method="get">
+						<input type="text" name="search" placeholder="Search products, brands and categories" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+						<button type="submit" class="absolute right-0 top-0 bottom-0 bg-orange-500 text-white px-4 rounded-r font-bold hover:bg-orange-600">
+							<i class="fas fa-search"></i>
+						</button>
+					</form>
+				</div>
+			</div>
+
+			<!-- Account, Help, Cart -->
+			<div class="flex items-center space-x-6">
+				<a href="/user/account" class="flex flex-col items-center text-gray-700 hover:text-orange-500">
+					<i class="fas fa-user text-lg"></i>
+					<span class="text-xs">Account</span>
 				</a>
-				<a href="https://x.com/wanjaswilly" class="text-gray-500 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
-					<span class="sr-only">Twitter</span>
-					<svg class="h-7 w-7" fill="currentColor" viewbox="0 0 24 24">
-						<path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
-					</svg>
+				<a href="/cart" class="flex flex-col items-center text-gray-700 hover:text-orange-500 relative">
+					<i class="fas fa-shopping-cart text-lg"></i>
+					<span class="text-xs">Cart</span>
+					<span class="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center cart_total_items"></span>
 				</a>
+				{% if session.user_id %}
+					<form action="/logout" method="post">
+						{{ csrf_field() | raw }}
+						<button type="submit" class="flex flex-col items-center text-gray-700 hover:text-orange-500 relative">
+							<i class="fas fa-power-off text-lg"></i>
+							<span class="text-xs">Logout</span>
+						</button>
+					</form>
+				{% endif %}
+
 			</div>
 		</div>
 
-		<!-- Mobile menu -->
-		<div id="mobile-menu" class="hidden md:hidden mt-2 space-y-2">
-			<a href="/" class="block text-gray-700 dark:text-white hover:text-blue-600 hover:bg-gray-400">Home</a>
-			<a href="/developer" class="block text-gray-700 dark:text-white hover:text-blue-600 hover:bg-gray-400">Developer</a>
-			<a href="/support" class="block text-gray-700 dark:text-white hover:text-blue-600  hover:bg-gray-400">Support</a>
-			<div class="flex gap-3 mb-6">
-				<a href="https://github.com/wanjaswilly" class="block text-gray-500 dark:text-gray-100 hover:text-gray-700">
-					<span class="sr-only">GitHub</span>
-					<svg class="h-8 w-8" fill="currentColor" viewbox="0 0 24 24">
-						<path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.09.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd"></path>
-					</svg>
+		<!-- Mobile Top Bar -->
+		<div class="md:hidden flex items-center justify-between py-2">
+			<div class="space-x-3">
+				<button class="mobile-menu-btn p-2">
+					<i class="fas fa-bars text-gray-700"></i>
+				</button>
+				<a href="/" class="text-xl font-black text-orange-500">
+					Small Ecom<span class="text-gray-800">®</span>
 				</a>
-				<a href="https://x.com/wanjaswilly" class="block text-gray-500 dark:text-gray-100 hover:text-gray-700 mb-2">
-					<span class="sr-only">Twitter</span>
-					<svg class="h-8 w-8" fill="currentColor" viewbox="0 0 24 24">
-						<path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
-					</svg>
+			</div>
+			<div class="relative flex space-x-4">
+				<a href="/user/account">
+					<i class="fas fa-user text-gray-700"></i>
+					<span class="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">0</span>
+				</a>
+				<a href="/cart">
+					<i class="fas fa-shopping-cart text-gray-700"></i>
+					<span class="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center cart_total_items">0</span>
 				</a>
 			</div>
 		</div>
 	</div>
+</header>
+
+<!-- Services Bar -->
+<div class="hidden md:flex bg-gray-100 border-b">
+	<div class="container mx-auto px-4 py-2">
+		<div class="flex items-center justify-center space-x-8 text-sm">
+			<span class="flex items-center text-gray-700">
+				<i class="fas fa-product mr-1 text-orange-500"></i>
+				GENUINE PRODUCTS
+			</span>
+			<span class="flex items-center text-gray-700">
+				<i class="fas fa-store mr-1 text-orange-500"></i>
+				UPTO 24 MONTHS WARRANTY
+			</span>
+			<span class="flex items-center text-gray-700">
+				<i class="fas fa-utensils mr-1 text-orange-500"></i>
+				SECURE PAYMENT
+			</span>
+			<span class="flex items-center text-gray-700">
+				<i class="fas fa-money-bill-wave mr-1 text-orange-500"></i>
+				PAY ON DELIVERY
+			</span>
+			<span class="flex items-center text-gray-700">
+				<i class="fas fa-globe mr-1 text-orange-500"></i>
+				Small Ecom GLOBAL
+			</span>
+		</div>
+	</div>
+</div>
+
+<!-- Navigation Menu -->
+<nav class="bg-gray-800 text-white">
+	<div
+		class="container mx-auto px-4">
+		<!-- Desktop Navigation -->
+		<div class="hidden md:flex items-center space-x-8 py-3">
+			<a href="/categories">
+				<button class="flex items-center space-x-2 bg-orange-500 px-4 py-2 rounded-lg font-bold">
+					<i class="fas fa-bars"></i>
+					<span>All Categories</span>
+				</button>
+			</a>
+
+			<div class="flex space-x-6 text-sm font-medium">
+				<a href="/sales" class="hover:text-orange-300 transition duration-200">Flash Sales</a>
+				<a href="/products" class="hover:text-orange-300 transition duration-200">All Products</a>
+				<a href="/category/electronics" class="hover:text-orange-300 transition duration-200">Electronics</a>
+				<a href="/category/car-parts" class="hover:text-orange-300 transition duration-200">Car Parts</a>
+				<a href="/category/smartphones" class="hover:text-orange-300 transition duration-200">Automotive & Motorbike</a>
+				<a href="/category/smartphones" class="hover:text-orange-300 transition duration-200">Smartphones</a>
+			</div>
+		</div>
+
+		<!-- Mobile Navigation -->
+		<div class="md:hidden flex items-center justify-between py-3">
+			<div class="flex space-x-4  text-xs font-medium flex-1 ml-4">
+				<a href="/products" class="whitespace-nowrap hover:text-orange-300 transition duration-200">All Products</a>
+				<a href="/category/electronics" class="whitespace-nowrap hover:text-orange-300 transition duration-200">Electronics</a>
+				<a href="/category/smartphones" class="hover:text-orange-300 transition duration-200">Smartphones</a>
+			</div>
+		</div>
+	</div>
 </nav>
+
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+	<div class="fixed top-0 left-0 w-64 h-full bg-orange-500 text-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out mobile-menu">
+		<div class="p-4 border-b">
+			<div class="flex items-center justify-between ">
+				<span class="text-lg font-bold hover:text-black">Menu</span>
+				<button class="mobile-menu-close p-2 rounded-lg hover:bg-gray-100">
+					<i class="fas fa-times text-xl"></i>
+				</button>
+			</div>
+		</div>
+		<div class="p-4 space-y-4">
+			<a href="/" class="block py-2 px-4 hover:bg-orange-50 hover:text-black  rounded-lg">Home</a>
+			<a href="/products" class="block py-2 px-4 hover:bg-orange-50 hover:text-black  rounded-lg">All Products</a>
+			<a href="/category/electronics" class="block py-2 px-4 hover:bg-orange-50 hover:text-black  rounded-lg">Electronics</a>
+			<a href="/category/car-parts" class="block py-2 px-4 hover:bg-orange-50 hover:text-black rounded-lg">Automotive</a>
+			<a href="/user/account" class="block py-2 px-4 hover:bg-orange-50 hover:text-black rounded-lg">My Account</a>
+			<a href="/help" class="block py-2 px-4 hover:bg-orange-50 hover:text-black rounded-lg">Help Center</a>
+		</div>
+	</div>
+</div>
+
+<!-- MOBILE FIXED FOOTER MENU -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t shadow-lg">
+	<div
+		class="grid grid-cols-4 text-center text-xs text-gray-700">
+
+		<!-- SHOP -->
+		<a href="/" class="py-3 flex flex-col items-center justify-center hover:text-[#842454]">
+			<i class="fa fa-store text-lg"></i>
+			<span class="mt-1">Home</span>
+		</a>
+
+		<!-- CATEGORIES -->
+		<a href="/categories" class="py-3 flex flex-col items-center justify-center hover:text-[#842454]">
+			<i class="fa fa-list text-lg"></i>
+			<span class="mt-1">Categories</span>
+		</a>
+
+		<!-- CART -->
+		<a href="/cart" class="relative py-3 flex flex-col items-center justify-center hover:text-[#842454]">
+			<i class="fa fa-shopping-cart text-lg"></i>
+			<span class="absolute top-1 right-6 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cart_total_items" data-cart-count></span>
+			<span class="mt-1">Cart</span>
+		</a>
+
+		<!-- ACCOUNT -->
+		<a href="/user/account" class="py-3 flex flex-col items-center justify-center hover:text-[#842454]">
+			<i class="fa fa-user text-lg"></i>
+			<span class="mt-1">Account</span>
+		</a>
+
+	</div>
+</div>
