@@ -146,7 +146,7 @@ class PesapalService implements PaymentInterface
     /**
      * Check payment status
      */
-    public function checkPaymentStatus(string $transactionId): array
+    public function checkPaymentStatus(string $transactionId): string
     {
         return PesaPalController::getPesapalTransactionStatus(
             $this->pesapal->accessToken,
