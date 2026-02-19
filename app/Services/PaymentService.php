@@ -33,7 +33,7 @@ class PaymentService
 
     }
 
-    public function paymentCallback(ServerRequestInterface $request, string $methodName)
+    public function processCallback(ServerRequestInterface $request, string $methodName)
     {
         $data = $request->getParsedBody();
         try {
