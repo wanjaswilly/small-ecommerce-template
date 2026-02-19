@@ -7,14 +7,15 @@ use App\Models\PaymentTransaction;
 interface PaymentInterface
 {
     /**
-     * Initialize a payment request
+     * Initialize a payment request, save response to paymentTransaction and method model.
+     * Both the paymentTransaction and method model will be fully filled by the processCallback method
      * @param array $paymentData all apyment data required by a given payment service
-     * @return string transaction code follow-up code to follow up the transaction
+     * @return string redirect url for the processing/waiting of transaction
      */
-    public function initiatePayment(array $paymentData): string;
+    public function initiatePayment(array $paymentData): mixed;
 
     /**
-     * Process payment callback/response
+     * Process payment callback/response, update the order, fill method model and paymentTransaction
      * @param array $callbackData payment response with all payment info
      * @return PaymentTransaction instance of the payment transaction.
      * 
