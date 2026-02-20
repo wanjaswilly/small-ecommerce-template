@@ -1,0 +1,96 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-6">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-6">
+            <a href="/orders" class="inline-flex items-center text-blue-600 hover:text-blue-500 mb-4">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Orders
+            </a>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Order History</h1>
+                    <p class="mt-2 text-gray-600">Order #{{ order.order_number }}</p>
+                </div>
+                <div class="mt-4 sm:mt-0">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-{{ status_labels[order.status].color }}-100 text-{{ status_labels[order.status].color }}-800">
+                        {{ status_labels[order.status].label }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="p-6">
+                {% if history|length > 0 %}
+                <div class="flow-root">
+                    <ul class="-mb-8">
+                        {% for event in history %}
+                        <li class="relative pb-8">
+                            <div class="relative flex items-start space-x-3">
+                                <div>
+                                    <div class="relative px-1">
+                                        <div class="h-8 w-8 bg-gray-100 rounded-full flex items-center justify-center ring-8 ring-white">
+                                            {% if event.action == 'order_created' %}
+                                            <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            {% elseif event.action == 'status_changed' %}
+                                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                            </svg>
+                                            {% elseif event.action == 'payment_received' %}
+                                            <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                            </svg>
+                                            {% elseif event.action == 'dispatched' %}
+                                            <svg class="h-5 w-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                            </svg>
+                                            {% elseif event.action == 'delivered' %}
+                                            <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            {% else %}
+                                            <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div>
+                                        <div class="text-sm">
+                                            <p class="font-medium text-gray-900">{{ event.description }}</p>
+                                        </div>
+                                        <div class="mt-2 text-sm text-gray-700">
+                                            <p>{{ event.notes }}</p>
+                                        </div>
+                                        <div class="mt-1 text-sm text-gray-500">
+                                            <time datetime="{{ event.created_at }}">{{ event.created_at|date('F d, Y \\a\\t g:i A') }}</time>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% else %}
+                <div class="text-center py-12">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900">No history available</h3>
+                    <p class="mt-2 text-gray-600">No activity has been recorded for this order yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
