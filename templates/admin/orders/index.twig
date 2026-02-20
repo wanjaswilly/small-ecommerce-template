@@ -1,0 +1,115 @@
+{% extends "admin.twig" %}
+
+{% block title %}Orders Management{% endblock %}
+
+{% block page_title %}Orders Management{% endblock %}
+
+{% block page_description %}View and manage customer orders{% endblock %}
+
+{% block page_breadcrumb %}
+    <span class="mx-2">/</span>
+    <span class="text-gray-800 dark:text-gray-200">Orders</span>
+{% endblock %}
+
+{% block page_actions %}
+    <div class="flex space-x-3">
+        <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center">
+            <i class="fas fa-download mr-2"></i>
+            Export Orders
+        </button>
+        <button class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors duration-300 flex items-center">
+            <i class="fas fa-filter mr-2"></i>
+            Filter
+        </button>
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <input type="text" placeholder="Search orders..." class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent w-64">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <select class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                    <option>All Status</option>
+                    <option>Pending</option>
+                    <option>Confirmed</option>
+                    <option>Processing</option>
+                    <option>Shipped</option>
+                    <option>Delivered</option>
+                    <option>Cancelled</option>
+                </select>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <span class="text-sm text-gray-600 dark:text-gray-400">Total: {{ orders|length }} orders</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Order ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Order Total</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amount</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {% for order in orders %}
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">{{ order.order_number }}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ order.customer_name }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900 dark:text-white">{{ order.subtotal }}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ order.payment_method }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        {{ order.created_at|date('M j, Y') }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        KSh {{ order.total_amount|number_format }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            {% if order.status == 'pending' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                            {% elseif order.status == 'confirmed' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                            {% elseif order.status == 'processing' %}bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
+                            {% elseif order.status == 'dispatched' %}bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200
+                            {% elseif order.status == 'delivered' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                            {% else %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200{% endif %}">
+                            {{ order.status|title }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <a href="/admin/orders/{{ order.id }}/view" class="text-primary-600 hover:text-primary-900 dark:hover:text-primary-400 mr-3">View</a>
+                        <a href="/admin/orders/{{ order.id }}/next-step" class="bg-green-500 text-white p-2 rounded-md hover:bg-green-600">
+                        {% if order.status == 'pending' %}Process Order
+                            {% elseif order.status == 'confirmed' %} Dispatch Order
+                            {% elseif order.status == 'processing' %} Dispatch Order
+                            {% elseif order.status == 'dispatched' %} Mark as Delivered
+                            {% elseif order.status == 'delivered' %} 
+                            {% else %}{% endif %}
+                            </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                        No orders found
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
