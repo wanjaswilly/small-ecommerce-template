@@ -3,6 +3,7 @@
 use App\Controllers\AdminController;
 use App\Controllers\AuthController;
 use App\Controllers\CategoryController;
+use App\Controllers\OrderController;
 use App\Controllers\ProductController;
 use App\Controllers\SettingsController;
 use App\Controllers\UsersController;
@@ -86,8 +87,21 @@ return function (App $app) {
         $group->post('/categories/{id}/update', [CategoryController::class, 'update'])->setName('admin.categories.update');
         $group->post('/categories/{id}/delete', [CategoryController::class, 'destroy'])->setName('admin.categories.destroy');
 
-
-
+        # customers
+        $group->get('/customers', [AdminController::class, 'customers'])->setName('admin.customers');
+        
+        # orders
+        $group->get('/orders', [OrderController::class, 'index'])->setName('admin.orders');
+        $group->get('/orders/{id}/view', [OrderController::class, 'showOrder'])->setName('admin.orders.view');
+        $group->get('/orders/{id}/next-step', [OrderController::class, 'nextStep'])->setName('admin.orders.next-step');
+        $group->get('/orders/process', [OrderController::class, 'ordersInProcessing'])->setName('staff.orders.processing');
+        $group->get('/orders/dispatched', [OrderController::class, 'dispatchedOrder'])->setName('staff.order.dispatched');
+        $group->get('/orders/completed', [OrderController::class, 'completedOrders'])->setName('staff.orders.completed');
+        $group->get('/orders/{id}/process', [OrderController::class, 'processOrder'])->setName('staff.order.process');
+        $group->post('/orders/{id}/process', [OrderController::class, 'processOrder'])->setName('staff.order.process');
+        $group->post('/orders/{id}/ready', [OrderController::class, 'markReadyForDispatch'])->setName('staff.order.ready');
+        $group->get('/orders/dispatchable', [OrderController::class, 'dispatchableOrders'])->setName('staff.order.dispatchable');
+        $group->get('/orders/dispatch/{id}', [OrderController::class, 'dispatchOrder'])->setName('staff.order.dispatch');
 
     });
 
