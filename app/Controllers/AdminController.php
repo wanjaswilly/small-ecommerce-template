@@ -83,14 +83,14 @@ class AdminController extends BaseController
     }
 
     # Edit Product Form
-    public function editProduct(Request $request, Response $response, $id): Response
+    public function editProduct(Request $request, Response $response, $args): Response
     {
-        return $this->render($request, $response, 'admin/edit-product.twig', $this->productsService->singleProductById($id));
+        return $this->render($request, $response, 'admin/edit-product.twig', $this->productsService->singleProductById($args['id']));
     }
 
-    public function editCategory(Request $request, Response $response, $id): Response
+    public function editCategory(Request $request, Response $response, $args): Response
     {
-        return $this->render($request, $response, 'admin/edit-category.twig', $this->adminService->editCategoryData($id) );
+        return $this->render($request, $response, 'admin/edit-category.twig', $this->adminService->editCategoryData($args['id']) );
     }
 
 
