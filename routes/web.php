@@ -2,6 +2,7 @@
 
 use App\Controllers\AdminController;
 use App\Controllers\AuthController;
+use App\Controllers\CategoryController;
 use App\Controllers\ProductController;
 use App\Controllers\SettingsController;
 use App\Controllers\UsersController;
@@ -71,11 +72,20 @@ return function (App $app) {
 
         # customers
         $group->get('/customers', [AdminController::class, 'customers'])->setName('admin.customers');
-        
+
         # settings section
         $group->get('/settings', [SettingsController::class, 'index'])->setName('admin.settings');
         $group->post('/settings', [SettingsController::class, 'update'])->setName('admin.settings.update');
         $group->post('/settings/reset', [SettingsController::class, 'reset'])->setName('admin.settings.reset');
+
+        # Category management
+        $group->get('/categories', [AdminController::class, 'categories'])->setName('admin.categories');
+        $group->get('/categories/create', [AdminController::class, 'addCategory'])->setName('admin.categories.add');
+        $group->get('/categories/{id}/edit', [AdminController::class, 'editCategory'])->setName('admin.categories.edit');
+        $group->post('/categories/store', [CategoryController::class, 'store'])->setName('admin.categories.store');
+        $group->post('/categories/{id}/update', [CategoryController::class, 'update'])->setName('admin.categories.update');
+        $group->post('/categories/{id}/delete', [CategoryController::class, 'destroy'])->setName('admin.categories.destroy');
+
 
 
 

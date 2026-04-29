@@ -104,9 +104,9 @@ class ProductsService
         ];
     }
 
-    public function categoryData(ServerRequestInterface $request): array
+    public function categoryData(ServerRequestInterface $request, string $categorySlug="" ): array
     {
-        $categorySlug = $args['categorySlug'] ?? "";
+        if($categorySlug !=""){
 
         $category = Category::where('slug', $categorySlug)->first();
 
@@ -190,6 +190,8 @@ class ProductsService
             'selected_sort' => $sort,
             'query_string' => $queryString,
         ];
+        }
+        return ['categories'=>Category::with('products')->get()];
     }
 
     public function parentCategories()
