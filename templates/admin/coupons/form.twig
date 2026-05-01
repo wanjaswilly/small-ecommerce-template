@@ -1,0 +1,65 @@
+{% extends 'admin.twig' %}
+
+{% block title %}{{ coupon ? 'Edit' : 'Create' }} Coupon - Admin{% endblock %}
+
+{% block content %}
+<div class="p-6">
+    <h1 class="text-2xl font-bold mb-6">{{ coupon ? 'Edit' : 'Create' }} Coupon</h1>
+
+    <form method="POST" action="{{ coupon ? '/admin/coupons/' ~ coupon.id : '/admin/coupons' }}" class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 max-w-2xl">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+        <div class="mb-4">
+            <label class="block mb-2">Code *</label>
+            <input type="text" name="code" value="{{ coupon.code ?? '' }}" required class="w-full px-3 py-2 border rounded">
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-2">Type *</label>
+            <select name="type" required class="w-full px-3 py-2 border rounded">
+                <option value="percentage" {{ coupon and coupon.type == 'percentage' ? 'selected' }}>Percentage</option>
+                <option value="fixed" {{ coupon and coupon.type == 'fixed' ? 'selected' }}>Fixed Amount</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-2">Value *</label>
+            <input type="number" step="0.01" name="value" value="{{ coupon.value ?? '' }}" required class="w-full px-3 py-2 border rounded">
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-2">Min Spend</label>
+            <input type="number" step="0.01" name="min_spend" value="{{ coupon.min_spend ?? '' }}" class="w-full px-3 py-2 border rounded">
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-2">Max Uses Total</label>
+            <input type="number" name="max_uses_total" value="{{ coupon.max_uses_total ?? '' }}" class="w-full px-3 py-2 border rounded">
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-2">Max Uses Per User</label>
+            <input type="number" name="max_uses_per_user" value="{{ coupon.max_uses_per_user ?? '' }}" class="w-full px-3 py-2 border rounded">
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-2">Start Date</label>
+            <input type="datetime-local" name="start_date" value="{{ coupon.start_date ? coupon.start_date|date('Y-m-d\\TH:i') : '' }}" class="w-full px-3 py-2 border rounded">
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-2">End Date</label>
+            <input type="datetime-local" name="end_date" value="{{ coupon.end_date ? coupon.end_date|date('Y-m-d\\TH:i') : '' }}" class="w-full px-3 py-2 border rounded">
+        </div>
+
+        <div class="mb-4">
+            <label class="flex items-center">
+                <input type="checkbox" name="is_active" {{ coupon and coupon.is_active ? 'checked' }} class="mr-2">
+                Active
+            </label>
+        </div>
+
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>
+    </form>
+</div>
+{% endblock %}

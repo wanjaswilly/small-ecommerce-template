@@ -12,6 +12,7 @@ use App\Controllers\ProductController;
 use App\Controllers\CategoryController;
 use App\Controllers\CheckoutController;
 use App\Controllers\SettingsController;
+use App\Controllers\CouponController;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\AdminMiddleware;
 
@@ -174,6 +175,14 @@ return function (App $app) {
         $group->post('/orders/{id}/ready', [OrderController::class, 'markReadyForDispatch'])->setName('staff.order.ready');
         $group->get('/orders/dispatchable', [OrderController::class, 'dispatchableOrders'])->setName('staff.order.dispatchable');
         $group->get('/orders/dispatch/{id}', [OrderController::class, 'dispatchOrder'])->setName('staff.order.dispatch');
+
+        # coupons
+        $group->get('/coupons', [CouponController::class, 'index'])->setName('admin.coupons');
+        $group->get('/coupons/create', [CouponController::class, 'create'])->setName('admin.coupons.create');
+        $group->post('/coupons', [CouponController::class, 'store'])->setName('admin.coupons.store');
+        $group->get('/coupons/{id}/edit', [CouponController::class, 'edit'])->setName('admin.coupons.edit');
+        $group->post('/coupons/{id}', [CouponController::class, 'update'])->setName('admin.coupons.update');
+        $group->post('/coupons/{id}/delete', [CouponController::class, 'destroy'])->setName('admin.coupons.destroy');
 
     })->add(new AdminMiddleware());
 

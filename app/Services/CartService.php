@@ -195,4 +195,25 @@ class CartService
         return $this->getCart();
     }
 
+    public function applyCoupon(string $code, ?int $userId = null): array
+    {
+        $cart = $this->getCart();
+        $couponService = new CouponService();
+
+        $result = $couponService->validate($code, $cart['total_price'], $userId);
+
+        if (!$result['valid']) {
+            return ['success' => false, 'message' => $result['error'], 'discount' => 0];
+        }
+
+        $_SESSION['cart_coupon'] = $code;
+        $_SESSION['cart_discount'] = $result['discount'];
+
+        return [
+            'success' => true,
+            'discount' => $result['discount'],
+            'total' => $cart['total_price'] - $result['discount']
+        ];
+    }
+
 }
