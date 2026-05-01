@@ -1,17 +1,17 @@
 <?php
 
-use App\Controllers\AdminController;
+use Slim\App;
 use App\Controllers\AuthController;
 use App\Controllers\CartController;
-use App\Controllers\CategoryController;
-use App\Controllers\CheckoutController;
+use App\Controllers\HomeController;
+use App\Controllers\AdminController;
 use App\Controllers\OrderController;
+use App\Controllers\UsersController;
 use App\Controllers\PaymentController;
 use App\Controllers\ProductController;
+use App\Controllers\CategoryController;
+use App\Controllers\CheckoutController;
 use App\Controllers\SettingsController;
-use App\Controllers\UsersController;
-use Slim\App;
-use App\Controllers\HomeController;
 
 return function (App $app) {
     # Static core routes
@@ -93,6 +93,7 @@ return function (App $app) {
         $group->post('/wishlist/remove/{id}', [UsersController::class, 'removeFromWishlist'])->setName('account.wishlist.remove');
 
         # address
+        $group->get('/addresses', [UsersController::class, 'addresses'])->setName('account.addresses');
         $group->post('/addresses', [UsersController::class, 'addAddress'])->setName('account.addresses.add');
 
     });
@@ -153,7 +154,6 @@ return function (App $app) {
         $group->get('/orders/dispatch/{id}', [OrderController::class, 'dispatchOrder'])->setName('staff.order.dispatch');
 
     });
-
 
 
     # Test 500 error
