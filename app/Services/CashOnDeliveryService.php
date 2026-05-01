@@ -57,4 +57,22 @@ class CashOnDeliveryService implements PaymentInterface
     {
         return !empty($this->config['enabled']);
     }
+
+    public function isAvailableForCounty(string $county): bool
+    {
+        $allowedCounties = Setting::where('key', 'cod_counties')->value('value');
+        
+        if (!$allowedCounties) {
+            // If no restriction set, allow all counties
+            return true;
+        }
+
+        $allowed = json_decode($allowedCounties, true);
+        
+        if (!is_array($allowed)) {
+            return true;
+        }
+
+        return in_array($county, $allowed);
+    }
 }
