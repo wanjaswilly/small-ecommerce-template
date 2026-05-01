@@ -1,0 +1,28 @@
+<div id="cookie-banner" class="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 z-50 hidden">
+    <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between">
+        <p class="text-sm mb-3 sm:mb-0">
+            We use cookies to improve your experience. By continuing to use our site, you accept our use of cookies.
+        </p>
+        <div class="flex space-x-2">
+            <button id="accept-cookies" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded text-sm">
+                Accept
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    var banner = document.getElementById('cookie-banner');
+    var acceptBtn = document.getElementById('accept-cookies');
+    
+    if (!localStorage.getItem('cookies-accepted')) {
+        banner.classList.remove('hidden');
+    }
+    
+    acceptBtn.addEventListener('click', function() {
+        localStorage.setItem('cookies-accepted', 'true');
+        banner.classList.add('hidden');
+    });
+})();
+</script>
