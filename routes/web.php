@@ -12,6 +12,8 @@ use App\Controllers\ProductController;
 use App\Controllers\CategoryController;
 use App\Controllers\CheckoutController;
 use App\Controllers\SettingsController;
+use App\Middleware\AuthMiddleware;
+use App\Middleware\AdminMiddleware;
 
 return function (App $app) {
     # Static core routes
@@ -52,8 +54,8 @@ return function (App $app) {
     $app->get('/products/search/json', [ProductController::class, 'productSearch']);
 
     // Checkout routes
-    $app->get('/checkout', [CheckoutController::class, 'showCheckout'])->setName('checkout.show');
-    $app->post('/checkout/process', [CheckoutController::class, 'processCheckout'])->setName('checkout.process');
+    $app->get('/checkout', [CheckoutController::class, 'showCheckout'])->setName('checkout.show')->add(new AuthMiddleware());
+    $app->post('/checkout/process', [CheckoutController::class, 'processCheckout'])->setName('checkout.process')->add(new AuthMiddleware());
     $app->get('/checkout/success', [CheckoutController::class, 'checkoutSuccess'])->setName('checkout.success');
 
     # Cart Routes
@@ -96,7 +98,7 @@ return function (App $app) {
         $group->get('/addresses', [UsersController::class, 'addresses'])->setName('account.addresses');
         $group->post('/addresses', [UsersController::class, 'addAddress'])->setName('account.addresses.add');
 
-    });
+    })->add(new AuthMiddleware());
 
     # Admin routes
     $app->group('/admin', function ($group) {
@@ -153,7 +155,7 @@ return function (App $app) {
         $group->get('/orders/dispatchable', [OrderController::class, 'dispatchableOrders'])->setName('staff.order.dispatchable');
         $group->get('/orders/dispatch/{id}', [OrderController::class, 'dispatchOrder'])->setName('staff.order.dispatch');
 
-    });
+    })->add(new AdminMiddleware());
 
 
     # Test 500 error
