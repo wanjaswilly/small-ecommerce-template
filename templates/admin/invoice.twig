@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice {{ order.order_number }} - Duka</title>
+    <style>
+        @media print {
+            body { font-family: Arial, sans-serif; }
+            .no-print { display: none; }
+        }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { margin: 0; color: #2563eb; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .info-box { flex: 1; padding: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .total-row { font-weight: bold; }
+        .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; }
+        .kra-pin { background: #fef3c7; padding: 15px; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="no-print" style="margin-bottom: 20px;">
+        <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded">Print Invoice</button>
+    </div>
+
+    <div class="header">
+        <h1>Duka Store</h1>
+        <p>Invoice #{{ order.order_number }}</p>
+    </div>
+
+    <div class="info-row">
+        <div class="info-box">
+            <h3>Bill To:</h3>
+            <p>{{ order.customer_name }}<br>
+               {{ order.customer_phone }}<br>
+               {{ order.customer_email ?: '' }}</p>
+        </div>
+        <div class="info-box" style="text-align: right;">
+            <h3>Invoice Details:</h3>
+            <p>Date: {{ order.created_at|date('Y-m-d') }}<br>
+               Payment: {{ order.payment_status|title }}<br>
+               Status: {{ order.status|title }}</p>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.product.name ?? 'Product #' ~ item.product_id }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>KSh {{ item.unit_price|number_format(2) }}</td>
+                <td>KSh {{ item.total_price|number_format(2) }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="total-row">
+                <td colspan="4" style="text-align: right;">Subtotal:</td>
+                <td>KSh {{ order.subtotal|number_format(2) }}</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align: right;">Delivery:</td>
+                <td>KSh {{ order.delivery_fee|number_format(2) }}</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="4" style="text-align: right;">Total:</td>
+                <td><strong>KSh {{ order.total_amount|number_format(2) }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="kra-pin">
+        <strong>KRA PIN: {{ kra_pin }}</strong>
+    </div>
+
+    <div class="footer">
+        <p>Thank you for shopping with Duka Store!</p>
+        <p>This is a computer-generated invoice.</p>
+    </div>
+</body>
+</html>

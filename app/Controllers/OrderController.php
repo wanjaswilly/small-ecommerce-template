@@ -110,12 +110,26 @@ class OrderController extends BaseController
         return $this->json($response, $this->orderService->updateOrderStatus($request, $args['id']));
     }
 
-    /**
-     * View order history/timeline
-     */
+/**
+      * View order history/timeline
+      */
     public function orderHistory(ServerRequestInterface $request, ResponseInterface $response, $args): ResponseInterface
     {
         return $this->render($request, $response, 'orders/history.twig', $this->orderService->orderHistory($request, $args['id']));
+    }
+
+    /**
+     * Generate invoice for order
+     */
+    public function invoice(ServerRequestInterface $request, ResponseInterface $response, $args): ResponseInterface
+    {
+        $order = Order::with('items.product')->findOrFail($args['id']);
+        $twig = Twig::fromRequest($request);
+        $invoiceService = new \App\Services\InvoiceService($twig);
+        
+        $html = $invoiceService->generateHtml($order);
+        $response->getBody()->write($html);
+        return $response;
     }
 
 }

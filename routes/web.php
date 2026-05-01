@@ -164,6 +164,7 @@ return function (App $app) {
         # orders
         $group->get('/orders', [OrderController::class, 'index'])->setName('admin.orders');
         $group->get('/orders/{id}/view', [OrderController::class, 'showOrder'])->setName('admin.orders.view');
+        $group->get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->setName('admin.orders.invoice');
         $group->get('/orders/{id}/next-step', [OrderController::class, 'nextStep'])->setName('admin.orders.next-step');
         $group->get('/orders/process', [OrderController::class, 'ordersInProcessing'])->setName('staff.orders.processing');
         $group->get('/orders/dispatched', [OrderController::class, 'dispatchedOrder'])->setName('staff.order.dispatched');
