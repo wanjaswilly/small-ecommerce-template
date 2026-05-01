@@ -1,0 +1,12 @@
+{% set whatsapp_number = setting('whatsapp_number', '+254712345678') %}
+{% if whatsapp_number %}
+<a href="https://wa.me/{{ whatsapp_number|replace({' ': '', '+': ''}) }}?text=Hello%20I%20need%20help%20with%20an%20order" 
+   target="_blank" 
+   rel="noopener noreferrer"
+   class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg z-50 transition-transform duration-300 hover:scale-110"
+   aria-label="Chat on WhatsApp">
+    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12.04 2C6.58 2 2.17 6.41 2.17 11.86c0 1.94.68 3.74 1.82 5.22L2 22l5.12-1.35c1.34.6 2.85.95 4.4.95 5.46 0 9.87-4.41 9.87-9.86S17.5 2 12.04 2zm4.4 14.45c-.18-.11-1.06-.52-1.22-.58-.16-.06-.28-.11-.4.06-.12.17-.46.58-.57.71-.11.13-.22.15-.4.06-.18-.09-.75-.28-1.43-.89-.52-.44-.87-.96-.97-1.17-.1-.21-.01-.33.09-.44.09-.11.2-.28.29-.42.1-.14.13-.25.2-.42.07-.17.03-.33-.01-.44-.05-.11-.4-1.02-.55-1.4-.15-.38-.31-.33-.43-.33h-.37c-.12 0-.31.05-.47.22-.16.17-.63.61-.63 1.49 0 .88.64 1.75 1.14 2.24.5.49 1.05.77 1.73.94.68.17 1.27.12 1.66.08.39-.04.63-.15.63-.37 0-.13-.05-.23-.11-.33z"/>
+    </svg>
+</a>
+{% endif %}
