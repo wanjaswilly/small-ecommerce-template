@@ -72,6 +72,16 @@ return function (App $app) {
     $app->get('/payment/{method}/callback', [PaymentController::class, 'paymentCallback'])->setName('payment.callback');
     $app->get('/payment/methods', [PaymentController::class, 'getPaymentMethods'])->setName('payment.methods');
 
+    // API routes
+    $app->get('/api/counties/{county}/sub-counties', function ($request, $response, $args) {
+        $county = $args['county'];
+        $dataService = new \App\Services\CountyDataService();
+        $subCounties = $dataService->getSubCounties($county);
+        $payload = json_encode($subCounties);
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
+    })->setName('api.county.subcounties');
+
     # user account routes
     $app->group('/user/account', function ($group) {
         # dashboard

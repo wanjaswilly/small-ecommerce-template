@@ -1,0 +1,57 @@
+{% macro county_select(county_name, subcounty_name) %}
+{% set counties = [
+    'Mombasa', 'Kwale', 'Kilifi', 'Tana River', 'Lamu', 'Marsabit', 'Isiolo', 'Meru',
+    'Tharaka-Nithari', 'Embu', 'Kitui', 'Machakos', 'Makueni', 'Nyandarua', 'Nyeri',
+    'Kirinyaga', 'Murang\'a', 'Kiambu', 'Turkana', 'West Pokot', 'Samburu', 'Trans-Nzoia',
+    'Uasin Gishu', 'Elgeyo-Marakwet', 'Nandi', 'Baringo', 'Laikipia', 'Nakuru', 'Narok',
+    'Kajiado', 'Kericho', 'Bomet', 'Kakamega', 'Vihiga', 'Bungoma', 'Busia', 'Siaya',
+    'Kisumu', 'Homa Bay', 'Migori', 'Kisii', 'Nyamira', 'Nairobi'
+] %}
+
+<div class="county-select" x-data="{ selectedCounty: '{{ county_name ?? '' }}', subcounties: [], loading: false }">
+    <div class="mb-4">
+        <label for="county" class="block text-sm font-medium text-gray-700 mb-1">{{ __('county') }}</label>
+        <select name="{{ county_name }}" id="county" x-model="selectedCounty" @change="fetchSubCounties()"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="">{{ __('select_county') }}</option>
+            {% for county in counties %}
+                <option value="{{ county }}" {% if county == county_name %}selected{% endif %}>{{ county }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="mb-4">
+        <label for="subcounty" class="block text-sm font-medium text-gray-700 mb-1">{{ __('sub_county') }}</label>
+        <select name="{{ subcounty_name }}" id="subcounty" :disabled="!selectedCounty || loading"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-gray-100">
+            <option value="">{{ __('select_sub_county') }}</option>
+            <template x-for="subcounty in subcounties">
+                <option :value="subcounty" :selected="subcounty === '{{ subcounty_name ?? '' }}'" x-text="subcounty"></option>
+            </template>
+        </select>
+    </div>
+</div>
+
+<script>
+function fetchSubCounties() {
+    const county = document.getElementById('county').value;
+    const subcountySelect = document.getElementById('subcounty');
+    
+    if (!county) {
+        subcountySelect.innerHTML = '<option value="">{{ __('select_sub_county') }}</option>';
+        return;
+    }
+    
+    fetch('/api/counties/' + encodeURIComponent(county) + '/sub-counties')
+        .then(response => response.json())
+        .then(data => {
+            let options = '<option value="">{{ __('select_sub_county') }}</option>';
+            data.forEach(function(subcounty) {
+                options += '<option value="' + subcounty + '">' + subcounty + '</option>';
+            });
+            subcountySelect.innerHTML = options;
+        })
+        .catch(error => console.error('Error fetching sub-counties:', error));
+}
+</script>
+{% endmacro %}

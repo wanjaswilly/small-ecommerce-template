@@ -36,4 +36,8 @@ return [
     'featured_products' => 'Featured Products',
     'new_arrivals' => 'New Arrivals',
     'special_offers' => 'Special Offers',
+    'county' => 'County',
+    'sub_county' => 'Sub County',
+    'select_county' => 'Select County',
+    'select_sub_county' => 'Select Sub County',
 ];
