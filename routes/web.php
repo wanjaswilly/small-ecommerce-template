@@ -82,6 +82,15 @@ return function (App $app) {
         return $response->withHeader('Content-Type', 'application/json');
     })->setName('api.county.subcounties');
 
+    $app->get('/api/mpesa/status/{id}', function ($request, $response, $args) {
+        $id = $args['id'];
+        $mpesaService = new \App\Services\MpesaService();
+        $status = $mpesaService->checkStatus($id);
+        $payload = json_encode(['status' => $status]);
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
+    })->setName('api.mpesa.status');
+
     # user account routes
     $app->group('/user/account', function ($group) {
         # dashboard
