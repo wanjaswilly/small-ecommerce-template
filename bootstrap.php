@@ -91,6 +91,12 @@ $app->add(new \App\Middleware\SessionMiddleware());
 $twig->getEnvironment()->addGlobal('session', $_SESSION);
 $twig->addExtension(new App\Extensions\CsrfExtension());
 
+# Translation service
+$translationService = new App\Services\TranslationService();
+$twig->getEnvironment()->addFunction(new TwigFunction('__', function (string $key, ?string $locale = null) use ($translationService) {
+    return $translationService->get($key, $locale);
+}));
+
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
