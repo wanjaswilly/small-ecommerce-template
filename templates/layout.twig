@@ -48,7 +48,7 @@
 		<!-- Favicon -->
 		<link rel="icon" href="/favicon.ico" type="image/x-icon"/> {% block styles %}{% endblock %}
 		</head>
-		<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans  pb-15 sm:pb-0">
+		<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans pb-15 sm:pb-0 transition-colors duration-300">
 			{% include 'partials/header.twig' %}
 
 			<main>
@@ -62,6 +62,39 @@
 {% include 'partials/cookie-banner.twig' %}
 
 <script>
+// Dark mode toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const html = document.documentElement;
+
+    // Check for saved theme preference or default to light mode
+    const currentTheme = localStorage.getItem('theme') || 'light';
+
+    if (currentTheme === 'dark') {
+        html.classList.add('dark');
+        themeIcon.className = 'fas fa-sun text-lg';
+    } else {
+        html.classList.remove('dark');
+        themeIcon.className = 'fas fa-moon text-lg';
+    }
+
+    // Toggle theme
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeIcon.className = 'fas fa-moon text-lg';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.className = 'fas fa-sun text-lg';
+            }
+        });
+    }
+});
+
 // Newsletter subscription
 document.addEventListener('DOMContentLoaded', function() {
     const newsletterForm = document.getElementById('newsletter-form');

@@ -1,12 +1,12 @@
 <!-- Top Announcement Bar -->
 <div class="bg-orange-500 text-white py-2 px-4 text-center text-[10px] sm:text-sm font-bold">
-	<a href="/sale/corey-black-friday">
+	<a href="/special-offers" class="hover:underline">
 		🎉 {{ __('special_offers')|title }}: {{ __('discount') }}! {{ __('shop')|title }} {{ __('now') }} →
 	</a>
 </div>
 
 <!-- Top Bar -->
-<header class="bg-white border-b">
+<header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
 	<div
 		class="container mx-auto px-4">
 		<!-- Desktop Top Bar -->
@@ -31,18 +31,24 @@
 
 			<!-- Language Switcher & Account, Help, Cart -->
 			<div class="flex items-center space-x-6">
-				<!-- Language Switcher -->
+				<!-- Language Switcher & Theme Toggle -->
 				<div class="flex items-center space-x-2 mr-4">
+					<!-- Theme Toggle -->
+					<button id="theme-toggle" class="text-gray-700 hover:text-orange-500 p-1">
+						<i id="theme-icon" class="fas fa-moon text-lg"></i>
+					</button>
+					<span class="text-gray-300">|</span>
+					<!-- Language Switcher -->
 					<form method="GET" class="flex items-center space-x-1">
 						<input type="hidden" name="lang" value="en">
-						<button type="submit" class="text-xs px-2 py-1 rounded {{ app.request.query.get('lang') == 'en' or not app.request.query.get('lang') ? 'bg-orange-500 text-white' : 'text-gray-600 hover:text-orange-500' }}">
+						<button type="submit" class="text-xs px-2 py-1 rounded {{ current_lang == 'en' ? 'bg-orange-500 text-white' : 'text-gray-600 hover:text-orange-500' }}">
 							EN
 						</button>
 					</form>
 					<span class="text-gray-300">|</span>
 					<form method="GET" class="flex items-center space-x-1">
 						<input type="hidden" name="lang" value="sw">
-						<button type="submit" class="text-xs px-2 py-1 rounded {{ app.request.query.get('lang') == 'sw' ? 'bg-orange-500 text-white' : 'text-gray-600 hover:text-orange-500' }}">
+						<button type="submit" class="text-xs px-2 py-1 rounded {{ current_lang == 'sw' ? 'bg-orange-500 text-white' : 'text-gray-600 hover:text-orange-500' }}">
 							SW
 						</button>
 					</form>
@@ -94,7 +100,7 @@
 </header>
 
 <!-- Services Bar -->
-<div class="hidden md:flex bg-gray-100 border-b">
+<div class="hidden md:flex bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 transition-colors duration-300">
 	<div class="container mx-auto px-4 py-2">
 		<div class="flex items-center justify-center space-x-8 text-sm">
 			<span class="flex items-center text-gray-700">
