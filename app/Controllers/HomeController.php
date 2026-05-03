@@ -91,4 +91,38 @@ class HomeController extends BaseController
         ]);
     }
 
+    public function subscribe(Request $request, Response $response): Response
+    {
+        $data = $request->getParsedBody();
+        $email = trim($data['email'] ?? '');
+
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = 'Please provide a valid email address';
+            return $this->json($response, ['success' => false, 'message' => 'Invalid email address']);
+        }
+
+        $subscriber = \App\Models\NewsletterSubscriber::where('email', $email)->first();
+
+        if ($subscriber) {
+            if ($subscriber->unsubscribed_at) {
+                // Re-subscribe
+                $subscriber->update([
+                    'subscribed_at' => now(),
+                    'unsubscribed_at' => null,
+                ]);
+            } else {
+                // Already subscribed
+                return $this->json($response, ['success' => false, 'message' => 'You are already subscribed to our newsletter']);
+            }
+        } else {
+            // New subscription
+            \App\Models\NewsletterSubscriber::create([
+                'email' => $email,
+                'subscribed_at' => now(),
+            ]);
+        }
+
+        return $this->json($response, ['success' => true, 'message' => 'Thank you for subscribing to our newsletter!']);
+    }
+
 }

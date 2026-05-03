@@ -70,6 +70,22 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- Newsletter Subscription -->
+			<div class="bg-gray-700 rounded-lg p-6 mb-6">
+				<h4 class="font-bold mb-2 text-center">{{ __('newsletter') }}</h4>
+				<p class="text-sm text-gray-300 text-center mb-4">{{ __('your_email') }}</p>
+				<form id="newsletter-form" class="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+					<input type="email" name="email" placeholder="{{ __('email') }}" required
+						   class="flex-1 px-3 py-2 rounded text-gray-900" id="newsletter-email">
+					<button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
+						{{ __('subscribe') }}
+					</button>
+				</form>
+				<div id="newsletter-message" class="mt-2 text-center text-sm hidden"></div>
+			</div>
+
 			<div class="text-center text-gray-400 text-xs sm:text-md">
 				<p>© Small Ecommerce Kenya
 					{{ today |date('Y')}}</p>

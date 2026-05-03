@@ -56,6 +56,9 @@ return function (App $app) {
     $app->get('/track', [HomeController::class, 'track'])->setName('track');
     $app->post('/track', [HomeController::class, 'trackOrder'])->setName('track.order');
 
+    # newsletter subscription
+    $app->post('/newsletter/subscribe', [HomeController::class, 'subscribe'])->setName('newsletter.subscribe');
+
     # products search JSON
     $app->get('/products/search/json', [ProductController::class, 'productSearch']);
 
