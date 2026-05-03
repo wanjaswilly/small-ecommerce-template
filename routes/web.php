@@ -60,6 +60,8 @@ return function (App $app) {
 
     // Checkout routes
     $app->get('/checkout', [CheckoutController::class, 'showCheckout'])->setName('checkout.show')->add(new AuthMiddleware());
+    $app->post('/checkout/step', [CheckoutController::class, 'processStep'])->setName('checkout.step')->add(new AuthMiddleware());
+    $app->post('/checkout/previous', [CheckoutController::class, 'previousStep'])->setName('checkout.previous')->add(new AuthMiddleware());
     $app->post('/checkout/process', [CheckoutController::class, 'processCheckout'])->setName('checkout.process')->add(new AuthMiddleware());
     $app->get('/checkout/success', [CheckoutController::class, 'checkoutSuccess'])->setName('checkout.success');
 

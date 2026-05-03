@@ -25,16 +25,23 @@ class CheckoutService
 
         # Redirect to cart if empty
         if (empty($cartData['items'])) {
-            throw new ValidationException("Empty Cart", ['error' => 'You canot proceed to checkout with an empty cart']);
+            throw new ValidationException("Empty Cart", ['error' => 'You cannot proceed to checkout with an empty cart']);
         }
 
         $user = User::find($_SESSION['user_id']) ?? null;
 
+        # Calculate delivery fee (placeholder - will be calculated based on location in stepper)
+        $deliveryFee = 200; // Default fee
+        $discountAmount = $_SESSION['cart_discount'] ?? 0;
+        $finalTotal = $cartData['total_price'] + $deliveryFee - $discountAmount;
 
         return [
             'cart_items' => $cartData['items'],
             'cart_total' => $cartData['total_price'],
             'cart_total_quantity' => $cartData['total_quantity'],
+            'delivery_fee' => $deliveryFee,
+            'discount_amount' => $discountAmount,
+            'final_total' => $finalTotal,
             'user' => $user,
         ];
     }
@@ -44,83 +51,36 @@ class CheckoutService
         return [];
     }
 
-    public function processCheckout(ServerRequestInterface $request): mixed
+    public function processCheckout(ServerRequestInterface $request, ?array $checkoutData = null): mixed
     {
-        $data = $request->getParsedBody();
+        $data = $checkoutData ?: $request->getParsedBody();
 
         # Validate required fields
-        $requiredFields = ['first_name', 'first_name', 'email', 'phone', 'location'];
+        $requiredFields = ['full_name', 'phone', 'county', 'subcounty', 'specific_address', 'payment_method'];
         foreach ($requiredFields as $field) {
             if (empty($data[$field])) {
                 throw new ValidationException("Incomplete Form", ['error' => "Please fill in all required fields: " . $field]);
             }
         }
 
-        # if the user has no account, create account for them with the data
-        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
-            # check if user exists with the email or phone number
-            if (!User::where('email', $data['email'])->exists() || !User::where('phone_number', $data['phone'])->exists()) {
-                # Create new user
-                $user = User::create([
-                    'first_name' => $data['first_name'],
-                    'last_name' => $data['last_name'],
-                    'email' => $data['email'],
-                    'phone_number' => $data['phone'],
-                    'password_hash' => password_hash('password1234X', PASSWORD_DEFAULT),
-                    'role' => 'customer',
-                    'is_active' => true,
-                    'email_verified_at' => null, # Will need verification
-                ]);
-
-                if ($user) {
-                    # Auto-login the user after registration
-                    $_SESSION['user_id'] = $user->id;
-                    $_SESSION['user_email'] = $user->email;
-                    $_SESSION['user_name'] = $user->first_name . ' ' . $user->last_name;
-                    $_SESSION['user_role'] = $user->role;
-                    $_SESSION['login_time'] = time();
-                    $_SESSION['account'] = "checkout-created";
-                }
-            } else {
-                $user = User::where('email', $data['email'])->first() ?? User::where('phone_number', $data['phone'])->first();
-                $_SESSION['user_id'] = $user->id;
-            }
+        # User should already be authenticated via middleware, but let's ensure they exist
+        $user = User::find($_SESSION['user_id']);
+        if (!$user) {
+            throw new ValidationException("Authentication Required", ['error' => 'Please log in to complete your order']);
         }
 
         try {
 
             DB::beginTransaction();
 
-            $deliveryFees = [
-                'CBD' => 150,
-                'Upper Hill' => 200,
-                'Parklands' => 250,
-                'Westlands' => 300,
-                'Eastleigh' => 300,
-                'Kilimani' => 350,
-                'Roysambu' => 400,
-                'Kileleshwa' => 400,
-                'Langata' => 400,
-                'Uthiru' => 500,
-                'Kasarani' => 500,
-                'Ruaka' => 500,
-                'Kahawa' => 500,
-                'Ruiru' => 600,
-                'Kikuyu' => 600,
-                'Karen' => 650,
-                'Syokimau' => 800,
-                'Rongai' => 900,
-                'Kitengela' => 1000,
-                'Utawala' => 1000,
-                'Thika' => 1300,
-                'Others' => 1500,
-                'Outside' => 500,
-                'Express' => 1500,
-                'Pickup' => 50,
-            ];
+            # Calculate delivery fee based on county
+            $deliveryFee = $this->calculateDeliveryFee($data['county']);
+
+            # Apply coupon discount if available
+            $discountAmount = $_SESSION['cart_discount'] ?? 0;
 
             # Create order first
-            $order = $this->createOrder($data, $deliveryFees[$data['location']]);
+            $order = $this->createOrder($data, $deliveryFee, $discountAmount);
 
             if (!$order) {
                 $_SESSION;
@@ -132,9 +92,7 @@ class CheckoutService
                 'amount' => $order['total_amount'],
                 'phone' => $this->formatPhoneNumber($data['phone']),
                 'order_number' => $order['order_number'],
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'customer_email' => $data['email'] ?? null
+                'order_id' => $order['id'],
             ];
 
             # Get current payment method
@@ -210,32 +168,36 @@ class CheckoutService
         return $phone;
     }
 
-    private function createOrder(array $data, float $deliveryFee)
+    private function createOrder(array $data, float $deliveryFee, float $discountAmount = 0)
     {
         $cartData = $this->cartService->getCart();
 
-        # Calculate delivery fee
+        # Apply free delivery threshold
         $deliveryFee = $cartData['total_price'] >= 20000 ? 0 : $deliveryFee;
-        $totalAmount = $cartData['total_price'] + $deliveryFee;
+        $totalAmount = $cartData['total_price'] + $deliveryFee - $discountAmount;
 
         # Create order data
         $orderData = [
             'user_id' => $_SESSION['user_id'],
-            'order_number' => 'ORD' . date('YmdHis') . rand(100, 999),
-            'customer_name' => $data['first_name'] . ' ' . $data['last_name'],
+            'order_number' => Order::generateOrderNumber(),
+            'customer_name' => $data['full_name'],
             'customer_phone' => $data['phone'],
             'customer_email' => $data['email'] ?? null,
-            'delivery_location' => $data['location'],
-            'specific_address' => $data['specific_address'] ?? null,
+            'delivery_location' => $data['county'] . ', ' . $data['subcounty'],
+            'specific_address' => $data['specific_address'],
             'delivery_notes' => $data['delivery_notes'] ?? null,
-            'payment_method' => env('DEFAULT_PAYMENT_METHOD'),
+            'payment_method' => $data['payment_method'],
             'subtotal' => $cartData['total_price'],
             'delivery_fee' => $deliveryFee,
             'total_amount' => $totalAmount,
-            # 'items' => $cartData['items'],
             'status' => 'pending',
-            'created_at' => date('Y-m-d H:i:s')
         ];
+
+        # Apply coupon if available
+        if (isset($_SESSION['cart_coupon'])) {
+            $couponService = new CouponService();
+            $couponService->applyCoupon(Order::create($orderData), $_SESSION['cart_coupon']);
+        }
 
         # Save order to database  
         $order = Order::create($orderData);
@@ -260,9 +222,20 @@ class CheckoutService
         return $order;
     }
 
-    public function checkoutSuccess(ServerRequestInterface $request): array
+    private function calculateDeliveryFee(string $county): float
     {
-        $orderId = $request->getQueryParams()['order'] ?? null;
-        return ['order_id' => $orderId];
+        // Simple delivery fee calculation based on county
+        $cbdCounties = ['Nairobi', 'Kiambu'];
+        $nearbyCounties = ['Machakos', 'Kajiado', 'Murang\'a', 'Nyeri'];
+
+        if (in_array($county, $cbdCounties)) {
+            return 200;
+        } elseif (in_array($county, $nearbyCounties)) {
+            return 300;
+        } else {
+            return 500;
+        }
     }
+
+}
 }

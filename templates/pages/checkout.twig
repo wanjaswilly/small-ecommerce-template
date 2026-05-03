@@ -1,0 +1,325 @@
+{% extends "layout.twig" %}
+
+{% block title %}Checkout - Duka{% endblock %}
+
+{% block content %}
+<section class="max-w-4xl mx-auto py-12 px-4">
+    <h1 class="text-3xl font-bold text-center mb-8">Checkout</h1>
+
+    <!-- Progress Steps -->
+    <div class="mb-8">
+        <div class="flex items-center justify-center">
+            <div class="flex items-center">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full {{ current_step >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600' }}">
+                    1
+                </div>
+                <span class="ml-2 text-sm font-medium {{ current_step >= 1 ? 'text-blue-600' : 'text-gray-600' }}">Address</span>
+            </div>
+            <div class="flex-1 h-1 mx-4 {{ current_step >= 2 ? 'bg-blue-600' : 'bg-gray-300' }}"></div>
+            <div class="flex items-center">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full {{ current_step >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600' }}">
+                    2
+                </div>
+                <span class="ml-2 text-sm font-medium {{ current_step >= 2 ? 'text-blue-600' : 'text-gray-600' }}">Payment</span>
+            </div>
+            <div class="flex-1 h-1 mx-4 {{ current_step >= 3 ? 'bg-blue-600' : 'bg-gray-300' }}"></div>
+            <div class="flex items-center">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full {{ current_step >= 3 ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600' }}">
+                    3
+                </div>
+                <span class="ml-2 text-sm font-medium {{ current_step >= 3 ? 'text-blue-600' : 'text-gray-600' }}">Confirm</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Checkout Form -->
+        <div class="lg:col-span-2">
+            <form id="checkout-form" method="POST" class="bg-white shadow rounded-lg p-6">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="step" id="current-step" value="{{ current_step }}">
+
+                <!-- Step 1: Address -->
+                <div id="step-1" class="{{ current_step == 1 ? '' : 'hidden' }}">
+                    <h2 class="text-xl font-semibold mb-6">Delivery Address</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                            <input type="text" name="full_name" value="{{ checkout_data.address.full_name ?? '' }}" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                            <input type="tel" name="phone" value="{{ checkout_data.address.phone ?? '' }}" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email (optional)</label>
+                        <input type="email" name="email" value="{{ checkout_data.address.email ?? '' }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <!-- County Selector -->
+                    <div class="mt-4">
+                        <div x-data="{ selectedCounty: '{{ checkout_data.address.county ?? '' }}', subcounties: [], loading: false }" class="county-select">
+                            <div class="mb-4">
+                                <label for="county" class="block text-sm font-medium text-gray-700 mb-2">County *</label>
+                                <select name="county" id="county" x-model="selectedCounty" @change="fetchSubCounties()" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select County</option>
+                                    {% for county in counties %}
+                                        <option value="{{ county }}" {{ checkout_data.address.county == county ? 'selected' : '' }}>{{ county }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="subcounty" class="block text-sm font-medium text-gray-700 mb-2">Sub County *</label>
+                                <select name="subcounty" id="subcounty" :disabled="!selectedCounty || loading" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100">
+                                    <option value="">Select Sub County</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Specific Address *</label>
+                        <textarea name="specific_address" rows="3" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{ checkout_data.address.specific_address ?? '' }}</textarea>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Delivery Notes (optional)</label>
+                        <textarea name="delivery_notes" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{ checkout_data.address.delivery_notes ?? '' }}</textarea>
+                    </div>
+                </div>
+
+                <!-- Step 2: Payment -->
+                <div id="step-2" class="{{ current_step == 2 ? '' : 'hidden' }}">
+                    <h2 class="text-xl font-semibold mb-6">Payment Method</h2>
+
+                    <div class="space-y-4">
+                        <!-- M-Pesa -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <input type="radio" id="mpesa" name="payment_method" value="mpesa" {{ checkout_data.payment.payment_method == 'mpesa' ? 'checked' : '' }} required class="mr-3">
+                                <label for="mpesa" class="flex-1 cursor-pointer">
+                                    <div class="font-medium">M-Pesa</div>
+                                    <div class="text-sm text-gray-600">Pay with your M-Pesa mobile money</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Card Payment (Stub) -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <input type="radio" id="card" name="payment_method" value="card" {{ checkout_data.payment.payment_method == 'card' ? 'checked' : '' }} required class="mr-3">
+                                <label for="card" class="flex-1 cursor-pointer">
+                                    <div class="font-medium">Credit/Debit Card</div>
+                                    <div class="text-sm text-gray-600">Coming soon - secure card payments</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Cash on Delivery -->
+                        <div class="border border-gray-200 rounded-lg p-4" id="cod-option">
+                            <div class="flex items-center">
+                                <input type="radio" id="cod" name="payment_method" value="cash_on_delivery" {{ checkout_data.payment.payment_method == 'cash_on_delivery' ? 'checked' : '' }} required class="mr-3">
+                                <label for="cod" class="flex-1 cursor-pointer">
+                                    <div class="font-medium">Cash on Delivery</div>
+                                    <div class="text-sm text-gray-600">Pay when you receive your order</div>
+                                </label>
+                            </div>
+                            <div class="mt-2 text-xs text-orange-600" id="cod-warning" style="display: none;">
+                                Cash on Delivery is not available for your selected county.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Confirm -->
+                <div id="step-3" class="{{ current_step == 3 ? '' : 'hidden' }}">
+                    <h2 class="text-xl font-semibold mb-6">Confirm Order</h2>
+
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-medium mb-2">Delivery Address</h3>
+                            <p>{{ checkout_data.address.full_name }}</p>
+                            <p>{{ checkout_data.address.phone }}</p>
+                            <p>{{ checkout_data.address.county }}, {{ checkout_data.address.subcounty }}</p>
+                            <p>{{ checkout_data.address.specific_address }}</p>
+                            {% if checkout_data.address.delivery_notes %}
+                                <p class="text-sm text-gray-600 mt-2">Notes: {{ checkout_data.address.delivery_notes }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-medium mb-2">Payment Method</h3>
+                            <p>
+                                {% if checkout_data.payment.payment_method == 'mpesa' %}
+                                    M-Pesa
+                                {% elseif checkout_data.payment.payment_method == 'card' %}
+                                    Credit/Debit Card
+                                {% elseif checkout_data.payment.payment_method == 'cash_on_delivery' %}
+                                    Cash on Delivery
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between mt-8">
+                    <button type="button" id="prev-btn" onclick="previousStep()" class="{{ current_step > 1 ? '' : 'hidden' }} bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400">
+                        Previous
+                    </button>
+
+                    <div>
+                        {% if current_step < 3 %}
+                            <button type="button" id="next-btn" onclick="nextStep()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                                Next
+                            </button>
+                        {% else %}
+                            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+                                Place Order
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="lg:col-span-1">
+            <div class="bg-white shadow rounded-lg p-6 sticky top-4">
+                <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+
+                {% if cart_items %}
+                    <div class="space-y-3 mb-4">
+                        {% for item in cart_items %}
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1">
+                                    <p class="font-medium text-sm">{{ item.product.name }}</p>
+                                    <p class="text-sm text-gray-600">Qty: {{ item.quantity }}</p>
+                                </div>
+                                <p class="font-medium">KSh {{ (item.product.price * item.quantity)|number_format }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span>Subtotal:</span>
+                            <span>KSh {{ cart_total|number_format }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Delivery:</span>
+                            <span>KSh {{ delivery_fee|number_format }}</span>
+                        </div>
+                        {% if discount_amount %}
+                            <div class="flex justify-between text-green-600">
+                                <span>Discount:</span>
+                                <span>-KSh {{ discount_amount|number_format }}</span>
+                            </div>
+                        {% endif %}
+                        <hr>
+                        <div class="flex justify-between font-bold text-lg">
+                            <span>Total:</span>
+                            <span>KSh {{ final_total|number_format }}</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-gray-600">Your cart is empty</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function nextStep() {
+    const form = document.getElementById('checkout-form');
+    const currentStep = parseInt(document.getElementById('current-step').value);
+
+    if (currentStep === 1) {
+        // Validate address step
+        const required = ['full_name', 'phone', 'county', 'subcounty', 'specific_address'];
+        for (let field of required) {
+            const input = form.querySelector(`[name="${field}"]`);
+            if (!input.value.trim()) {
+                alert(`Please fill in ${field.replace('_', ' ')}`);
+                return;
+            }
+        }
+    } else if (currentStep === 2) {
+        // Validate payment method
+        const paymentMethod = form.querySelector('input[name="payment_method"]:checked');
+        if (!paymentMethod) {
+            alert('Please select a payment method');
+            return;
+        }
+    }
+
+    document.getElementById('current-step').value = currentStep + 1;
+    form.action = '/checkout/step';
+    form.submit();
+}
+
+function previousStep() {
+    const form = document.getElementById('checkout-form');
+    const currentStep = parseInt(document.getElementById('current-step').value);
+
+    document.getElementById('current-step').value = currentStep - 1;
+    form.action = '/checkout/previous';
+    form.submit();
+}
+
+function fetchSubCounties() {
+    const county = document.getElementById('county').value;
+    const subcountySelect = document.getElementById('subcounty');
+
+    if (!county) {
+        subcountySelect.innerHTML = '<option value="">Select Sub County</option>';
+        return;
+    }
+
+    fetch('/api/counties/' + encodeURIComponent(county) + '/sub-counties')
+        .then(response => response.json())
+        .then(data => {
+            let options = '<option value="">Select Sub County</option>';
+            data.forEach(function(subcounty) {
+                const selected = subcounty === '{{ checkout_data.address.subcounty ?? '' }}' ? 'selected' : '';
+                options += `<option value="${subcounty}" ${selected}>${subcounty}</option>`;
+            });
+            subcountySelect.innerHTML = options;
+
+            // Check COD availability
+            checkCodAvailability(county);
+        })
+        .catch(error => console.error('Error fetching sub-counties:', error));
+}
+
+function checkCodAvailability(county) {
+    // This would be checked on the server side, but we can show a warning
+    const codWarning = document.getElementById('cod-warning');
+    const codOption = document.getElementById('cod-option');
+
+    // For demo purposes, COD is not available for Nairobi
+    if (county === 'Nairobi') {
+        codWarning.style.display = 'block';
+        codOption.classList.add('opacity-50');
+    } else {
+        codWarning.style.display = 'none';
+        codOption.classList.remove('opacity-50');
+    }
+}
+
+// Load subcounties if county is pre-selected
+document.addEventListener('DOMContentLoaded', function() {
+    const countySelect = document.getElementById('county');
+    if (countySelect.value) {
+        fetchSubCounties();
+    }
+});
+</script>
+{% endblock %}
