@@ -772,4 +772,17 @@ class OrderService
         # sendSMS($order->customer_phone, $message);
     }
 
+    /**
+     * Lookup order by order number and email for public tracking
+     */
+    public function lookupOrder(string $orderNumber, string $email): ?array
+    {
+        $order = Order::with(['items.product', 'user'])
+            ->where('order_number', $orderNumber)
+            ->where('customer_email', $email)
+            ->first();
+
+        return $order ? $order->toArray() : null;
+    }
+
 }

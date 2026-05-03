@@ -1,0 +1,168 @@
+{% extends "layout.twig" %}
+
+{% block title %}Track Your Order - Duka{% endblock %}
+
+{% block content %}
+<section class="max-w-2xl mx-auto py-12 px-4">
+    <h1 class="text-3xl font-bold text-center mb-8">Track Your Order</h1>
+
+    <div class="bg-white shadow rounded-lg p-6">
+        {% if session.success %}
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                {{ session.success }}
+            </div>
+        {% endif %}
+
+        {% if session.error %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {{ session.error }}
+            </div>
+        {% endif %}
+
+        <!-- Tracking Form -->
+        <form method="POST" action="/track" class="space-y-4">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div>
+                <label for="order_number" class="block text-sm font-medium text-gray-700 mb-2">Order Number *</label>
+                <input type="text" id="order_number" name="order_number" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="e.g., ORD20260101123456">
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                <input type="email" id="email" name="email" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="your.email@example.com">
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                Track Order
+            </button>
+        </form>
+
+        <!-- Order Details -->
+        {% if order %}
+            <div class="mt-8 border-t pt-6">
+                <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                    <h2 class="text-xl font-semibold mb-4">Order Details</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600">Order Number:</p>
+                            <p class="font-semibold">{{ order.order_number }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Order Date:</p>
+                            <p class="font-semibold">{{ order.created_at|date('M d, Y H:i') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Status:</p>
+                            <span class="px-2 py-1 text-xs rounded font-semibold
+                                {% if order.status == 'delivered' %}bg-green-100 text-green-800
+                                {% elseif order.status == 'shipped' or order.status == 'processing' %}bg-blue-100 text-blue-800
+                                {% elseif order.status == 'cancelled' %}bg-red-100 text-red-800
+                                {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                {{ order.status|title }}
+                            </span>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Total Amount:</p>
+                            <p class="font-semibold">KSh {{ order.total_amount|number_format }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Timeline -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-4">Order Timeline</h3>
+                    <div class="space-y-4">
+                        {% set timeline = [
+                            {'status': 'pending', 'title': 'Order Placed', 'description': 'Your order has been received', 'icon': 'fas fa-shopping-cart', 'color': 'gray'},
+                            {'status': 'confirmed', 'title': 'Order Confirmed', 'description': 'Your order has been confirmed', 'icon': 'fas fa-check-circle', 'color': 'blue'},
+                            {'status': 'processing', 'title': 'Processing', 'description': 'Your order is being prepared', 'icon': 'fas fa-cog', 'color': 'yellow'},
+                            {'status': 'shipped', 'title': 'Shipped', 'description': 'Your order has been shipped', 'icon': 'fas fa-truck', 'color': 'purple'},
+                            {'status': 'delivered', 'title': 'Delivered', 'description': 'Your order has been delivered', 'icon': 'fas fa-box-open', 'color': 'green'}
+                        ] %}
+
+                        {% for step in timeline %}
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center
+                                        {% if order.status == step.status or (loop.index <= status_index) %}
+                                            bg-{{ step.color }}-500 text-white
+                                        {% else %}
+                                            bg-gray-300 text-gray-600
+                                        {% endif %}">
+                                        <i class="{{ step.icon }}"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-sm font-medium
+                                        {% if order.status == step.status or (loop.index <= status_index) %}
+                                            text-{{ step.color }}-600
+                                        {% else %}
+                                            text-gray-600
+                                        {% endif %}">
+                                        {{ step.title }}
+                                    </h4>
+                                    <p class="text-sm text-gray-500">{{ step.description }}</p>
+                                    {% if order.status == step.status %}
+                                        <p class="text-xs text-gray-400 mt-1">{{ order.updated_at|date('M d, Y H:i') }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if not loop.last %}
+                                <div class="ml-5 w-px h-8 bg-gray-300"></div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Order Items</h3>
+                    <div class="space-y-3">
+                        {% for item in order.items %}
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1">
+                                    <p class="font-medium">{{ item.product.name ?? 'Product #' ~ item.product_id }}</p>
+                                    <p class="text-sm text-gray-600">Quantity: {{ item.quantity }}</p>
+                                </div>
+                                <p class="font-semibold">KSh {{ item.total_price|number_format }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <hr class="my-3">
+                    <div class="flex justify-between font-semibold">
+                        <span>Total:</span>
+                        <span>KSh {{ order.total_amount|number_format }}</span>
+                    </div>
+                </div>
+
+                <!-- Delivery Information -->
+                {% if order.delivery_location %}
+                    <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-4">Delivery Information</h3>
+                        <div class="space-y-2">
+                            <p><span class="font-medium">Location:</span> {{ order.delivery_location }}</p>
+                            {% if order.specific_address %}
+                                <p><span class="font-medium">Address:</span> {{ order.specific_address }}</p>
+                            {% endif %}
+                            {% if order.delivery_notes %}
+                                <p><span class="font-medium">Notes:</span> {{ order.delivery_notes }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Contact Support -->
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600 mb-2">Need help with your order?</p>
+                    <a href="/contact" class="text-blue-600 hover:text-blue-800 underline">Contact Support</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

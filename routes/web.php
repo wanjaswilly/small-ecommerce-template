@@ -52,6 +52,10 @@ return function (App $app) {
     $app->get('/search', [HomeController::class, 'search'])->setName('search');
     $app->get('/category/{categorySlug}', [ProductController::class, 'category']);
 
+    # order tracking
+    $app->get('/track', [HomeController::class, 'track'])->setName('track');
+    $app->post('/track', [HomeController::class, 'trackOrder'])->setName('track.order');
+
     # products search JSON
     $app->get('/products/search/json', [ProductController::class, 'productSearch']);
 
