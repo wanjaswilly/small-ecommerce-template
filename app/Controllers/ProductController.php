@@ -78,4 +78,23 @@ class ProductController extends BaseController
         return $this->json($response, $this->productService->productSearch($request), 200);
     }
 
+    public function review(Request $request, Response $response, $args): Response
+    {
+        $data = $request->getParsedBody();
+        $reviewService = new \App\Services\ReviewService();
+        
+        $review = $reviewService->createReview(
+            (int) $args['id'],
+            $_SESSION['user_id'] ?? null,
+            [
+                'rating' => $data['rating'],
+                'title' => $data['title'] ?? null,
+                'content' => $data['content']
+            ]
+        );
+
+        $_SESSION['success'] = 'Review submitted and awaiting approval';
+        return $this->redirect($response, '/products/' . ($args['slug'] ?? $args['id']));
+    }
+
 }

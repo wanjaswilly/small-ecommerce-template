@@ -222,9 +222,14 @@ class ProductsService
             ->inRandomOrder()
             ->limit(8)
             ->get();
+        # Get approved reviews for this product
+        $reviewService = new \App\Services\ReviewService();
+        $reviews = $reviewService->getApprovedReviews($product->id);
+
         return [
             'product' => $product,
             'related_products' => $relatedProducts,
+            'reviews' => $reviews,
         ];
     }
 

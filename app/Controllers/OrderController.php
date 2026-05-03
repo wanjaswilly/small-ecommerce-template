@@ -118,9 +118,9 @@ class OrderController extends BaseController
         return $this->render($request, $response, 'orders/history.twig', $this->orderService->orderHistory($request, $args['id']));
     }
 
-    /**
-     * Generate invoice for order
-     */
+/**
+      * Generate invoice for order
+      */
     public function invoice(ServerRequestInterface $request, ResponseInterface $response, $args): ResponseInterface
     {
         $order = Order::with('items.product')->findOrFail($args['id']);
@@ -130,6 +130,38 @@ class OrderController extends BaseController
         $html = $invoiceService->generateHtml($order);
         $response->getBody()->write($html);
         return $response;
+    }
+
+    /**
+     * Admin - List all reviews
+     */
+    public function adminReviews(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $reviewService = new \App\Services\ReviewService();
+        $reviews = $reviewService->getAllForAdmin();
+        return $this->render($request, $response, 'admin/reviews/index.twig', ['reviews' => $reviews]);
+    }
+
+    /**
+     * Admin - Approve review
+     */
+    public function approveReview(ServerRequestInterface $request, ResponseInterface $response, $args): ResponseInterface
+    {
+        $reviewService = new \App\Services\ReviewService();
+        $reviewService->approveReview($args['id']);
+        $_SESSION['success'] = 'Review approved';
+        return $this->redirect($response, '/admin/reviews');
+    }
+
+    /**
+     * Admin - Delete review
+     */
+    public function deleteReview(ServerRequestInterface $request, ResponseInterface $response, $args): ResponseInterface
+    {
+        $reviewService = new \App\Services\ReviewService();
+        $reviewService->deleteReview($args['id']);
+        $_SESSION['success'] = 'Review deleted';
+        return $this->redirect($response, '/admin/reviews');
     }
 
 }

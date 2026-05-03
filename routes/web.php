@@ -54,6 +54,9 @@ return function (App $app) {
     # products search JSON
     $app->get('/products/search/json', [ProductController::class, 'productSearch']);
 
+    # product reviews
+    $app->post('/products/{id}/review', [ProductController::class, 'review'])->setName('product.review');
+
     // Checkout routes
     $app->get('/checkout', [CheckoutController::class, 'showCheckout'])->setName('checkout.show')->add(new AuthMiddleware());
     $app->post('/checkout/process', [CheckoutController::class, 'processCheckout'])->setName('checkout.process')->add(new AuthMiddleware());
@@ -175,6 +178,11 @@ return function (App $app) {
         $group->post('/orders/{id}/ready', [OrderController::class, 'markReadyForDispatch'])->setName('staff.order.ready');
         $group->get('/orders/dispatchable', [OrderController::class, 'dispatchableOrders'])->setName('staff.order.dispatchable');
         $group->get('/orders/dispatch/{id}', [OrderController::class, 'dispatchOrder'])->setName('staff.order.dispatch');
+
+        # reviews
+        $group->get('/reviews', [OrderController::class, 'adminReviews'])->setName('admin.reviews');
+        $group->post('/reviews/{id}/approve', [OrderController::class, 'approveReview'])->setName('admin.reviews.approve');
+        $group->post('/reviews/{id}/delete', [OrderController::class, 'deleteReview'])->setName('admin.reviews.delete');
 
         # coupons
         $group->get('/coupons', [CouponController::class, 'index'])->setName('admin.coupons');

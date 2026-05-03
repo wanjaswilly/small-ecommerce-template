@@ -323,5 +323,104 @@ if (current > 1) {
 qty.value = current - 1;
 }
 }
-	</script>
+
+<!-- Reviews Section -->
+<section class="max-w-6xl mx-auto py-12 bg-white border-t">
+    <div class="mx-auto px-4">
+        <h2 class="text-2xl font-bold mb-6">Customer Reviews</h2>
+
+        {% if session.success %}
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                {{ session.success }}
+            </div>
+        {% endif %}
+
+        <!-- Approved Reviews -->
+        {% if reviews %}
+            <div class="space-y-4 mb-8">
+                {% for review in reviews %}
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center">
+                            <div class="flex text-yellow-400 text-sm mr-2">
+                                {% for i in 1..5 %}
+                                    {% if i <= review.rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="text-sm text-gray-600">{{ review.rating }}/5</span>
+                        </div>
+                        <span class="text-sm text-gray-500">{{ review.created_at|date('M d, Y') }}</span>
+                    </div>
+                    {% if review.title %}
+                        <h4 class="font-semibold mb-1">{{ review.title }}</h4>
+                    {% endif %}
+                    <p class="text-gray-700">{{ review.content }}</p>
+                    <p class="text-sm text-gray-600 mt-2">By {{ review.user.first_name }} {{ review.user.last_name }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-600 mb-8">No reviews yet. Be the first to review this product!</p>
+        {% endif %}
+
+        <!-- Review Form -->
+        {% if session.user_id %}
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold mb-4">Write a Review</h3>
+                <form method="POST" action="/products/{{ product.id }}/review">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Rating *</label>
+                        <div class="flex space-x-1">
+                            {% for i in 1..5 %}
+                                <input type="radio" id="rating-{{ i }}" name="rating" value="{{ i }}" required class="sr-only peer">
+                                <label for="rating-{{ i }}" class="cursor-pointer">
+                                    <i class="far fa-star text-gray-400 peer-checked:text-yellow-400"></i>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Title (optional)</label>
+                        <input type="text" id="title" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="content" class="block text-sm font-medium text-gray-700 mb-2">Your Review *</label>
+                        <textarea id="content" name="content" rows="4" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
+                    </div>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Submit Review</button>
+                </form>
+            </div>
+        {% else %}
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <p class="text-blue-800">Please <a href="/login" class="underline">log in</a> to write a review.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+// Star rating functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('input[name="rating"]');
+    stars.forEach((star, index) => {
+        star.addEventListener('change', function() {
+            const labels = document.querySelectorAll('label[for^="rating-"]');
+            labels.forEach((label, i) => {
+                const icon = label.querySelector('i');
+                if (i <= index) {
+                    icon.className = 'fas fa-star text-yellow-400';
+                } else {
+                    icon.className = 'far fa-star text-gray-400';
+                }
+            });
+        });
+    });
+});
+</script>
+
 {% endblock %}
