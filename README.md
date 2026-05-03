@@ -1,158 +1,263 @@
-# Small Ecommerce Template
+# Duka - Kenyan E-commerce Platform
 
+A modern, feature-rich e-commerce platform built with PHP Slim 4, Twig templates, and Tailwind CSS. Designed specifically for the Kenyan market with local payment integrations, county-based delivery, and Swahili language support.
 
-A lightweight, reusable **Slim 4 + Twig boilerplate** for small ecommerce company or businesses.
+![Duka Logo](https://img.shields.io/badge/Duka-Kenyan%20E--commerce-blue?style=for-the-badge)
+![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=flat-square&logo=php)
+![Slim](https://img.shields.io/badge/Slim-4-green?style=flat-square)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-38B2AC?style=flat-square&logo=tailwind-css)
 
-Ideal for fast deployment of small ecommerce sites like:
+## 🌟 Features
 
-* single product sites
-* single category sites
-* single owner business
+### Core E-commerce Features
+- ✅ **Product Management** - Categories, variants, inventory tracking
+- ✅ **Shopping Cart** - Session-based cart with coupon support
+- ✅ **User Authentication** - Registration, login, profile management
+- ✅ **Order Management** - Full order lifecycle with status tracking
+- ✅ **Payment Processing** - M-Pesa integration with COD fallback
+- ✅ **Admin Dashboard** - Complete admin panel for store management
+- ✅ **Product Reviews** - Customer reviews with admin moderation
+- ✅ **Sales Reports** - Analytics dashboard with charts
+- ✅ **Newsletter Subscription** - Email marketing integration
+- ✅ **Order Tracking** - Public order lookup by number and email
 
----
+### Kenyan-Specific Features
+- 🏛️ **County Integration** - All 47 Kenyan counties with sub-counties
+- 💰 **M-Pesa Payment** - Full STK Push integration with sandbox support
+- 🧾 **KRA Invoice Generation** - Tax-ready invoice generation
+- 📍 **Local Delivery** - County-based delivery fee calculation
+- 🇰🇪 **Swahili Translation** - Complete Swahili language support
+- 📱 **WhatsApp Integration** - Floating WhatsApp contact button
+- 🍪 **GDPR Compliance** - Cookie consent banner
+- 🎨 **Cultural Products** - Kenyan artisan and cultural products
 
-## Features
+### Technical Features
+- 🎨 **Dark Mode** - Complete dark/light theme toggle
+- 📱 **Responsive Design** - Mobile-first responsive layout
+- 🔒 **Security** - CSRF protection, secure sessions
+- 🌐 **Multi-language** - English/Swahili with easy expansion
+- 📊 **Analytics** - Built-in site statistics tracking
+- 🚀 **Performance** - Optimized for speed and scalability
 
-* Slim 4 routing
-* Twig templating
-* Tailwind support with Vite
-* Clean layout with partials
-* Custom 404 & 500 error pages
-* session/authentication enabled
-* SQLite-ready (with outofthebox config to migrate to mysql or postgre)
-* Fast and easy to clone for new projects
-* A **`slim` CLI command** for scaffolding pages, models, migrations, factories, and seeding
-
----
-
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-
-* PHP 8.0+
-* Composer
-* Node.js 16+
-* SQLite (optional, for blog/DB features)
+- PHP 8.1 or higher
+- Composer
+- Node.js & npm (for frontend assets)
+- SQLite (default) or MySQL/PostgreSQL
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/duka-ecommerce.git
+   cd duka-ecommerce
+   ```
 
-```bash
-git clone https://github.com/wanjaswilly/small-ecomerce-template.git ./company-site
-cd company-site
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
+
+3. **Install Node dependencies**
+   ```bash
+   npm install
+   ```
+
+4. **Environment Setup**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+5. **Database Setup & Demo Data**
+   ```bash
+   php slim demo:import
+   ```
+   This command will:
+   - Run all migrations
+   - Create demo categories, products, users, orders, reviews, and coupons
+   - Seed with realistic Kenyan data
+
+6. **Build Frontend Assets**
+   ```bash
+   npm run build
+   # or for development
+   npm run dev
+   ```
+
+7. **Start the Development Server**
+   ```bash
+   php slim serve
+   ```
+   Visit `http://localhost:8000`
+
+## 📋 Demo Data Included
+
+The demo import creates:
+- **5 Product Categories** - Electronics, Fashion, Home, Books, Sports
+- **25 Kenyan Products** - Authentic products with local pricing
+- **5 Users** - Including 1 admin user (admin@example.com / password123)
+- **10 Sample Orders** - Various statuses and payment methods
+- **20 Product Reviews** - Mixed ratings with approval status
+- **3 Coupon Codes** - Percentage and fixed discounts
+
+### Default Admin Account
+- Email: `admin@example.com`
+- Password: `password123`
+- Access admin panel at: `/admin`
+
+## 🛠️ Configuration
+
+### Environment Variables (.env)
+
+```env
+# Application
+APP_NAME="Duka Store"
+APP_URL="http://localhost:8000"
+APP_ENVIRONMENT="development"
+
+# Database
+DB_CONNECTION=sqlite
+DB_DATABASE=database/database.sqlite
+
+# M-Pesa Integration
+MPESA_CONSUMER_KEY=your_consumer_key
+MPESA_CONSUMER_SECRET=your_consumer_secret
+MPESA_SHORTCODE=your_shortcode
+MPESA_PASSKEY=your_passkey
+MPESA_ENVIRONMENT=sandbox
+
+# Settings
+WHATSAPP_NUMBER=+254712345678
+STORE_EMAIL=store@duka.co.ke
 ```
 
-2. Install dependencies:
+### Payment Integration
 
-```bash
-composer install
-npm install && npm run build
+#### M-Pesa Setup
+1. Register for M-Pesa Daraja API
+2. Get consumer key, secret, shortcode, and passkey
+3. Update `.env` file with credentials
+4. Test with sandbox environment first
+
+#### Cash on Delivery
+COD restrictions can be configured per county in the admin settings.
+
+### Branding Customization
+
+#### Colors
+Update `tailwind.config.js` to change the primary color scheme:
+```js
+primary: {
+  500: '#your-color', // Main brand color
+  // ... other shades
+}
 ```
 
-3. Configure environment:
+#### Logo & Store Name
+- Update `templates/partials/header.twig` logo section
+- Change `APP_NAME` in `.env` file
+
+#### Language Support
+Add new languages in `app/Lang/` directory and update the language switcher.
+
+## 📖 Usage Guide
+
+### For Customers
+1. **Browse Products** - Explore categories and search products
+2. **Add to Cart** - Use the shopping cart functionality
+3. **Checkout** - Multi-step process with address and payment selection
+4. **Track Orders** - Use order number and email for tracking
+5. **Write Reviews** - Leave reviews for purchased products
+
+### For Administrators
+1. **Dashboard** - Overview of sales, orders, and analytics
+2. **Product Management** - Add, edit, delete products and categories
+3. **Order Management** - Process orders, update status, generate invoices
+4. **Coupon Management** - Create and manage discount codes
+5. **Review Moderation** - Approve or reject customer reviews
+6. **Reports** - View sales analytics and performance metrics
+7. **Settings** - Configure store settings, payments, and delivery
+
+### CLI Commands
 
 ```bash
-cp .env.example .env
-# Edit .env with your settings
-```
-
-4. Configure CSS & JS:
-   Check the generated files in `public/build` and update `templates/layout.twig` accordingly.
-
-### Development
-
-```bash
+# Development server
 php slim serve
+
+# Database operations
+php slim migrate          # Run migrations
+php slim demo:import      # Full demo data import
+
+# Content management
+php slim make:model ModelName -m    # Create model with migration
+php slim make:controller ControllerName
+php slim make:factory FactoryName   # Create data factory
+php slim seed ModelName count       # Seed specific model
 ```
 
-Visit: [http://localhost:8000](http://localhost:8000)
+## 🔧 API Endpoints
+
+### Public APIs
+- `GET /api/counties/{county}/sub-counties` - Get sub-counties for a county
+- `GET /api/mpesa/status/{id}` - Check M-Pesa payment status
+
+### Admin APIs
+- `POST /newsletter/subscribe` - Newsletter subscription
+- Various CRUD endpoints for products, orders, coupons
+
+## 🌍 Kenyan Localization
+
+### Counties & Regions
+- Complete coverage of all 47 Kenyan counties
+- Sub-county data for accurate delivery
+- County-based delivery fee calculation
+
+### Cultural Products
+- Traditional Kenyan crafts and artifacts
+- Maasai beaded jewelry
+- Acacia wood carvings
+- Kikoy and other traditional fabrics
+
+### Payment Methods
+- M-Pesa (most popular)
+- Cash on Delivery (COD)
+- Card payments (placeholder for future)
+
+### Language Support
+- English (default)
+- Swahili (complete translation)
+- Easy to add more languages
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built with [Slim Framework](https://www.slimframework.com/)
+- Styled with [Tailwind CSS](https://tailwindcss.com/)
+- Kenyan county data sourced from official government records
+- Icons by [Font Awesome](https://fontawesome.com/)
+
+## 📞 Support
+
+- **Documentation**: [Wiki](https://github.com/yourusername/duka-ecommerce/wiki)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/duka-ecommerce/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/duka-ecommerce/discussions)
 
 ---
 
-## Project Structure
+**Made with ❤️ for Kenya** 🇰🇪
 
-```
-company-site/
-├── app/                  # Application core
-│   ├── Controllers       # Request handlers
-│   ├── Exceptions        # Request exceptions to be raised
-│   ├── Helpers           # Utilities
-│   ├── Middlewares       # HTTP middleware
-│   ├── Models            # Eloquent models
-│   └── Services          # Services classes
-├── config/               # Configuration files
-│   ├── app.php           # Main config
-│   ├── database.php      # Database config
-│   └── projects.php      # Example data config
-├── database/             # DB files
-│   ├── migrations/       # Migration files
-│   ├── factories/        # Model factories
-│   ├── seeders.php       # Seeder registry
-│   └── database.sqlite   # SQLite DB (auto-created)
-├── public/               # Web root
-│   ├── build/            # Compiled assets
-│   └── images/           # Site images
-├── resources/            # Frontend assets
-│   ├── css/              # Custom styles
-│   └── js/               # JavaScript
-├── routes/               # Route definitions
-│   └── web.php           # Main routes
-├── templates/            # Twig templates
-│   ├── layout.twig       # Base template
-│   ├── admin/            # admin view components
-│   ├── partials/         # Reusable components
-│   ├── pages/            # user pages templates
-│   └── errors/           # Error pages
-├── .env.example          # Environment template
-├── bootstrap.php         # bootstrapp the application
-├── composer.json         # PHP dependencies
-├── package.json          # JS dependencies
-└── slim                  # Custom CLI tool
-```
-
----
-
-## Slim CLI
-
-The **`slim` CLI tool** makes it easy to scaffold pages, partials, models, migrations, factories, and seeders.
-
-### Available Commands
-
-| Command                                      | Description                                      |
-| -------------------------------------------- | ------------------------------------------------ |
-| `php slim make:page about`                   | Create a new route + Twig page                   |
-| `php slim remove:page about`                 | Remove page + route                              |
-| `php slim make:partial footer`               | Create a new partial in `templates/partials/`    |
-| `php slim make:controller User`              | Create a new controller (`UserController.php`)   |
-| `php slim make:model Post`                   | Create a new model (`app/Models/Post.php`)       |
-| `php slim make:model Post -m`                | Create a model **and** a matching migration      |
-| `php slim make:migration create_posts_table` | Create a blank migration file                    |
-| `php slim migrate`                           | Run all pending migrations                       |
-| `php slim make:factory Post`                 | Create a factory for the `Post` model            |
-| `php slim seed Post 10`                      | Seed 10 fake `Post` records (via factory)        |
-| `php slim serve`                             | Start local dev server (`http://localhost:8000`) |
-
----
-
-## Database Support
-
-* **Models** use [Eloquent ORM](https://laravel.com/docs/eloquent).
-* **Migrations** are plain PHP classes with `up()` and `down()` methods.
-* **Factories** generate fake model data using [Faker](https://fakerphp.github.io/).
-* **Seeders** let you quickly populate tables with demo/test data.
-
----
-
-## Error Pages
-
-* `templates/errors/404.twig` -> Not Found errors
-* `templates/errors/500.twig` -> General server errors
-
-These are rendered automatically via middleware defined in `bootstrap.php`.
-
----
-
-## License
-
-All Rights Reserved © 2026 Wilson Wanja
+Transforming e-commerce in Kenya, one transaction at a time.
