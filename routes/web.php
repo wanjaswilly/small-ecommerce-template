@@ -13,6 +13,7 @@ use App\Controllers\CategoryController;
 use App\Controllers\CheckoutController;
 use App\Controllers\SettingsController;
 use App\Controllers\CouponController;
+use App\Controllers\ReportController;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\AdminMiddleware;
 
@@ -191,6 +192,9 @@ return function (App $app) {
         $group->get('/coupons/{id}/edit', [CouponController::class, 'edit'])->setName('admin.coupons.edit');
         $group->post('/coupons/{id}', [CouponController::class, 'update'])->setName('admin.coupons.update');
         $group->post('/coupons/{id}/delete', [CouponController::class, 'destroy'])->setName('admin.coupons.destroy');
+
+        # reports
+        $group->get('/reports', [ReportController::class, 'index'])->setName('admin.reports');
 
     })->add(new AdminMiddleware());
 
