@@ -19,7 +19,7 @@ use App\Middleware\AdminMiddleware;
 
 return function (App $app) {
     # Static core routes
-    $app->get('/', [HomeController::class, 'index'])->setName('home');
+    $app->get('/', [HomeController::class, 'home'])->setName('home');
     $app->get('/about', [HomeController::class, 'about'])->setName('about');
     $app->get('/contact', [HomeController::class, 'contact'])->setName('contact');
     $app->post('/contact', [HomeController::class, 'saveContact'])->setName('contact.save');
