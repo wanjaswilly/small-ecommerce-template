@@ -1,0 +1,184 @@
+<?php
+
+use Illuminate\Database\Capsule\Manager as Capsule;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\Review;
+use App\Models\Coupon;
+use App\Models\OrderItem;
+
+class DemoDataSeeder
+{
+    public function run()
+    {
+        echo "🌱 Starting demo data seeding...\n";
+
+        // Seed categories
+        echo "📂 Seeding categories...\n";
+        $this->seedCategories();
+
+        // Seed users
+        echo "👥 Seeding users...\n";
+        $this->seedUsers();
+
+        // Seed products
+        echo "📦 Seeding products...\n";
+        $this->seedProducts();
+
+        // Seed coupons
+        echo "🎫 Seeding coupons...\n";
+        $this->seedCoupons();
+
+        // Seed orders
+        echo "📋 Seeding orders...\n";
+        $this->seedOrders();
+
+        // Seed reviews
+        echo "⭐ Seeding reviews...\n";
+        $this->seedReviews();
+
+        echo "✅ Demo data seeding completed!\n";
+    }
+
+    private function seedCategories()
+    {
+        require_once __DIR__ . '/../factories/CategoryFactory.php';
+
+        // Clear existing categories
+        Capsule::table('categories')->truncate();
+
+        $categories = [];
+        for ($i = 0; $i < 5; $i++) {
+            $categories[] = \Database\Factories\CategoryFactory::make();
+        }
+
+        foreach ($categories as $category) {
+            Category::create($category);
+        }
+
+        echo "   → Created " . count($categories) . " categories\n";
+    }
+
+    private function seedUsers()
+    {
+        require_once __DIR__ . '/../factories/UserFactory.php';
+
+        // Clear existing users (except any existing admin)
+        Capsule::table('users')->where('email', '!=', 'admin@example.com')->delete();
+
+        $users = [];
+        for ($i = 0; $i < 5; $i++) {
+            $userData = \Database\Factories\UserFactory::make();
+
+            // Ensure one admin user
+            if ($i === 0) {
+                $userData['email'] = 'admin@example.com';
+                $userData['first_name'] = 'Admin';
+                $userData['last_name'] = 'User';
+                $userData['role'] = 'admin';
+                $userData['is_active'] = true;
+            }
+
+            $users[] = User::create($userData);
+        }
+
+        echo "   → Created " . count($users) . " users (including 1 admin)\n";
+    }
+
+    private function seedProducts()
+    {
+        require_once __DIR__ . '/../factories/ProductFactory.php';
+
+        // Clear existing products
+        Capsule::table('products')->truncate();
+
+        $categories = Category::all();
+        $products = [];
+
+        for ($i = 0; $i < 25; $i++) {
+            $productData = \Database\Factories\ProductFactory::make();
+            $productData['category_id'] = $categories->random()->id;
+            $products[] = Product::create($productData);
+        }
+
+        echo "   → Created " . count($products) . " products across " . $categories->count() . " categories\n";
+    }
+
+    private function seedCoupons()
+    {
+        require_once __DIR__ . '/../factories/CouponFactory.php';
+
+        // Clear existing coupons
+        Capsule::table('coupons')->truncate();
+
+        $coupons = [];
+        for ($i = 0; $i < 3; $i++) {
+            $coupons[] = Coupon::create(\Database\Factories\CouponFactory::make());
+        }
+
+        echo "   → Created " . count($coupons) . " coupons\n";
+    }
+
+    private function seedOrders()
+    {
+        require_once __DIR__ . '/../factories/OrderFactory.php';
+
+        // Clear existing orders and order items
+        Capsule::table('order_items')->truncate();
+        Capsule::table('orders')->truncate();
+
+        $users = User::where('role', 'customer')->get();
+        $products = Product::all();
+
+        $orders = [];
+        for ($i = 0; $i < 10; $i++) {
+            $orderData = \Database\Factories\OrderFactory::make();
+            $orderData['user_id'] = $users->random()->id;
+            $order = Order::create($orderData);
+
+            // Add 1-5 random items to each order
+            $itemCount = rand(1, 5);
+            $orderItems = [];
+
+            for ($j = 0; $j < $itemCount; $j++) {
+                $product = $products->random();
+                $quantity = rand(1, 3);
+
+                $orderItems[] = OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'quantity' => $quantity,
+                    'unit_price' => $product->price,
+                    'total_price' => $product->price * $quantity,
+                ]);
+            }
+
+            $orders[] = $order;
+        }
+
+        echo "   → Created " . count($orders) . " orders with order items\n";
+    }
+
+    private function seedReviews()
+    {
+        require_once __DIR__ . '/../factories/ReviewFactory.php';
+
+        // Clear existing reviews
+        Capsule::table('reviews')->truncate();
+
+        $users = User::where('role', 'customer')->get();
+        $products = Product::all();
+
+        $reviews = [];
+        for ($i = 0; $i < 20; $i++) {
+            $reviewData = \Database\Factories\ReviewFactory::make();
+            $reviewData['user_id'] = $users->random()->id;
+            $reviewData['product_id'] = $products->random()->id;
+            $reviews[] = Review::create($reviewData);
+        }
+
+        echo "   → Created " . count($reviews) . " product reviews\n";
+    }
+}

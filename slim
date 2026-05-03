@@ -463,86 +463,62 @@ PHP;
         echo "Seeded {$count} {$modelName} record(s).\n";
         break;
 
+    case 'demo:import':
+        echo "🌱 Importing demo data...\n";
 
-    case 'migrate':
-        echo " Running all migrations...\n";
-
-        # Load environment variables
+        # Bootstrap Eloquent
         $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
         $dotenv->safeLoad();
-
-        # Load DB config
         $dbConfig = require __DIR__ . '/config/database.php';
-
-        # Initialize Eloquent Capsule with explicit paths
-        $capsule = new \Illuminate\Database\Capsule\Manager;
-
-        # For SQLite connections, ensure database file exists
-        if ($dbConfig['default'] === 'sqlite') {
-            $databasePath = __DIR__ . "/database/database.sqlite";
-            if (!file_exists($databasePath)) {
-                touch($databasePath);
-                chmod($databasePath, 0755);
-            }
-        }
-
+        $capsule = new \Illuminate\Database\Capsule\Manager();
         $capsule->addConnection($dbConfig['connections'][$dbConfig['default']]);
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
 
-        # Get all migration files
+        # Run migrations first
+        echo "📦 Running migrations...\n";
         $migrations = glob(__DIR__ . '/database/migrations/*.php');
-        if (!$migrations) {
-            echo " No migration files found.\n";
-            break;
-        }
-
-        # Sort migrations by filename
-        sort($migrations);
-
-        foreach ($migrations as $file) {
-            $filename = basename($file, '.php');
-            echo " - $filename\n";
-
-            # Convert filename to class name
-            $className = str_replace(
-                ' ',
-                '',
-                ucwords(
-                    str_replace(
-                        '_',
-                        ' ',
-                        substr($filename, 18) # Remove timestamp
+        if ($migrations) {
+            sort($migrations);
+            foreach ($migrations as $file) {
+                $filename = basename($file, '.php');
+                echo "   - $filename\n";
+                $className = str_replace(
+                    ' ',
+                    '',
+                    ucwords(
+                        str_replace(
+                            '_',
+                            ' ',
+                            substr($filename, 18)
+                        )
                     )
-                )
-            );
-
-            require_once $file;
-
-            if (!class_exists($className)) {
-                echo "   >> Skipped: Class $className not found in file $filename\n";
-                continue;
-            }
-
-            try {
-                $migration = new $className();
-                $migration->up();
-                echo "   >> Migrated: $className\n";
-            } catch (\Throwable $e) {
-                $message = $e->getMessage();
-                if (
-                    str_contains($message, 'already exists') ||
-                    str_contains($message, 'SQLSTATE[42S01]')
-                ) {
-                    echo "   >> Skipped: Table already exists\n";
-                } else {
-                    echo "   ** Error: {$e->getMessage()}\n";
-                    echo "      File: {$e->getFile()}:{$e->getLine()}\n";
+                );
+                require_once $file;
+                if (class_exists($className)) {
+                    $migration = new $className();
+                    try {
+                        $migration->up();
+                        echo "   >> Migrated\n";
+                    } catch (\Throwable $e) {
+                        if (!str_contains($e->getMessage(), 'already exists')) {
+                            echo "   ** Error: {$e->getMessage()}\n";
+                        } else {
+                            echo "   >> Skipped (already exists)\n";
+                        }
+                    }
                 }
             }
         }
 
-        echo " Migrations complete.\n";
+        # Run demo seeder
+        echo "🌱 Running demo data seeder...\n";
+        require_once __DIR__ . '/database/seeders/DemoDataSeeder.php';
+        $seeder = new DemoDataSeeder();
+        $seeder->run();
+
+        echo "🎉 Demo data import completed!\n";
+        echo "   Visit http://localhost:8000 to see the demo store\n";
         break;
 
     default:
@@ -554,9 +530,12 @@ Usage:
   remove:page {name}     Delete route and Twig file
   make:partial {name}    Create a Twig partial in templates/partials
   make:controller {name} Create a controller class in app/Controllers
-  make:model {name}      Create a model class in app/Models
-  make:migration {name}  Create a migration file in database/migrations
-  serve                  Start local dev server (localhost:8000)
+   make:model {name}      Create a model class in app/Models
+   make:migration {name}  Create a migration file in database/migrations
+   make:factory {name}    Create a factory class in database/factories
+   seed {model} {count}   Seed database with fake data
+   demo:import            Import complete demo data (runs migrations + seeds)
+   serve                  Start local dev server (localhost:8000)
 
 EOL;
         break;
