@@ -92,10 +92,22 @@ $twig->getEnvironment()->addGlobal('session', $_SESSION);
 $twig->addExtension(new App\Extensions\CsrfExtension());
 
 # Translation service
-$translationService = new App\Services\TranslationService();
+$currentLang = $_GET['lang'] ?? $_COOKIE['lang'] ?? 'en';
+if (isset($_GET['lang']) && in_array($_GET['lang'], ['en', 'sw'])) {
+    setcookie('lang', $_GET['lang'], time() + (365 * 24 * 60 * 60), '/'); // 1 year
+    $currentLang = $_GET['lang'];
+    // Redirect to clean URL
+    if (isset($_GET['lang'])) {
+        $url = strtok($_SERVER['REQUEST_URI'], '?');
+        header("Location: $url");
+        exit;
+    }
+}
+$translationService = new App\Services\TranslationService($currentLang);
 $twig->getEnvironment()->addFunction(new TwigFunction('__', function (string $key, ?string $locale = null) use ($translationService) {
     return $translationService->get($key, $locale);
 }));
+$twig->getEnvironment()->addGlobal('current_lang', $currentLang);
 
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);

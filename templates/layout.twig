@@ -6,14 +6,14 @@
 
 		<title>
 			{% block title %}
-				Small Ecommerce - Premium Products Such as Electronics & Car Parts
+				Duka - {{ __('home')|title }} - {{ __('shop')|title }}
 			{% endblock %}
 		</title>
 
-		<meta name="description" content="{% block description %}Your trusted partner for quality products and genuine car spare parts in Ngara, Nairobi. CBD delivery available.{% endblock %}"/>
-		<meta name="author" content="Small Ecommerce"/>
+		<meta name="description" content="{% block description %}{{ __('Your trusted partner for quality products in Kenya') }}{% endblock %}"/>
+		<meta name="author" content="Duka"/>
 		<meta
-		name="keywords" content="electronics, car parts, Nairobi, Ngara, smartphones, laptops, car spare parts, Kenya"/>
+		name="keywords" content="electronics, fashion, home, Kenya, Nairobi, smartphones, laptops, traditional crafts"/>
 
 		<!-- Open Graph (OG) Tags for social media -->
 		<meta property="og:title" content="{% block og_title %}Small Ecommerce - Quality Products for day to day use{% endblock %}"/>
