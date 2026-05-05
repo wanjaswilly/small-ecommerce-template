@@ -164,4 +164,12 @@ class OrderController extends BaseController
         return $this->redirect($response, '/admin/reviews');
     }
 
+    /**
+     * Admin - List COD orders
+     */
+    public function codOrders(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        return $this->render($request, $response, 'admin/orders/cod.twig', $this->orderService->getCodOrders($request));
+    }
+
 }

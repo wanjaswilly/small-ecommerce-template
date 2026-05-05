@@ -15,6 +15,10 @@ class DemoDataSeeder
     {
         echo "🌱 Starting demo data seeding...\n";
 
+        // Clear existing demo data first
+        echo "🧹 Clearing existing demo data...\n";
+        $this->clearExistingData();
+
         // Seed categories
         echo "📂 Seeding categories...\n";
         $this->seedCategories();
@@ -40,6 +44,23 @@ class DemoDataSeeder
         $this->seedReviews();
 
         echo "✅ Demo data seeding completed!\n";
+    }
+
+    private function clearExistingData()
+    {
+        // Clear tables in reverse dependency order using delete instead of truncate
+        Capsule::table('reviews')->delete();
+        Capsule::table('orderitems')->delete();
+        Capsule::table('orders')->delete();
+        Capsule::table('products')->delete();
+        Capsule::table('categories')->delete();
+        Capsule::table('coupons')->delete();
+        Capsule::table('newslettersubscribers')->delete();
+
+        // Keep existing users but clear demo users
+        Capsule::table('users')->where('email', '!=', 'admin@example.com')->delete();
+
+        echo "   → Cleared existing demo data\n";
     }
 
     private function seedCategories()

@@ -203,7 +203,10 @@ return function (App $app) {
         $group->post('/coupons/{id}/delete', [CouponController::class, 'destroy'])->setName('admin.coupons.destroy');
 
         # reports
-        $group->get('/reports', [ReportController::class, 'index'])->setName('admin.reports');
+        $group->get('/reports', [ReportController::class, 'index'])->setName('admin.reviews');
+
+        # COD orders
+        $group->get('/orders/cod', [OrderController::class, 'codOrders'])->setName('admin.orders.cod');
 
     })->add(new AdminMiddleware());
 

@@ -558,7 +558,23 @@ class OrderService
         ];
     }
 
-    # TODO: create method to handle COD orders display()'/orders/cod/{orderId})
+    /**
+     * Get COD orders for admin display
+     */
+    public function getCodOrders(ServerRequestInterface $request): array
+    {
+        $query = Order::with(['user', 'items.product'])
+            ->where('payment_method', 'cash_on_delivery')
+            ->where('status', '!=', 'cancelled')
+            ->orderBy('created_at', 'desc');
+
+        $orders = $query->get()->toArray();
+
+        return [
+            'orders' => $orders,
+            'status_labels' => $this->getStatusLabels()
+        ];
+    }
 
     /**
      * Get formatted order history for display

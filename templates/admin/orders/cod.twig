@@ -1,0 +1,73 @@
+{% extends 'admin.twig' %}
+
+{% block title %}COD Orders - Admin{% endblock %}
+
+{% block content %}
+<div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Cash on Delivery Orders</h1>
+        <a href="/admin/orders" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">All Orders</a>
+    </div>
+
+    {% if session.success %}
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ session.success }}
+        </div>
+    {% endif %}
+
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Order #</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Customer</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Amount</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                {% for order in orders %}
+                <tr>
+                    <td class="px-6 py-4">
+                        <a href="/admin/orders/{{ order.id }}/view" class="text-blue-600 hover:text-blue-800 font-medium">
+                            {{ order.order_number }}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm">
+                            <div class="font-medium text-gray-900 dark:text-gray-100">{{ order.customer_name }}</div>
+                            <div class="text-gray-500">{{ order.customer_phone }}</div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 font-semibold">KSh {{ order.total_amount|number_format }}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 text-xs rounded font-semibold
+                            {% if order.status == 'delivered' %}bg-green-100 text-green-800
+                            {% elseif order.status == 'shipped' or order.status == 'processing' %}bg-blue-100 text-blue-800
+                            {% elseif order.status == 'pending' %}bg-yellow-100 text-yellow-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ order.status|title }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">{{ order.created_at|date('M d, Y') }}</td>
+                    <td class="px-6 py-4">
+                        <a href="/admin/orders/{{ order.id }}/view" class="text-blue-600 hover:text-blue-800 mr-3">View</a>
+                        {% if order.status == 'pending' %}
+                            <a href="/admin/orders/{{ order.id }}/next-step" class="text-green-600 hover:text-green-800">Process</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if orders|length == 0 %}
+            <div class="p-6 text-center text-gray-500">
+                No Cash on Delivery orders found.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
