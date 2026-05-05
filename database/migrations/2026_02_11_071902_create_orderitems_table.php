@@ -7,8 +7,14 @@ class CreateOrderItemsTable
     public function up()
     {
 
-        Capsule::schema()->create('orderitems', function ($table) {
+        Capsule::schema()->create('order_items', function ($table) {
             $table->id();
+                        
+            $table->foreignId('order_id')->constrained()->onDelete('cascade');
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->integer('quantity');
+            $table->decimal('unit_price', 10, 2);
+            $table->decimal('total_price', 10, 2);
                         
             $table->timestamps();
         });
@@ -16,6 +22,6 @@ class CreateOrderItemsTable
 
     public function down()
     {
-        Capsule::schema()->dropIfExists('orderitems');
+        Capsule::schema()->dropIfExists('order_items');
     }
 }
