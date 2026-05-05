@@ -10,12 +10,12 @@ $makeMigration = in_array('-m', $flags);
 
 # Required directories
 $paths = [
-    'routesFile'     => __DIR__ . '/routes/web.php',
-    'templatesDir'   => __DIR__ . '/templates/pages',
-    'partialsDir'    => __DIR__ . '/templates/partials',
-    'controllerDir'  => __DIR__ . '/app/Controllers',
-    'modelDir'       => __DIR__ . '/app/Models',
-    'migrationsDir'  => __DIR__ . '/database/migrations',
+    'routesFile' => __DIR__ . '/routes/web.php',
+    'templatesDir' => __DIR__ . '/templates/pages',
+    'partialsDir' => __DIR__ . '/templates/partials',
+    'controllerDir' => __DIR__ . '/app/Controllers',
+    'modelDir' => __DIR__ . '/app/Models',
+    'migrationsDir' => __DIR__ . '/database/migrations',
 ];
 
 # Ensure folders exist
@@ -37,7 +37,8 @@ function ensurePackageInstalled($class, $install)
 
 switch ($command) {
     case 'make:page':
-        if (!$name) exit(" Page name required.\n");
+        if (!$name)
+            exit(" Page name required.\n");
 
         $routeLine = "\n# Route for '$name'\n"
             . "\$app->get('/$name', [HomeController::class, '$name'])->setName('$name'); \n";
@@ -81,7 +82,7 @@ switch ($command) {
         echo " Route '$name' registered.\n";
 
 
-        $controllerPath =  __DIR__ . '/app/Controllers' . '/HomeController.php';
+        $controllerPath = __DIR__ . '/app/Controllers' . '/HomeController.php';
         $methodStub = <<<PHP
 
         public function {$name}(Request \$request, Response \$response): Response
@@ -134,7 +135,8 @@ switch ($command) {
         break;
 
     case 'remove:page':
-        if (!$name) exit(" Page name required.\n");
+        if (!$name)
+            exit(" Page name required.\n");
 
         $templatePath = "{$paths['templatesDir']}/$name.twig";
         if (file_exists($templatePath)) {
@@ -150,9 +152,12 @@ switch ($command) {
         $skip = false;
 
         foreach ($lines as $line) {
-            if (strpos($line, "'/$name'") !== false) $skip = true;
-            if (!$skip) $newLines[] = $line;
-            if ($skip && trim($line) === '});') $skip = false;
+            if (strpos($line, "'/$name'") !== false)
+                $skip = true;
+            if (!$skip)
+                $newLines[] = $line;
+            if ($skip && trim($line) === '});')
+                $skip = false;
         }
 
         file_put_contents($paths['routesFile'], implode("\n", $newLines));
@@ -160,7 +165,8 @@ switch ($command) {
         break;
 
     case 'make:partial':
-        if (!$name) exit(" Partial name required.\n");
+        if (!$name)
+            exit(" Partial name required.\n");
 
         $path = "{$paths['partialsDir']}/$name.twig";
         if (!file_exists($path)) {
@@ -172,7 +178,8 @@ switch ($command) {
         break;
 
     case 'make:controller':
-        if (!$name) exit(" Controller name required.\n");
+        if (!$name)
+            exit(" Controller name required.\n");
 
         $className = ucfirst($name) . 'Controller';
         $path = "{$paths['controllerDir']}/$className.php";
@@ -205,7 +212,8 @@ PHP
         break;
 
     case 'make:model':
-        if (!$name) exit(" Model name required.\n");
+        if (!$name)
+            exit(" Model name required.\n");
 
         ensurePackageInstalled('Illuminate\\Database\\Eloquent\\Model', 'composer require illuminate/database');
 
@@ -281,7 +289,8 @@ PHP
         break;
 
     case 'make:migration':
-        if (!$name) exit(" Migration name required.\n");
+        if (!$name)
+            exit(" Migration name required.\n");
 
         ensurePackageInstalled('Illuminate\\Database\\Capsule\\Manager', 'composer require illuminate/database');
 
@@ -327,19 +336,20 @@ PHP
 
     case 'make:factory':
         $name = $argv[2] ?? null;
-        if (!$name) exit("Factory name required.\n");
+        if (!$name)
+            exit("Factory name required.\n");
 
         ensurePackageInstalled('Faker\Factory', 'composer require fakerphp/faker');
 
-        $modelName   = ucfirst($name);
-        $modelClass  = "App\\Models\\$modelName";
+        $modelName = ucfirst($name);
+        $modelClass = "App\\Models\\$modelName";
 
         # Check if model exists
         if (!class_exists($modelClass)) {
             exit("Model '$modelClass' not found. Create the model first using make:model.\n");
         }
 
-        $className   = "{$modelName}Factory";
+        $className = "{$modelName}Factory";
         $factoryPath = __DIR__ . "/database/factories/{$className}.php";
 
         # Ensure factories directory exists
@@ -396,7 +406,7 @@ PHP;
             $seeders[$modelName] = [
                 'model' => $modelClass,
                 'class' => "Database\\Factories\\$className",
-                'file'  => $factoryPath,
+                'file' => $factoryPath,
             ];
 
             # Rewrite seeders.php with updated array
@@ -412,7 +422,7 @@ PHP;
 
     case 'seed':
         $modelName = ucfirst($argv[2] ?? null);
-        $count     = isset($argv[3]) ? (int)$argv[3] : 1;
+        $count = isset($argv[3]) ? (int) $argv[3] : 1;
 
         if (!$modelName) {
             exit("Usage: php slim seed <Model> [count]\n");
@@ -462,6 +472,88 @@ PHP;
 
         echo "Seeded {$count} {$modelName} record(s).\n";
         break;
+
+    
+    case 'migrate':
+        echo " Running all migrations...\n";
+
+        // Load environment variables
+        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+        $dotenv->safeLoad();
+
+        // Load DB config
+        $dbConfig = require __DIR__ . '/config/database.php';
+
+        // Initialize Eloquent Capsule with explicit paths
+        $capsule = new \Illuminate\Database\Capsule\Manager;
+
+        // For SQLite connections, ensure database file exists
+        if ($dbConfig['default'] === 'sqlite') {
+            $databasePath = __DIR__ . "/database/database.sqlite";
+            if (!file_exists($databasePath)) {
+                touch($databasePath);
+                chmod($databasePath, 0755);
+            }
+        }
+
+        $capsule->addConnection($dbConfig['connections'][$dbConfig['default']]);
+        $capsule->setAsGlobal();
+        $capsule->bootEloquent();
+
+        // Get all migration files
+        $migrations = glob(__DIR__ . '/database/migrations/*.php');
+        if (!$migrations) {
+            echo " No migration files found.\n";
+            break;
+        }
+
+        // Sort migrations by filename
+        sort($migrations);
+
+        foreach ($migrations as $file) {
+            $filename = basename($file, '.php');
+            echo " - $filename\n";
+
+            // Convert filename to class name
+            $className = str_replace(
+                ' ',
+                '',
+                ucwords(
+                    str_replace(
+                        '_',
+                        ' ',
+                        substr($filename, 18) // Remove timestamp
+                    )
+                )
+            );
+
+            require_once $file;
+
+            if (!class_exists($className)) {
+                echo "   >> Skipped: Class $className not found in file $filename\n";
+                continue;
+            }
+
+            try {
+                $migration = new $className();
+                $migration->up();
+                echo "   >> Migrated: $className\n";
+            } catch (\Throwable $e) {
+                $message = $e->getMessage();
+                if (
+                    str_contains($message, 'already exists') ||
+                    str_contains($message, 'SQLSTATE[42S01]')
+                ) {
+                    echo "   >> Skipped: Table already exists\n";
+                } else {
+                    echo "   ** Error: {$e->getMessage()}\n";
+                    echo "      File: {$e->getFile()}:{$e->getLine()}\n";
+                }
+            }
+        }
+
+        echo " Migrations complete.\n";
+        break;  
 
     case 'demo:import':
         echo "🌱 Importing demo data...\n";
@@ -526,16 +618,16 @@ PHP;
 Slim Site CLI
 -------------------------
 Usage:
-  make:page {name}       Create a new route and Twig page
-  remove:page {name}     Delete route and Twig file
-  make:partial {name}    Create a Twig partial in templates/partials
-  make:controller {name} Create a controller class in app/Controllers
-   make:model {name}      Create a model class in app/Models
-   make:migration {name}  Create a migration file in database/migrations
-   make:factory {name}    Create a factory class in database/factories
-   seed {model} {count}   Seed database with fake data
-   demo:import            Import complete demo data (runs migrations + seeds)
-   serve                  Start local dev server (localhost:8000)
+    make:page {name}       Create a new route and Twig page
+    remove:page {name}     Delete route and Twig file
+    make:partial {name}    Create a Twig partial in templates/partials
+    make:controller {name} Create a controller class in app/Controllers
+    make:model {name}      Create a model class in app/Models
+    make:migration {name}  Create a migration file in database/migrations
+    make:factory {name}    Create a factory class in database/factories
+    seed {model} {count}   Seed database with fake data
+    demo:import            Import complete demo data (runs migrations + seeds)
+    serve                  Start local dev server (localhost:8000)
 
 EOL;
         break;
