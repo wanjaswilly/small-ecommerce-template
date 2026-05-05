@@ -50,7 +50,7 @@ class DemoDataSeeder
     {
         // Clear tables in reverse dependency order using delete instead of truncate
         Capsule::table('reviews')->delete();
-        Capsule::table('orderitems')->delete();
+        Capsule::table('order_items')->delete();
         Capsule::table('orders')->delete();
         Capsule::table('products')->delete();
         Capsule::table('categories')->delete();
@@ -71,8 +71,16 @@ class DemoDataSeeder
         Capsule::table('categories')->truncate();
 
         $categories = [];
-        for ($i = 0; $i < 5; $i++) {
-            $categories[] = \Database\Factories\CategoryFactory::make();
+        $slugs = [];
+        $i = 0;
+        while ($i < 5) {
+            $cate = \Database\Factories\CategoryFactory::make();
+            if (!in_array($cate['slug'], $slugs, true)) {
+                $categories[] = $cate;
+                $slugs[] = $cate['slug'];
+                $i++;
+
+            }
         }
 
         foreach ($categories as $category) {
@@ -88,6 +96,8 @@ class DemoDataSeeder
 
         // Clear existing users (except any existing admin)
         Capsule::table('users')->where('email', '!=', 'admin@example.com')->delete();
+
+
 
         $users = [];
         for ($i = 0; $i < 5; $i++) {
