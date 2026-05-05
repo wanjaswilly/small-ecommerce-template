@@ -1,45 +1,45 @@
-# Duka - Kenyan E-commerce Platform
+# Small-e.com - Kenyan E-commerce Platform
 
 A modern, feature-rich e-commerce platform built with PHP Slim 4, Twig templates, and Tailwind CSS. Designed specifically for the Kenyan market with local payment integrations, county-based delivery, and Swahili language support.
 
-![Duka Logo](https://img.shields.io/badge/Duka-Kenyan%20E--commerce-blue?style=for-the-badge)
+![Small-e.com Logo](https://img.shields.io/badge/small-e-commerce-blue?style=for-the-badge)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=flat-square&logo=php)
 ![Slim](https://img.shields.io/badge/Slim-4-green?style=flat-square)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-38B2AC?style=flat-square&logo=tailwind-css)
 
-## 🌟 Features
+## Features
 
 ### Core E-commerce Features
-- ✅ **Product Management** - Categories, variants, inventory tracking
-- ✅ **Shopping Cart** - Session-based cart with coupon support
-- ✅ **User Authentication** - Registration, login, profile management
-- ✅ **Order Management** - Full order lifecycle with status tracking
-- ✅ **Payment Processing** - M-Pesa integration with COD fallback
-- ✅ **Admin Dashboard** - Complete admin panel for store management
-- ✅ **Product Reviews** - Customer reviews with admin moderation
-- ✅ **Sales Reports** - Analytics dashboard with charts
-- ✅ **Newsletter Subscription** - Email marketing integration
-- ✅ **Order Tracking** - Public order lookup by number and email
+- **Product Management** - Categories, variants, inventory tracking
+- **Shopping Cart** - Session-based cart with coupon support
+- **User Authentication** - Registration, login, profile management
+- **Order Management** - Full order lifecycle with status tracking
+- **Payment Processing** - M-Pesa integration with COD fallback
+- **Admin Dashboard** - Complete admin panel for store management
+- **Product Reviews** - Customer reviews with admin moderation
+- **Sales Reports** - Analytics dashboard with charts
+- **Newsletter Subscription** - Email marketing integration
+- **Order Tracking** - Public order lookup by number and email
 
 ### Kenyan-Specific Features
-- 🏛️ **County Integration** - All 47 Kenyan counties with sub-counties
-- 💰 **M-Pesa Payment** - Full STK Push integration with sandbox support
-- 🧾 **KRA Invoice Generation** - Tax-ready invoice generation
-- 📍 **Local Delivery** - County-based delivery fee calculation
-- 🇰🇪 **Swahili Translation** - Complete Swahili language support
-- 📱 **WhatsApp Integration** - Floating WhatsApp contact button
-- 🍪 **GDPR Compliance** - Cookie consent banner
-- 🎨 **Cultural Products** - Kenyan artisan and cultural products
+- **County Integration** - All 47 Kenyan counties with sub-counties
+- **M-Pesa Payment** - Full STK Push integration with sandbox support
+- **KRA Invoice Generation** - Tax-ready invoice generation
+- **Local Delivery** - County-based delivery fee calculation
+- **Swahili Translation** - Complete Swahili language support
+- **WhatsApp Integration** - Floating WhatsApp contact button
+- **GDPR Compliance** - Cookie consent banner
+- **Cultural Products** - Kenyan artisan and cultural products
 
 ### Technical Features
-- 🎨 **Dark Mode** - Complete dark/light theme toggle
-- 📱 **Responsive Design** - Mobile-first responsive layout
-- 🔒 **Security** - CSRF protection, secure sessions
-- 🌐 **Multi-language** - English/Swahili with easy expansion
-- 📊 **Analytics** - Built-in site statistics tracking
-- 🚀 **Performance** - Optimized for speed and scalability
+- **Dark Mode** - Complete dark/light theme toggle
+- **Responsive Design** - Mobile-first responsive layout
+- **Security** - CSRF protection, secure sessions
+- **Multi-language** - English/Swahili with easy expansion
+- **Analytics** - Built-in site statistics tracking
+- **Performance** - Optimized for speed and scalability
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - PHP 8.1 or higher
@@ -51,8 +51,8 @@ A modern, feature-rich e-commerce platform built with PHP Slim 4, Twig templates
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/duka-ecommerce.git
-   cd duka-ecommerce
+   git clone https://github.com/wanjaswilly/small-ecommerce-template.git
+   cd small-ecommerce-template
    ```
 
 2. **Install PHP dependencies**
@@ -93,7 +93,7 @@ A modern, feature-rich e-commerce platform built with PHP Slim 4, Twig templates
    ```
    Visit `http://localhost:8000`
 
-## 📋 Demo Data Included
+## Demo Data Included
 
 The demo import creates:
 - **5 Product Categories** - Electronics, Fashion, Home, Books, Sports
@@ -108,13 +108,13 @@ The demo import creates:
 - Password: `password123`
 - Access admin panel at: `/admin`
 
-## 🛠️ Configuration
+## Configuration
 
 ### Environment Variables (.env)
 
 ```env
 # Application
-APP_NAME="Duka Store"
+APP_NAME="Small Ecommerce"
 APP_URL="http://localhost:8000"
 APP_ENVIRONMENT="development"
 
@@ -130,8 +130,9 @@ MPESA_PASSKEY=your_passkey
 MPESA_ENVIRONMENT=sandbox
 
 # Settings
-WHATSAPP_NUMBER=+254712345678
-STORE_EMAIL=store@duka.co.ke
+WHATSAPP_NUMBER=+254741400006
+STORE_EMAIL=store@small-e.com
+
 ```
 
 ### Payment Integration
@@ -163,7 +164,7 @@ primary: {
 #### Language Support
 Add new languages in `app/Lang/` directory and update the language switcher.
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### For Customers
 1. **Browse Products** - Explore categories and search products
@@ -198,7 +199,7 @@ php slim make:factory FactoryName   # Create data factory
 php slim seed ModelName count       # Seed specific model
 ```
 
-## 🔧 API Endpoints
+## API Endpoints
 
 ### Public APIs
 - `GET /api/counties/{county}/sub-counties` - Get sub-counties for a county
@@ -208,7 +209,7 @@ php slim seed ModelName count       # Seed specific model
 - `POST /newsletter/subscribe` - Newsletter subscription
 - Various CRUD endpoints for products, orders, coupons
 
-## 🌍 Kenyan Localization
+## Kenyan Localization
 
 ### Counties & Regions
 - Complete coverage of all 47 Kenyan counties
@@ -219,19 +220,19 @@ php slim seed ModelName count       # Seed specific model
 - Traditional Kenyan crafts and artifacts
 - Maasai beaded jewelry
 - Acacia wood carvings
-- Kikoy and other traditional fabrics
+- Kikoi and other traditional fabrics
 
 ### Payment Methods
 - M-Pesa (most popular)
 - Cash on Delivery (COD)
-- Card payments (placeholder for future)
+- Card payments via Pesapal
 
 ### Language Support
 - English (default)
 - Swahili (complete translation)
 - Easy to add more languages
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -239,22 +240,19 @@ php slim seed ModelName count       # Seed specific model
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built with [Slim Framework](https://www.slimframework.com/)
 - Styled with [Tailwind CSS](https://tailwindcss.com/)
 - Kenyan county data sourced from official government records
 - Icons by [Font Awesome](https://fontawesome.com/)
 
-## 📞 Support
+## Support
 
-- **Documentation**: [Wiki](https://github.com/yourusername/duka-ecommerce/wiki)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/duka-ecommerce/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/duka-ecommerce/discussions)
+- **Documentation**: [Wiki](https://github.com/wanjaswilly/small-ecommerce-template/wiki)
+- **Issues**: [GitHub Issues](https://github.com/wanjaswilly/small-ecommerce-template/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/wanjaswilly/small-ecommerce-template/discussions)
 
 ---
 
