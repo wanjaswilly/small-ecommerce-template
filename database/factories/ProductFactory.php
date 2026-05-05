@@ -78,7 +78,7 @@ class ProductFactory
 
         return [
             'name' => $product['name'],
-            'slug' => $slug . '-' . $faker->unique()->numberBetween(100, 999),
+            'slug' => $slug . '-' . $faker->unique()->numberBetween(10000, 99999),
             'description' => $product['description'],
             'price' => $product['price'],
             'discount_price' => $faker->optional(0.3)->numberBetween($product['price'] * 0.7, $product['price'] * 0.9),

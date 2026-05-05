@@ -38,7 +38,7 @@ class UserFactory
         $phone = '254' . $faker->numberBetween(700000000, 799999999);
 
         return [
-            'email' => strtolower($firstName . '.' . $lastName . $faker->unique()->numberBetween(1, 999)) . '@example.com',
+            'email' => strtolower($firstName . '.' . $lastName . $faker->unique()->numberBetween(1999, 9999)) . '@example.com',
             'password_hash' => password_hash('password123', PASSWORD_DEFAULT),
             'first_name' => $firstName,
             'last_name' => $lastName,

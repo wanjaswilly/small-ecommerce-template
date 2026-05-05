@@ -15,7 +15,7 @@ class CouponFactory
 
         // Generate coupon code
         $words = ['KENYA', 'SAFARI', 'DUKA', 'LOCAL', 'AFRICA', 'HERITAGE', 'TRADITION', 'CRAFT', 'ARTISAN', 'QUALITY'];
-        $code = $faker->randomElement($words) . $faker->numberBetween(10, 99);
+        $code = $faker->randomElement($words) . $faker->numberBetween(1099, 9889);
 
         // Value based on type
         $value = $type === 'percentage'
