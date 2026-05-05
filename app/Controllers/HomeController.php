@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\SiteStat;
 use App\Services\ContactMessageService;
+use Carbon\Carbon;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
@@ -107,7 +108,7 @@ class HomeController extends BaseController
             if ($subscriber->unsubscribed_at) {
                 // Re-subscribe
                 $subscriber->update([
-                    'subscribed_at' => now(),
+                    'subscribed_at' => Carbon::now(),
                     'unsubscribed_at' => null,
                 ]);
             } else {
@@ -118,7 +119,7 @@ class HomeController extends BaseController
             // New subscription
             \App\Models\NewsletterSubscriber::create([
                 'email' => $email,
-                'subscribed_at' => now(),
+                'subscribed_at' => Carbon::now(),
             ]);
         }
 

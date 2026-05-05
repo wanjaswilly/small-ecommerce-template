@@ -12,7 +12,7 @@ interface PaymentInterface
      * @param array $paymentData all apyment data required by a given payment service
      * @return string redirect url for the processing/waiting of transaction
      */
-    public function initiatePayment(array $paymentData): mixed;
+    public function initiatePayment(array $paymentData): string;
 
     /**
      * Process payment callback/response, update the order, fill method model and paymentTransaction
@@ -32,9 +32,9 @@ interface PaymentInterface
     /**
      * Validate payment parameters
      * @param array $paymentData all apyment data required by a given payment service
-     * @return bool validation status: pass or fail
+     * @return bool|array   validation status: pass or an array of errors
      */
-    public function validatePaymentData(array $paymentData): bool;
+    public function validatePaymentData(array $paymentData): bool|array;
 
     /**
      * Get payment method name

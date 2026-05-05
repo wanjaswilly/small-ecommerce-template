@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Controllers\PesaPalController;
 use App\Exceptions\PaymentCallbackErrorException;
+use App\Exceptions\ValidationException;
 use App\Models\PaymentTransaction;
 use App\Models\PesapalQueries;
 use App\Models\Setting;
@@ -47,12 +48,19 @@ class PesapalService implements PaymentInterface
      */
     public function initiatePayment(array $paymentData): string
     {
-        // if (!$this->validatePaymentData($paymentData)) {
-        //     return ['error' => 'Invalid payment data'];
-        // }
+
+        # todo: wrap this to a try& catch and throw a
+        # ValidationException(just a wrapper that reidirects back with error ->check bootstrap.php)
+
+        $validationOutput = $this->validatePaymentData($paymentData);
+
+        if ($validationOutput != true) {
+            throw new ValidationException("Invalid Payment Data", ['error' => $validationOutput]);
+        }
 
         $_ENV['APP_ENVIRONMENT'] != 'DEV' ? $amount = (float) $paymentData['amount'] : $amount = 1;
 
+        # initiate payment
         $paymentRequestResponse = $this->handleThisPayment(
             localReferenceId: 'PPP-' . date('YmdHis') . '-' . rand(100, 999),
             currency: 'KES',
@@ -66,6 +74,11 @@ class PesapalService implements PaymentInterface
             orderReferenceId: $paymentData['order_number']
         );
 
+        # Todo: save transaction status to database
+        PaymentTransaction::create([
+            # todo: fill data here, refer to payment_transactions migration for non-nullables
+        ]);
+
         return $paymentRequestResponse['redirect_url'];
     }
 
@@ -74,32 +87,33 @@ class PesapalService implements PaymentInterface
      */
     public function processCallback(array $callbackData): ?PaymentTransaction
     {
-        $data = $callbackData; // GET parameters for IPN
-
-        $orderTrackingId = $data['OrderTrackingId'] ?? null;
-        $orderMerchantReference = $data['OrderMerchantReference'] ?? null;
-
-        if (!$orderTrackingId) {
-            $payload = ['localPaymentReference' => $orderMerchantReference, 'status' => 'error', 'message' => 'Missing OrderTrackingId'];
-
-            throw new PaymentCallbackErrorException("Invalid Order Tracking ID", $payload);
-        }
-        // Find the PesaPal query
-        $pesapalQuery = PesapalQueries::with('order')->where('pesapal_order_tracking', $orderTrackingId)->first();
-        // var_dump($pesapalQuery->order);
-        if (!$pesapalQuery) {
-            $payload = ['localPaymentReference' => $orderMerchantReference, 'status' => 'error', 'message' => 'initial transaction not found with the provided local reference'];
-
-            throw new PaymentCallbackErrorException("Missing Local Reference ", $payload);
-        }
-
-        # check if the payment has been processed
-        if ($transaction = PaymentTransaction::where('transaction_id', $pesapalQuery->local_payment_reference_id)->first()) {
-            $payload = ['localPaymentReference' => $orderMerchantReference, 'status' => 'processed', 'message' => 'Transaction already processed'];
-            return $transaction;
-        }
 
         try {
+            $data = $callbackData; // GET parameters for IPN
+
+            $orderTrackingId = $data['OrderTrackingId'] ?? null;
+            $orderMerchantReference = $data['OrderMerchantReference'] ?? null;
+
+            if (!$orderTrackingId) {
+                $payload = ['localPaymentReference' => $orderMerchantReference, 'status' => 'error', 'message' => 'Missing OrderTrackingId'];
+
+                throw new PaymentCallbackErrorException("Invalid Order Tracking ID", $payload);
+            }
+            // Find the PesaPal query
+            $pesapalQuery = PesapalQueries::with('order')->where('pesapal_order_tracking', $orderTrackingId)->first();
+            // var_dump($pesapalQuery->order);
+            if (!$pesapalQuery) {
+                $payload = ['localPaymentReference' => $orderMerchantReference, 'status' => 'error', 'message' => 'initial transaction not found with the provided local reference'];
+
+                throw new PaymentCallbackErrorException("Missing Local Reference ", $payload);
+            }
+
+            # check if the payment has been processed
+            if ($transaction = PaymentTransaction::where('transaction_id', $pesapalQuery->local_payment_reference_id)->first()) {
+                $payload = ['localPaymentReference' => $orderMerchantReference, 'status' => 'processed', 'message' => 'Transaction already processed'];
+                return $transaction;
+            }
+
 
             $accessToken = $this->accessToken;
 
@@ -112,7 +126,7 @@ class PesapalService implements PaymentInterface
 
 
             // Update PesaPal query
-            $pesapalQuery->update(['ipn_notification_data' => $data,'payment_status' => $paymentStatus ?? 'unknown']);
+            $pesapalQuery->update(['ipn_notification_data' => $data, 'payment_status' => $paymentStatus ?? 'unknown']);
 
             // Update order status to paid
             if ($pesapalQuery->order) {
@@ -157,8 +171,10 @@ class PesapalService implements PaymentInterface
     /**
      * Validate payment parameters
      */
-    public function validatePaymentData(array $paymentData): bool
+    public function validatePaymentData(array $paymentData): bool|array
     {
+        # todo: implement this with valitron validation so as to get errors
+        # todo: if no errors return true, else errors
         $required = [
             'local_reference_id',
             'amount',
@@ -228,7 +244,7 @@ class PesapalService implements PaymentInterface
         ]);
 
         $data = json_decode($response->getBody(), true);
-        return $data['token'] ?? throw new Exception('Access token not returned' . var_dump($data));
+        return $data['token'] ?? throw new Exception('Access token not returned' . json_encode($data));
     }
 
     private function registerPesapalIPN(string $accessToken)

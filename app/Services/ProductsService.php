@@ -441,6 +441,20 @@ class ProductsService
         }
     }
 
+
+    #todo : create method to get a product delivery prices from productDeliveryPrice model
+    #todo: the method checks for the product with highest delivery price and if the rest of the 
+    #todo: ... products are of low price and below 3, return the highest, if above 4 products return
+    # ... highest+average of the rest, 
+    # the products will have to have classes, where each class has max no of items to retain the same 
+    # delivery price eg smallest = 20(earphones, usbs etc), small= 10(tshirts), medium=5, big=2 with a 
+    # free delivery option if total value hit free delivery ceiling.
+    # WOULD BE BETTER IF THIS IS MADE INTO A SERVICE.
+    
+
+    #todo: create productDeliveryPrice model where each product has its own delivery price and delivery class
+
+    
     # Handle image upload
     private function handleImageUpload(ServerRequestInterface $request, string $categorySlug, string $slug): array
     {

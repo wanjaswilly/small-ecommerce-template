@@ -48,6 +48,7 @@ class CheckoutService
 
     public function confirmCheckout():array
     {
+        #todo: show user their order to confirm items, delivery location etc so that the system can start order processing
         return [];
     }
 
@@ -55,6 +56,7 @@ class CheckoutService
     {
         $data = $checkoutData ?: $request->getParsedBody();
 
+        #todo: use valitron validator instead
         # Validate required fields
         $requiredFields = ['full_name', 'phone', 'county', 'subcounty', 'specific_address', 'payment_method'];
         foreach ($requiredFields as $field) {
@@ -224,6 +226,7 @@ class CheckoutService
 
     private function calculateDeliveryFee(string $county): float
     {
+        #todo:implement read from product delivery model
         // Simple delivery fee calculation based on county
         $cbdCounties = ['Nairobi', 'Kiambu'];
         $nearbyCounties = ['Machakos', 'Kajiado', 'Murang\'a', 'Nyeri'];

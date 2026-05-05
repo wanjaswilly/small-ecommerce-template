@@ -558,6 +558,8 @@ class OrderService
         ];
     }
 
+    # TODO: create method to handle COD orders display()'/orders/cod/{orderId})
+
     /**
      * Get formatted order history for display
      */

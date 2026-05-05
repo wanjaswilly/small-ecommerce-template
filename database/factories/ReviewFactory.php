@@ -22,7 +22,7 @@ class ReviewFactory
             'This product exceeded my expectations. The quality is outstanding and the delivery was fast.',
             'Very happy with my purchase. The item arrived exactly as described and works perfectly.',
             'Great Kenyan product! Supporting local artisans is important, and this item is beautiful.',
-            'Excellent service from Duka. The ordering process was smooth and delivery was on time.',
+            'Excellent service from '.$_ENV["APP_NAME"].' The ordering process was smooth and delivery was on time.',
             'Good value for money. The quality matches the price and I\'m very satisfied.',
             'Traditional Kenyan craftsmanship at its best. Proud to own this authentic piece.',
             'Fast delivery and excellent packaging. The product arrived in perfect condition.',

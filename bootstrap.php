@@ -90,6 +90,7 @@ $app->add(new \App\Middleware\SessionMiddleware());
 # add sessions to twig
 $twig->getEnvironment()->addGlobal('session', $_SESSION);
 $twig->addExtension(new App\Extensions\CsrfExtension());
+$twig->addExtension(new App\Extensions\SettingsExtension());
 
 # Translation service
 $currentLang = $_GET['lang'] ?? $_COOKIE['lang'] ?? 'en';
