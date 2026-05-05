@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice {{ order.order_number }} - Duka</title>
+    <title>Invoice {{ order.order_number }} -{{ APP_NAME}}</title>
     <style>
         @media print {
             body { font-family: Arial, sans-serif; }
@@ -87,7 +87,7 @@
     </div>
 
     <div class="footer">
-        <p>Thank you for shopping with Duka Store!</p>
+        <p>Thank you for shopping with{{ APP_NAME}} Store!</p>
         <p>This is a computer-generated invoice.</p>
     </div>
 </body>
