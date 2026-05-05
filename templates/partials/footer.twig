@@ -4,7 +4,8 @@
 			<div>
 				<h3 class=" text-md sm:text-xl font-semibold mb-4">About Us</h3>
 				<p class=" text-xs sm:text-md text-gray-300 mb-4">
-					Small Ecommerce is an upcoming online shopping website offering best value for money, convinience in shopping and quick fast deliveries with Nairobi and the rest of Kenya.
+					Small Ecommerce is an upcoming online shopping website offering best value for money, convinience in
+					shopping and quick fast deliveries with Nairobi and the rest of Kenya.
 
 				</p>
 			</div>
@@ -64,27 +65,26 @@
 						<a href="https://instagram.com/corey.co.ke" target="_blank" class="hover:text-orange-300">
 							<i class="fab fa-instagram"></i>
 						</a>
-						<a href="https://wa.me/254725211952" target="_blank" class="hover:text-orange-300">
+						<a href="https://wa.me/254741400006" target="_blank" class="hover:text-orange-300">
 							<i class="fab fa-whatsapp"></i>
 						</a>
 					</div>
+					<!-- Newsletter Subscription -->
+					<div class="my-6">
+						<h4 class="font-bold mb-2  text-xs sm:text-md">SUBSCRIBE TO OUR NEWSLETTER</h4>
+						<form id="newsletter-form" class="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+							<input type="email" name="email" placeholder="Enter your email" required
+								class="flex-1 px-3  bg-white py-2 rounded text-gray-900" id="newsletter-email">
+							<button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
+								{{ __('subscribe') }}
+							</button>
+						</form>
+						<div id="newsletter-message" class="mt-2 text-center text-sm hidden"></div>
+					</div>
 				</div>
+
 			</div>
 
-			<!-- Newsletter Subscription -->
-			<div class="bg-gray-700 rounded-lg p-6 mb-6">
-				<h4 class="font-bold mb-2 text-center">{{ __('newsletter') }}</h4>
-				<p class="text-sm text-gray-300 text-center mb-4">{{ __('your_email') }}</p>
-				<form id="newsletter-form" class="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-					<input type="email" name="email" placeholder="{{ __('email') }}" required
-						   class="flex-1 px-3 py-2 rounded text-gray-900" id="newsletter-email">
-					<button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
-						{{ __('subscribe') }}
-					</button>
-				</form>
-				<div id="newsletter-message" class="mt-2 text-center text-sm hidden"></div>
-			</div>
 
 			<div class="text-center text-gray-400 text-xs sm:text-md">
 				<p>© Small Ecommerce Kenya

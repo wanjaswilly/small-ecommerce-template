@@ -1,1924 +1,2014 @@
 {% extends "layout.twig" %}
 
 {% block content %}
-	<!-- Mega Header Bar with Announcements -->
-	<div class="bg-red-600 text-white py-2 px-4 text-center text-sm">
-		<div class="container mx-auto">
-			🚚
-			<strong>FREE DELIVERY</strong>
-			for orders above KSh 20,000 within Nairobi CBD • 
-																																																																																																																		            ⚡
-			<strong>Fast Delivery</strong>
-			available • 
-																																																																																																																		            🔄
-			<strong>Easy Returns</strong>
-			on faulty goods.
-		</div>
+<!-- Mega Header Bar with Announcements -->
+<div class="bg-red-600 text-white py-2 px-4 text-center text-sm">
+	<div class="container mx-auto">
+		🚚
+		<strong>FREE DELIVERY</strong>
+		for orders above KSh 20,000 within Nairobi CBD •
+		⚡
+		<strong>Fast Delivery</strong>
+		available •
+		🔄
+		<strong>Easy Returns</strong>
+		on faulty goods.
 	</div>
-	<!-- Enhanced Hero Section with Categories, Banner Slider, and Promotions -->
-	<section
-		class="hero-gradient text-white pt-0 pb-4 md:py-8 relative overflow-hidden">
-		<!-- Background Pattern -->
-		<div class="absolute inset-0 opacity-10">
-			<div class="pattern-dots pattern-blue-500 pattern-size-4 pattern-opacity-20"></div>
-		</div>
+</div>
+<!-- Enhanced Hero Section with Categories, Banner Slider, and Promotions -->
+<section class="hero-gradient text-white pt-0 pb-4 md:py-8 relative overflow-hidden">
+	<!-- Background Pattern -->
+	<div class="absolute inset-0 opacity-10">
+		<div class="pattern-dots pattern-blue-500 pattern-size-4 pattern-opacity-20"></div>
+	</div>
 
-		<div class="relative max-w-7xl mx-auto px-4">
-			<div
-				class="grid grid-cols-1 lg:grid-cols-12 gap-6 mx-auto">
+	<div class="relative max-w-7xl mx-auto px-4">
+		<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mx-auto">
 
-				<!-- Left Column: Categories Sidebar -->
-				<div class="hidden lg:block lg:col-span-3">
-					<div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 lg:p-6">
-						<h3 class="text-lg lg:text-xl font-bold mb-4 flex items-center">
-							<i class="fas fa-list mr-2"></i>
-							Categories
-						</h3>
+			<!-- Left Column: Categories Sidebar -->
+			<div class="hidden lg:block lg:col-span-3">
+				<div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 lg:p-6">
+					<h3 class="text-lg lg:text-xl font-bold mb-4 flex items-center">
+						<i class="fas fa-list mr-2"></i>
+						Categories
+					</h3>
 
-						<nav class="space-y-2">
-							{% for category in categories|slice(0,9) %}
-								<a href="/category/{{ category.slug }}" class="category-sidebar-item group">
-									<div class="category-sidebar-icon">
-										<i class="fas {{ category.icon|default('fa-tag') }}"></i>
-									</div>
-									<span class="category-sidebar-name">{{ category.name }}</span>
-									<div class="category-sidebar-arrow">
-										<i class="fas fa-chevron-right"></i>
-									</div>
-								</a>
-							{% else %}
-								<!-- Fallback categories -->
-								{% for cat in [
-                                {name: 'Phones & Tablets', slug: 'phones-tablets', icon: 'fa-mobile-alt'},
-                                {name: 'Electronics', slug: 'electronics', icon: 'fa-tv'},
-                                {name: 'Fashion', slug: 'fashion', icon: 'fa-tshirt'},
-                                {name: 'Home & Office', slug: 'home-office', icon: 'fa-home'},
-                                {name: 'Beauty & Health', slug: 'beauty-health', icon: 'fa-spa'},
-                                {name: 'Supermarket', slug: 'supermarket', icon: 'fa-shopping-cart'},
-                                {name: 'Computing', slug: 'computing', icon: 'fa-laptop'},
-                                {name: 'Baby & Toys', slug: 'baby-toys', icon: 'fa-baby'},
-                                {name: 'Gaming', slug: 'gaming', icon: 'fa-gamepad'}
-                            ] %}
-									<a href="/category/{{ cat.slug }}" class="category-sidebar-item group">
-										<div class="category-sidebar-icon">
-											<i class="fas {{ cat.icon }}"></i>
-										</div>
-										<span class="category-sidebar-name">{{ cat.name }}</span>
-										<div class="category-sidebar-arrow">
-											<i class="fas fa-chevron-right"></i>
-										</div>
-									</a>
-								{% endfor %}
-							{% endfor %}
-
-							<!-- View All Categories -->
-							<a href="/categories" class="category-sidebar-item group bg-white/20 mt-4 rounded-lg">
-								<div class="category-sidebar-icon">
-									<i class="fas fa-th-large"></i>
-								</div>
-								<span class="category-sidebar-name">View All Categories</span>
-								<div class="category-sidebar-arrow">
-									<i class="fas fa-arrow-right"></i>
-								</div>
-							</a>
-						</nav>
-					</div>
-				</div>
-
-				<!-- Middle Column: Main Banner Slider -->
-				<div class="lg:col-span-6">
-					<div class="bg-white/10 backdrop-blur-sm sm:rounded-xl p-4">
-						<div class="hero-carousel-desktop">
-							{% for slide in hero_slides %}
-								<div class="hero-slide-desktop {% if loop.first %}active{% endif %}" data-slide="{{ loop.index0 }}">
-									<a href="{{ slide.link }}">
-										<div class="relative  overflow-hidden">
-											<img
-											src="{{ slide.image }}" alt="{{ slide.alt }}" class="w-full h-64 md:h-98 object-cover p-2 sm:p-0 sm:rounded-xl">
-
-											<!-- Caption Overlay -->
-											<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-												<div class="inline-block bg-yellow-400 text-gray-800 px-3 py-1 rounded-full text-sm font-bold mb-2">
-													{{ slide.badge_text }}
-												</div>
-												<h2 class="text-xl md:text-2xl lg:text-3xl font-bold mb-2">
-													{{ slide.caption_title|raw }}
-												</h2>
-												<p class="text-sm md:text-base opacity-90">{{ slide.caption_description }}</p>
-
-												{% if slide.offer_ending %}
-													<div class="mt-3 bg-red-500 text-white px-3 py-1 rounded-lg font-bold inline-flex items-center text-sm">
-														<i class="fas fa-clock mr-2"></i>
-														Ends:
-														{{ slide.offer_ending }}
-													</div>
-												{% endif %}
-											</div>
-
-											<!-- Floating Store Badge -->
-											<div class="absolute top-4 right-4 bg-yellow-400 text-gray-800 p-2 rounded-xl shadow-lg">
-												<div class="font-bold text-sm">📍 Ngara Store</div>
-												<div class="text-xs">Open Mon-Sat: 8AM-8PM</div>
-											</div>
-										</div>
-									</a>
-								</div>
-							{% endfor %}
-						</div>
-
-						<!-- Carousel Controls -->
-						<div class="hidden sm:flex justify-center mt-4 space-x-4">
-							<button class="hero-prev bg-white/20 w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/30 transition duration-300">
-								<i class="fas fa-chevron-left"></i>
-							</button>
-							<div class="flex space-x-2">
-								{% for slide in hero_slides %}
-									<button class="hero-indicator-desktop w-3 h-3 rounded-full bg-white/30 {% if loop.first %}bg-white/100{% endif %}" data-slide="{{ loop.index0 }}"></button>
-								{% endfor %}
+					<nav class="space-y-2">
+						{% for category in categories|slice(0,9) %}
+						<a href="/category/{{ category.slug }}" class="category-sidebar-item group">
+							<div class="category-sidebar-icon">
+								<i class="fas {{ category.icon|default('fa-tag') }}"></i>
 							</div>
-							<button class="hero-next bg-white/20 w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/30 transition duration-300">
+							<span class="category-sidebar-name">{{ category.name }}</span>
+							<div class="category-sidebar-arrow">
 								<i class="fas fa-chevron-right"></i>
-							</button>
-						</div>
-					</div>
-
-					<!-- Mobile Hero (Hidden on Desktop) -->
-					<div class="md:hidden mt-4">
-						<div class="hero-carousel-mobile">
-							{% for slide in hero_slides %}
-								<div class="hero-slide-mobile px-1 {% if loop.first %}active{% endif %}" data-slide="{{ loop.index0 }}">
-									<a href="{{ slide.link }}">
-										<div class="bg-white shadow-lg overflow-hidden">
-											<img src="{{ slide.image }}" alt="{{ slide.alt }}" class="w-full h-48 object-cover">
-
-											<div class="p-4">
-												<div class="inline-block bg-yellow-400 text-gray-800 px-3 py-1 text-sm font-bold mb-2">
-													{{ slide.badge_text }}
-												</div>
-												<h3 class="text-lg font-bold mb-1">{{ slide.caption_title|raw }}</h3>
-												<p class="text-sm text-gray-600 mb-2">{{ slide.caption_description }}</p>
-
-												{% if slide.offer_ending %}
-													<div class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm font-bold inline-flex items-center">
-														<i class="fas fa-clock mr-2"></i>
-														Ends:
-														{{ slide.offer_ending }}
-													</div>
-												{% endif %}
-											</div>
-										</div>
-									</a>
-								</div>
-							{% endfor %}
-						</div>
-
-						<!-- Mobile Indicators -->
-						<div class="flex justify-center mt-4 space-x-2">
-							{% for slide in hero_slides %}
-								<button class="hero-indicator-mobile w-2 h-2 rounded-full bg-white/30 {% if loop.first %}bg-white/100{% endif %}" data-slide="{{ loop.index0 }}"></button>
-							{% endfor %}
-						</div>
-					</div>
-				</div>
-
-				<!-- Right Column: Promotions Sidebar -->
-				<div
-					class="hidden lg:block lg:col-span-3 grid grid-cols-2 sm:grid-cols-1 gap-2 px-1">
-
-					<!-- Top Deals -->
-					<div class="bg-gradient-to-br from-green-500 to-teal-500 rounded-xl p-2 sm:p-4">
-						<div class="flex items-center mb-3">
-							<div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-3">
-								<i class="fas fa-fire text-white"></i>
 							</div>
-							<div>
-								<h4 class="font-bold text-lg">Top Deals</h4>
-								<p class="text-sm opacity-90">Best Sellers</p>
-							</div>
-						</div>
-
-						<div class="space-y-3">
-							{% for product in top_products|slice(0,5) %}
-								<a href="/products/{{ product.slug }}" class="top-deal-item group">
-									<div class="top-deal-image">
-										<img src="{{ product.images[0]|default('https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80') }}" alt="{{ product.name }}" class="w-full h-16 object-cover rounded">
-									</div>
-									<div class="top-deal-info">
-										<h5 class="text-[10px] sm:text-md">{{ product.name|slice(0,30) }}
-											{% if product.name|length > 30 %}...
-											{% endif %}
-										</h5>
-										<div class="top-deal-price">
-											<span class="font-bold">KSh
-												{{ product.final_price|number_format }}</span>
-											{% if product.discount_percentage > 0 %}
-												<span class="text-xs line-through opacity-75">KSh
-													{{ product.price|number_format }}</span>
-											{% endif %}
-										</div>
-									</div>
-								</a>
-								{% else %}
-							{% endfor %}
-						</div>
-
-						<a href="/deals" class="block text-center hidden sm:block text-[11px] sm:text-md mt-3 bg-white/20 font-semibold sm:font-bold py-1 sm:py-2 rounded-md hover:bg-white/30 transition duration-200">
-							View All Deals →
 						</a>
-					</div>
+						{% else %}
+						<!-- Fallback categories -->
+						{% for cat in [
+						{name: 'Phones & Tablets', slug: 'phones-tablets', icon: 'fa-mobile-alt'},
+						{name: 'Electronics', slug: 'electronics', icon: 'fa-tv'},
+						{name: 'Fashion', slug: 'fashion', icon: 'fa-tshirt'},
+						{name: 'Home & Office', slug: 'home-office', icon: 'fa-home'},
+						{name: 'Beauty & Health', slug: 'beauty-health', icon: 'fa-spa'},
+						{name: 'Supermarket', slug: 'supermarket', icon: 'fa-shopping-cart'},
+						{name: 'Computing', slug: 'computing', icon: 'fa-laptop'},
+						{name: 'Baby & Toys', slug: 'baby-toys', icon: 'fa-baby'},
+						{name: 'Gaming', slug: 'gaming', icon: 'fa-gamepad'}
+						] %}
+						<a href="/category/{{ cat.slug }}" class="category-sidebar-item group">
+							<div class="category-sidebar-icon">
+								<i class="fas {{ cat.icon }}"></i>
+							</div>
+							<span class="category-sidebar-name">{{ cat.name }}</span>
+							<div class="category-sidebar-arrow">
+								<i class="fas fa-chevron-right"></i>
+							</div>
+						</a>
+						{% endfor %}
+						{% endfor %}
+
+						<!-- View All Categories -->
+						<a href="/categories" class="category-sidebar-item group bg-white/20 mt-4 rounded-lg">
+							<div class="category-sidebar-icon">
+								<i class="fas fa-th-large"></i>
+							</div>
+							<span class="category-sidebar-name">View All Categories</span>
+							<div class="category-sidebar-arrow">
+								<i class="fas fa-arrow-right"></i>
+							</div>
+						</a>
+					</nav>
 				</div>
 			</div>
-		</div>
-	</section>
 
-	<!-- Flash Sale Section -->
-	{% if flash_offers|length %}
-		<section class="max-w-6xl mx-auto bg-gradient-to-r from-red-50 to-orange-50 border-t border-b border-red-200">
-			<div
-				class="container mx-auto">
-				<!-- Header -->
-				<div class="bg-gradient-to-r from-red-600 to-orange-600 px-3 sm:px-6 py-3">
-					<div class="flex justify-between items-center">
-						<div class="flex-row sm:flex items-center space-x-4">
-							<div class="flex items-center space-x-2">
-								<i class="fas fa-bolt text-xl animate-pulse"></i>
-								<div>
-									<h2 class="text-[12px] sm:text-xl">FLASH SALE</h2>
-									<div class="text-[10px] sm:text-sm font-normal opacity-90">Limited Time Offers</div>
-								</div>
-							</div>
+			<!-- Middle Column: Main Banner Slider -->
+			<div class="lg:col-span-6">
+				<div class="bg-white/10 backdrop-blur-sm sm:rounded-xl p-4">
+					<div class="hero-carousel-desktop">
+						{% for slide in hero_slides %}
+						<div class="hero-slide-desktop {% if loop.first %}active{% endif %}"
+							data-slide="{{ loop.index0 }}">
+							<a href="{{ slide.link }}">
+								<div class="relative  overflow-hidden">
+									<img src="{{ slide.image }}" alt="{{ slide.alt }}"
+										class="w-full h-64 md:h-98 object-cover p-2 sm:p-0 sm:rounded-xl">
 
-							<!-- timelapse counter -->
-							<div
-								class="flash-countdown flex items-center gap-1 sm:gap-3 text-white mt-2 sm:mt-0 text-[10px] sm:text-base">
+									<!-- Caption Overlay -->
+									<div
+										class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+										<div
+											class="inline-block bg-yellow-400 text-gray-800 px-3 py-1 rounded-full text-sm font-bold mb-2">
+											{{ slide.badge_text }}
+										</div>
+										<h2 class="text-xl md:text-2xl lg:text-3xl font-bold mb-2">
+											{{ slide.caption_title|raw }}
+										</h2>
+										<p class="text-sm md:text-base opacity-90">{{ slide.caption_description }}</p>
 
-								<!-- Days -->
-								<div class="flex items-center gap-1">
-									<div id="d1" class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-2xl font-bold shadow">0</div>
-									<div id="d2" class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-2xl font-bold shadow">0</div>
-									<div class="w-14 h-8 sm:w-20 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-2xl font-bold shadow">
-										DAYS
+										{% if slide.offer_ending %}
+										<div
+											class="mt-3 bg-red-500 text-white px-3 py-1 rounded-lg font-bold inline-flex items-center text-sm">
+											<i class="fas fa-clock mr-2"></i>
+											Ends:
+											{{ slide.offer_ending }}
+										</div>
+										{% endif %}
+									</div>
+
+									<!-- Floating Store Badge -->
+									<div
+										class="absolute top-4 right-4 bg-yellow-400 text-gray-800 p-2 rounded-xl shadow-lg">
+										<div class="font-bold text-sm">📍 Ngara Store</div>
+										<div class="text-xs">Open Mon-Sat: 8AM-8PM</div>
 									</div>
 								</div>
-
-
-								<!-- Hours -->
-								<div class="flex items-center gap-1">
-									<div id="h1" class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">0</div>
-									<div id="h2" class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">0</div>
-								</div>
-
-								<div class="text-xs sm:text-2xl font-bold">:</div>
-
-								<!-- Minutes -->
-								<div class="flex items-center gap-1">
-									<div id="m1" class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">0</div>
-									<div id="m2" class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">0</div>
-								</div>
-
-								<div class="text-xs sm:text-2xl font-bold">:</div>
-
-								<!-- Seconds -->
-								<div class="flex items-center gap-1">
-									<div id="s1" class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">0</div>
-									<div id="s2" class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">0</div>
-								</div>
-
-							</div>
+							</a>
 						</div>
-						<a href="/sales" class=" hidden sm:block text-white hover:text-pink-200 text-[12px] sm:text-md font-semibold sm:font-bold">
-							View All
-							<i class="fas fa-arrow-right ml-2"></i>
-						</a>
-					</div>
-				</div>
-
-				<!-- Flash Sale Products Grid -->
-				<div class="py-2">
-					<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
-						{% for product in flash_offers.products %}
-							<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-								<a href="/products/{{product.slug}}">
-									<div class="relative">
-										{% if product.images and product.images|length > 0 %}
-											<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full  h-32 sm:h-40 object-cover">
-										{% else %}
-											<img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="{{ product.name }}" class="w-full  h-32 sm:h-40 object-cover">
-										{% endif %}
-
-										<!-- Flash Sale Badge -->
-										<div class="absolute top-3 left-3">
-											<div class="bg-red-500 text-white px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold animate-pulse">
-												⚡ FLASH SALE
-											</div>
-										</div>
-
-										{% if product.discount_percentage > 0 %}
-											<div class="absolute top-3 right-3 bg-yellow-400 text-gray-900 px-2 py-1 rounded-lg text-[10px] sm:text-sm font-bold">
-												-{{ product.discount_percentage|round }}%
-											</div>
-										{% endif %}
-
-										<!-- Overlay on hover -->
-										<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-									</div>
-								</a>
-
-								<div class="pt-2 sm:p-1">
-									<h3 class="text-[12px] min-h-9 sm:min-h-10 sm:text-md font-semibold sm:font-bold text-gray-900 line-clamp-2">{{ product.name }}</h3>
-
-									<!-- Price -->
-									<div class="mb-1">
-										<div class="flex items-center space-x-2">
-											<span class="text-xs sm:text-xl font-black text-red-600">KSh
-												{{ product.pivot.sale_price|number_format }}</span>
-											{# {% if product.has_active_offers %} #}
-											<span class="text-[10px] sm:text-sm text-gray-500 line-through">KSh
-												{{ product.price|number_format }}</span>
-											{# {% endif %} #}
-										</div>
-									</div>
-
-									<!-- Stock Progress -->
-									{% set stock_percentage = (product.pivot.quantity  - (product.pivot.sold +1) )/ product.pivot.quantity * 100 %}
-									<div class="mb-2 sm:mb-2">
-										<div class="flex justify-between text-xs mb-1">
-											<span class="text-gray-600">{{ product.pivot.quantity  - (product.pivot.sold ) }}
-												items left</span>
-										</div>
-										<div class="w-full bg-gray-200 rounded-full h-2">
-											<div class="bg-gradient-to-r from-red-500 to-orange-500 h-2 rounded-full" style="width: {{ stock_percentage }}%"></div>
-										</div>
-									</div>
-								</div>
-							</div>
 						{% endfor %}
 					</div>
-					<a href="/sales" class="sm:hidden text-xs text-red-600 font-bold hover:text-red-800 transition duration-200 flex items-center space-x-2 px-4 py-2 hover:border-red-400">
-						<span>View All Deals</span>
-						<i class="fas fa-arrow-right"></i>
-					</a>
+
+					<!-- Carousel Controls -->
+					<div class="hidden sm:flex justify-center mt-4 space-x-4">
+						<button
+							class="hero-prev bg-white/20 w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/30 transition duration-300">
+							<i class="fas fa-chevron-left"></i>
+						</button>
+						<div class="flex space-x-2">
+							{% for slide in hero_slides %}
+							<button
+								class="hero-indicator-desktop w-3 h-3 rounded-full bg-white/30 {% if loop.first %}bg-white/100{% endif %}"
+								data-slide="{{ loop.index0 }}"></button>
+							{% endfor %}
+						</div>
+						<button
+							class="hero-next bg-white/20 w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/30 transition duration-300">
+							<i class="fas fa-chevron-right"></i>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Hero (Hidden on Desktop) -->
+				<div class="md:hidden mt-4">
+					<div class="hero-carousel-mobile">
+						{% for slide in hero_slides %}
+						<div class="hero-slide-mobile px-1 {% if loop.first %}active{% endif %}"
+							data-slide="{{ loop.index0 }}">
+							<a href="{{ slide.link }}">
+								<div class="bg-white shadow-lg overflow-hidden">
+									<img src="{{ slide.image }}" alt="{{ slide.alt }}" class="w-full h-48 object-cover">
+
+									<div class="p-4">
+										<div
+											class="inline-block bg-yellow-400 text-gray-800 px-3 py-1 text-sm font-bold mb-2">
+											{{ slide.badge_text }}
+										</div>
+										<h3 class="text-lg font-bold mb-1">{{ slide.caption_title|raw }}</h3>
+										<p class="text-sm text-gray-600 mb-2">{{ slide.caption_description }}</p>
+
+										{% if slide.offer_ending %}
+										<div
+											class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm font-bold inline-flex items-center">
+											<i class="fas fa-clock mr-2"></i>
+											Ends:
+											{{ slide.offer_ending }}
+										</div>
+										{% endif %}
+									</div>
+								</div>
+							</a>
+						</div>
+						{% endfor %}
+					</div>
+
+					<!-- Mobile Indicators -->
+					<div class="flex justify-center mt-4 space-x-2">
+						{% for slide in hero_slides %}
+						<button
+							class="hero-indicator-mobile w-2 h-2 rounded-full bg-white/30 {% if loop.first %}bg-white/100{% endif %}"
+							data-slide="{{ loop.index0 }}"></button>
+						{% endfor %}
+					</div>
 				</div>
 			</div>
-		</section>
-	{% endif %}
-	
-	<!-- Categories Menu Bar -->
-	<div
-		class="space-y-3">
-		<!-- All Categories -->
-		<div class="max-w-6xl mx-auto my-4 bg-white dark:bg-gray-800 sm:rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-			<div class="p-1 sm:p-4">
-				<div class="grid grid-cols-6 md:grid-cols-6 space-y-3">
-					{% for category in categories %}
-						<a href="/category/{{ category.slug }}">
-							<div class="flex-row items-center justify-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-								<div class="flex items-center justify-center">
-									{% if category.image_url %}
-										<img src="{{ category.image_url }}" alt="{{ category.name }}" class="w-10 h-10 rounded-lg object-cover">
-									{% else %}
-										<div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-											<i class="fas fa-mobile-alt text-blue-600 dark:text-blue-400"></i>
-										</div>
+
+			<!-- Right Column: Promotions Sidebar -->
+			<div class="hidden lg:block lg:col-span-3 grid grid-cols-2 sm:grid-cols-1 gap-2 px-1">
+
+				<!-- Top Deals -->
+				<div class="bg-gradient-to-br from-green-500 to-teal-500 rounded-xl p-2 sm:p-4">
+					<div class="flex items-center mb-3">
+						<div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-3">
+							<i class="fas fa-fire text-white"></i>
+						</div>
+						<div>
+							<h4 class="font-bold text-lg">Top Deals</h4>
+							<p class="text-sm opacity-90">Best Sellers</p>
+						</div>
+					</div>
+
+					<div class="space-y-3">
+						{% for product in top_products|slice(0,5) %}
+						<a href="/products/{{ product.slug }}" class="top-deal-item group">
+							<div class="top-deal-image">
+								<img src="{{ product.images[0]|default('https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80') }}"
+									alt="{{ product.name }}" class="w-full h-16 object-cover rounded">
+							</div>
+							<div class="top-deal-info">
+								<h5 class="text-[10px] sm:text-md">{{ product.name|slice(0,30) }}
+									{% if product.name|length > 30 %}...
 									{% endif %}
-								</div>
-								<div class="hidden sm:flex items-center justify-center mt-2">
-									<h4 class="text-xs font-medium text-gray-900 dark:text-white">{{ category.name }}</h4>
+								</h5>
+								<div class="top-deal-price">
+									<span class="font-bold">KSh
+										{{ product.final_price|number_format }}</span>
+									{% if product.discount_percentage > 0 %}
+									<span class="text-xs line-through opacity-75">KSh
+										{{ product.price|number_format }}</span>
+									{% endif %}
 								</div>
 							</div>
 						</a>
-					{% endfor %}
+						{% else %}
+						{% endfor %}
+					</div>
+
+					<a href="/deals"
+						class="block text-center hidden sm:block text-[11px] sm:text-md mt-3 bg-white/20 font-semibold sm:font-bold py-1 sm:py-2 rounded-md hover:bg-white/30 transition duration-200">
+						View All Deals →
+					</a>
 				</div>
 			</div>
 		</div>
 	</div>
+</section>
 
-	<!-- Category Showcases Section -->
-	<section class="max-w-6xl mx-auto  pb-12 pt-2 sm:pt-6 bg-gray-50">
-		<div
-			class="container mx-auto">
-
-			<!-- Toys & Dolls -->
-			{% if toys_and_dolls|length %}
-				<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
-					<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
-						<div class="flex justify-between items-center">
-							<div class="flex items-center space-x-4">
-								<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
-									<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
-								</div>
-								<div>
-									<h3 class="text-xs sm:text-2xl font-bold text-white">Toys & Dolls</h3>
-									<p class="text-[10px] sm:text-md text-pink-100">Teddy bears, DIY boards & more</p>
-								</div>
-							</div>
-							<a href="/category/electronics" class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
-								View All
-								<i class="fas fa-arrow-right ml-2"></i>
-							</a>
+<!-- Flash Sale Section -->
+{% if flash_offers|length %}
+<section class="max-w-6xl mx-auto bg-gradient-to-r from-red-50 to-orange-50 border-t border-b border-red-200">
+	<div class="container mx-auto">
+		<!-- Header -->
+		<div class="bg-gradient-to-r from-red-600 to-orange-600 px-3 sm:px-6 py-3">
+			<div class="flex justify-between items-center">
+				<div class="flex-row sm:flex items-center space-x-4">
+					<div class="flex items-center space-x-2">
+						<i class="fas fa-bolt text-xl animate-pulse"></i>
+						<div>
+							<h2 class="text-[12px] sm:text-xl">FLASH SALE</h2>
+							<div class="text-[10px] sm:text-sm font-normal opacity-90">Limited Time Offers</div>
 						</div>
 					</div>
-					<div class="p-2">
-						<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
 
-							{% if toys_and_dolls|length %}
-								{% for product in toys_and_dolls|slice(0,8) %}
-									<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-										<a href="/products/{{ product.slug }}">
-											<div class="relative overflow-hidden bg-gray-100 mb-3">
-												<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-32 sm:h-40 object-cover">
-											</div>
+					<!-- timelapse counter -->
+					<div
+						class="flash-countdown flex items-center gap-1 sm:gap-3 text-white mt-2 sm:mt-0 text-[10px] sm:text-base">
 
-											<h4 class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
-												{{ product.name }}
-											</h4>
-										</a>
+						<!-- Days -->
+						<div class="flex items-center gap-1">
+							<div id="d1"
+								class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-2xl font-bold shadow">
+								0</div>
+							<div id="d2"
+								class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-2xl font-bold shadow">
+								0</div>
+							<div
+								class="w-14 h-8 sm:w-20 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-2xl font-bold shadow">
+								DAYS
+							</div>
+						</div>
 
-										<div class="flex items-center justify-between">
-											<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
-												KSh
-												{{ product.price|number_format }}
-											</span>
 
-										</div>
-									</div>
-								{% endfor %}
-							{% endif %}
+						<!-- Hours -->
+						<div class="flex items-center gap-1">
+							<div id="h1"
+								class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">
+								0</div>
+							<div id="h2"
+								class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">
+								0</div>
+						</div>
 
+						<div class="text-xs sm:text-2xl font-bold">:</div>
+
+						<!-- Minutes -->
+						<div class="flex items-center gap-1">
+							<div id="m1"
+								class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">
+								0</div>
+							<div id="m2"
+								class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">
+								0</div>
+						</div>
+
+						<div class="text-xs sm:text-2xl font-bold">:</div>
+
+						<!-- Seconds -->
+						<div class="flex items-center gap-1">
+							<div id="s1"
+								class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">
+								0</div>
+							<div id="s2"
+								class="w-6 h-8 sm:w-10 sm:h-12 flex items-center justify-center bg-black rounded text-lg sm:text-3xl font-bold shadow">
+								0</div>
 						</div>
 
 					</div>
 				</div>
-			{% endif %}
-
-			<!-- Fashion -->
-			{% if fashion|length %}
-				<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
-					<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
-						<div class="flex justify-between items-center">
-							<div class="flex items-center space-x-4">
-								<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
-									<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
-								</div>
-								<div>
-									<h3 class="text-xs sm:text-2xl font-bold text-white">Fashion</h3>
-									<p class="text-[10px] sm:text-md text-pink-100">Trending outfits, designers & officials</p>
-								</div>
-							</div>
-							<a href="/category/fashion" class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
-								View All
-								<i class="fas fa-arrow-right ml-2"></i>
-							</a>
-						</div>
-					</div>
-					<div class="p-2">
-						<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
-
-							{% if fashion|length %}
-								{% for product in fashion|slice(0,8) %}
-									<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-										<a href="/products/{{ product.slug }}">
-											<div class="relative overflow-hidden bg-gray-100 mb-3">
-												<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-32 sm:h-40 object-cover">
-											</div>
-
-											<h4 class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
-												{{ product.name }}
-											</h4>
-										</a>
-
-										<div class="flex items-center justify-between">
-											<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
-												KSh
-												{{ product.price|number_format }}
-											</span>
-
-										</div>
-									</div>
-								{% endfor %}
-							{% endif %}
-
-						</div>
-
-					</div>
-				</div>
-			{% endif %}
-
-			<!-- Car Parts -->
-			{% if car_parts|length %}
-				<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
-					<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
-						<div class="flex justify-between items-center">
-							<div class="flex items-center space-x-4">
-								<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
-									<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
-								</div>
-								<div>
-									<h3 class="text-xs sm:text-2xl font-bold text-white">Car Parts</h3>
-									<p class="text-[12px] sm:text-md text-pink-100">Engine parts, bearings, bolts & more</p>
-								</div>
-							</div>
-							<a href="/category/car-parts" class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
-								View All
-								<i class="fas fa-arrow-right ml-2"></i>
-							</a>
-						</div>
-					</div>
-					<div class="p-2">
-						<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
-
-							{% if car_parts|length %}
-								{% for product in car_parts|slice(0,8) %}
-									<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-										<a href="/products/{{ product.slug }}">
-											<div class="relative overflow-hidden bg-gray-100 mb-3">
-												<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-32 sm:h-40 object-cover">
-											</div>
-
-											<h4 class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
-												{{ product.name }}
-											</h4>
-										</a>
-
-										<div class="flex items-center justify-between">
-											<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
-												KSh
-												{{ product.price|number_format }}
-											</span>
-
-										</div>
-									</div>
-								{% endfor %}
-							{% endif %}
-
-						</div>
-
-					</div>
-				</div>
-			{% endif %}
-
-
-			<!-- Iphone -->
-			{% if iphones|length %}
-				<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
-					<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
-						<div class="flex justify-between items-center">
-							<div class="flex items-center space-x-4">
-								<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
-									<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
-								</div>
-								<div>
-									<h3 class="text-xs sm:text-2xl font-bold text-white">iPhones</h3>
-									<p class="text-[10px] sm:text-md text-pink-100">Devices, casings, and accessories</p>
-								</div>
-							</div>
-							<a href="/category/iphones" class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
-								View All
-								<i class="fas fa-arrow-right ml-2"></i>
-							</a>
-						</div>
-					</div>
-					<div class="p-2">
-						<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
-
-							{% if iphones|length %}
-								{% for product in iphones|slice(0,8) %}
-									<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-										<a href="/products/{{ product.slug }}">
-											<div class="relative overflow-hidden bg-gray-100 mb-3">
-												<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-32 sm:h-40 object-cover">
-											</div>
-
-											<h4 class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
-												{{ product.name }}
-											</h4>
-										</a>
-
-										<div class="flex items-center justify-between">
-											<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
-												KSh
-												{{ product.price|number_format }}
-											</span>
-
-										</div>
-									</div>
-								{% endfor %}
-							{% endif %}
-
-						</div>
-
-					</div>
-				</div>
-			{% endif %}
-
-			<!-- Samsung -->
-			{% if samsung|length %}
-				<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
-					<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
-						<div class="flex justify-between items-center">
-							<div class="flex items-center space-x-4">
-								<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
-									<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
-								</div>
-								<div>
-									<h3 class="text-xs sm:text-2xl font-bold text-white">Samsung</h3>
-									<p class="text-[12px] sm:text-md text-pink-100">Devices, casings, and accessories</p>
-								</div>
-							</div>
-							<a href="/category/samsung" class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
-								View All
-								<i class="fas fa-arrow-right ml-2"></i>
-							</a>
-						</div>
-					</div>
-					<div class="p-2">
-						<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
-
-							{% if samsung|length %}
-								{% for product in samsung|slice(0,8) %}
-									<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-										<a href="/products/{{ product.slug }}">
-											<div class="relative overflow-hidden bg-gray-100 mb-3">
-												<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-32 sm:h-40 object-cover">
-											</div>
-
-											<h4 class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
-												{{ product.name }}
-											</h4>
-										</a>
-
-										<div class="flex items-center justify-between">
-											<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
-												KSh
-												{{ product.price|number_format }}
-											</span>
-
-										</div>
-									</div>
-								{% endfor %}
-							{% endif %}
-
-						</div>
-
-					</div>
-				</div>
-			{% endif %}
-
-			<!-- Cameras & Accessories -->
-			{% if cameras_and_accessories|length %}
-				<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
-					<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
-						<div class="flex justify-between items-center">
-							<div class="flex items-center space-x-4">
-								<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
-									<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
-								</div>
-								<div>
-									<h3 class="text-xs sm:text-2xl font-bold text-white">Cameras & Accessories</h3>
-									<p class="text-[12px] sm:text-md text-pink-100">Cameras, lens, batteries & stands</p>
-								</div>
-							</div>
-							<a href="/category/cameras-and-accessories" class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
-								View All
-								<i class="fas fa-arrow-right ml-2"></i>
-							</a>
-						</div>
-					</div>
-					<div class="p-2">
-						<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
-
-							{% if cameras_and_accessories|length %}
-								{% for product in cameras_and_accessories|slice(0,8) %}
-									<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-										<a href="/products/{{ product.slug }}">
-											<div class="relative overflow-hidden bg-gray-100 mb-3">
-												<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-32 sm:h-40 object-cover">
-											</div>
-
-											<h4 class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
-												{{ product.name }}
-											</h4>
-										</a>
-
-										<div class="flex items-center justify-between">
-											<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
-												KSh
-												{{ product.price|number_format }}
-											</span>
-
-										</div>
-									</div>
-								{% endfor %}
-							{% endif %}
-
-						</div>
-
-					</div>
-				</div>
-			{% endif %}
-
-			<!-- Home & Decor -->
-			{% if home_and_decor|length %}
-				<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
-					<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
-						<div class="flex justify-between items-center">
-							<div class="flex items-center space-x-4">
-								<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
-									<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
-								</div>
-								<div>
-									<h3 class="text-xs sm:text-2xl font-bold text-white">Home & Decor</h3>
-									<p
-										class="text-[10px] sm:text-md text-pink-100">{# TODO: find home and decor description #}
-									</p>
-								</div>
-							</div>
-							<a href="/category/home-and-decor" class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
-								View All
-								<i class="fas fa-arrow-right ml-2"></i>
-							</a>
-						</div>
-					</div>
-					<div class="p-2">
-						<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
-
-							{% if home_and_decor|length %}
-								{% for product in home_and_decor|slice(0,8) %}
-									<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-										<a href="/products/{{ product.slug }}">
-											<div class="relative overflow-hidden bg-gray-100 mb-3">
-												<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-32 sm:h-40 object-cover">
-											</div>
-
-											<h4 class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
-												{{ product.name }}
-											</h4>
-										</a>
-
-										<div class="flex items-center justify-between">
-											<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
-												KSh
-												{{ product.price|number_format }}
-											</span>
-
-										</div>
-									</div>
-								{% endfor %}
-							{% endif %}
-
-						</div>
-
-					</div>
-				</div>
-			{% endif %}
-
-			<!-- Laptops & Macbooks -->
-			{% if laptops_and_macbooks|length %}
-				<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
-					<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
-						<div class="flex justify-between items-center">
-							<div class="flex items-center space-x-4">
-								<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
-									<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
-								</div>
-								<div>
-									<h3 class="text-xs sm:text-2xl font-bold text-white">Laptops & Macbooks</h3>
-									<p class="text-[10px] sm:text-md text-pink-100">
-										HP, Dell, Lenovo, Macbook Air
-									</p>
-								</div>
-							</div>
-							<a href="/category/laptopts-and-macbooks" class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
-								View All
-								<i class="fas fa-arrow-right ml-2"></i>
-							</a>
-						</div>
-					</div>
-					<div class="p-2">
-						<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
-
-							{% if laptops_and_macbooks|length %}
-								{% for product in laptops_and_macbooks|slice(0,8) %}
-									<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-										<a href="/products/{{ product.slug }}">
-											<div class="relative overflow-hidden bg-gray-100 mb-3">
-												<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-32 sm:h-40 object-cover">
-											</div>
-
-											<h4 class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
-												{{ product.name }}
-											</h4>
-										</a>
-
-										<div class="flex items-center justify-between">
-											<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
-												KSh
-												{{ product.price|number_format }}
-											</span>
-
-										</div>
-									</div>
-								{% endfor %}
-							{% endif %}
-
-						</div>
-
-					</div>
-				</div>
-			{% endif %}
-
-			<!-- Antiques & Art -->
-			{% if antiques_and_art|length %}
-				<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
-					<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
-						<div class="flex justify-between items-center">
-							<div class="flex items-center space-x-4">
-								<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
-									<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
-								</div>
-								<div>
-									<h3 class="text-xs sm:text-2xl font-bold text-white">Antiques & Art</h3>
-									<p class="text-[10px] sm:text-md text-pink-100">
-										Paintings, drawings, collections
-									</p>
-								</div>
-							</div>
-							<a href="/category/antiques-and-art" class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
-								View All
-								<i class="fas fa-arrow-right ml-2"></i>
-							</a>
-						</div>
-					</div>
-					<div class="p-2">
-						<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
-
-							{% if antiques_and_art|length %}
-								{% for product in antiques_and_art|slice(0,8) %}
-									<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-										<a href="/products/{{ product.slug }}">
-											<div class="relative overflow-hidden bg-gray-100 mb-3">
-												<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-32 sm:h-40 object-cover">
-											</div>
-
-											<h4 class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
-												{{ product.name }}
-											</h4>
-										</a>
-
-										<div class="flex items-center justify-between">
-											<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
-												KSh
-												{{ product.price|number_format }}
-											</span>
-
-										</div>
-									</div>
-								{% endfor %}
-							{% endif %}
-
-						</div>
-
-					</div>
-				</div>
-			{% endif %}
-
-			<!-- Electronics -->
-			{% if electronics|length %}
-				<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
-					<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
-						<div class="flex justify-between items-center">
-							<div class="flex items-center space-x-4">
-								<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
-									<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
-								</div>
-								<div>
-									<h3 class="text-xs sm:text-2xl font-bold text-white">Consumer Electronics</h3>
-									<p class="text-[10px] sm:text-md text-pink-100">
-										Sound systems, TVs, fridges
-									</p>
-								</div>
-							</div>
-							<a href="/category/electronics" class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
-								View All
-								<i class="fas fa-arrow-right ml-2"></i>
-							</a>
-						</div>
-					</div>
-					<div class="p-2">
-						<div class="flex gap-1 sm:gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
-
-							{% if electronics|length %}
-								{% for product in electronics|slice(0,8) %}
-									<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-										<a href="/products/{{ product.slug }}">
-											<div class="relative overflow-hidden bg-gray-100 mb-3">
-												<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-60 sm:w-full h-28 sm:h-40 object-cover">
-											</div>
-
-											<h4 class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
-												{{ product.name }}
-											</h4>
-										</a>
-
-										<div class="flex items-center justify-between">
-											<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
-												KSh
-												{{ product.price|number_format }}
-											</span>
-										</div>
-									</div>
-								{% endfor %}
-							{% endif %}
-
-						</div>
-
-					</div>
-				</div>
-			{% endif %}
-
-			<!-- Phones & Tablets -->
-			{% if phones_and_tablets|length %}
-				<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
-					<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3">
-						<div class="flex justify-between items-center">
-							<div class="flex items-center space-x-4">
-								<div class="bg-white/20 p-3 rounded-xl">
-									<i class="fas fa-tshirt text-2xl text-white"></i>
-								</div>
-								<div>
-									<h3 class="text-xl sm:text-2xl font-bold text-white">Phones & Tablets</h3>
-									<p class="text-[12px] sm:text-md text-pink-100">
-										Techno, Huawei, Infinix, Oppo
-									</p>
-								</div>
-							</div>
-							<a href="/category/phones-and-tablets" class="text-white hover:text-pink-200 text-[12px] sm:text-md font-semibold sm:font-bold">
-								View All
-								<i class="fas fa-arrow-right ml-2"></i>
-							</a>
-						</div>
-					</div>
-					<div class="p-2">
-						<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
-
-							{% if phones_and_tablets|length %}
-								{% for product in phones_and_tablets|slice(0,8) %}
-									<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
-										<a href="/products/{{ product.slug }}">
-											<div class="relative overflow-hidden bg-gray-100 mb-3">
-												<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-32 sm:h-40 object-cover">
-											</div>
-
-											<h4 class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
-												{{ product.name }}
-											</h4>
-										</a>
-
-										<div class="flex items-center justify-between">
-											<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
-												KSh
-												{{ product.price|number_format }}
-											</span>
-
-										</div>
-									</div>
-								{% endfor %}
-							{% endif %}
-
-						</div>
-
-					</div>
-				</div>
-			{% endif %}
-
-		</div>
-	</section>
-
-	<!-- Official Stores / Brands -->
-	<section class="max-w-6xl mx-auto py-12 bg-white">
-		<div class="container mx-auto px-4">
-			<div class="text-center mb-10">
-				<h2 class="text-xl sm:text-3xl font-black text-gray-900 mb-3">Official Stores & Brands</h2>
-				<p class="text-gray-600">Shop from trusted official brand stores</p>
+				<a href="/sales"
+					class=" hidden sm:block text-white hover:text-pink-200 text-[12px] sm:text-md font-semibold sm:font-bold">
+					View All
+					<i class="fas fa-arrow-right ml-2"></i>
+				</a>
 			</div>
+		</div>
 
-			<div class="grid grid-cols-4 md:grid-cols-8 gap-1 sm:gap-4">
-				{% for brand in brands|slice(0,8) %}
-					<div class="brand-card group">
-						<a href="/brand/{{brand.slug}}" class="flex flex-col items-center p-4">
-							<div class="justify-center items-center mb-3">
-								{% if brand.logo %}
-									<img src="{{ brand.logo }}" alt="{{ brand.name }}" class="brand-logo">
-								{% else %}
-									<div class="brand-placeholder bg-gray-100 text-gray-400 rounded-lg">
-										<i class="fas fa-store text-2xl"></i>
-									</div>
-								{% endif %}
-							</div>
-							<span class="brand-name">{{ brand.name }}</span>
-							<span class="brand-products text-xs text-gray-500 mt-1">{{ brand.product_count }}
-								products</span>
-						</a>
-					</div>
-				{% else %}
-					{% for brand_name in ['Samsung', 'Apple', 'Tecno', 'Adidas', 'Nike', 'LG', 'HP', 'Lenovo'] %}
-						<div class="brand-card group">
-							<a href="#" class="flex flex-col items-center p-2 sm:p-4">
-								<div class="flex justify-center items-center mb-3">
-									<div class="flex items-center justify-center p-4 bg-gray-100 text-gray-400 rounded-lg">
-										<i class="fas fa-store text-2xl"></i>
-									</div>
+		<!-- Flash Sale Products Grid -->
+		<div class="py-2">
+			<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
+				{% for product in flash_offers.products %}
+				<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+					<a href="/products/{{product.slug}}">
+						<div class="relative">
+							{% if product.images and product.images|length > 0 %}
+							<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+								class="w-full  h-32 sm:h-40 object-cover">
+							{% else %}
+							<img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+								alt="{{ product.name }}" class="w-full  h-32 sm:h-40 object-cover">
+							{% endif %}
+
+							<!-- Flash Sale Badge -->
+							<div class="absolute top-3 left-3">
+								<div
+									class="bg-red-500 text-white px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold animate-pulse">
+									⚡ FLASH SALE
 								</div>
-								<span class="text-[10] sm:text-sm">{{ brand_name }}</span>
-								<span class="brand-products text-xs text-gray-500 mt-1">500+ products</span>
-							</a>
+							</div>
+
+							{% if product.discount_percentage > 0 %}
+							<div
+								class="absolute top-3 right-3 bg-yellow-400 text-gray-900 px-2 py-1 rounded-lg text-[10px] sm:text-sm font-bold">
+								-{{ product.discount_percentage|round }}%
+							</div>
+							{% endif %}
+
+							<!-- Overlay on hover -->
+							<div
+								class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+							</div>
 						</div>
-					{% endfor %}
+					</a>
+
+					<div class="pt-2 sm:p-1">
+						<h3
+							class="text-[12px] min-h-9 sm:min-h-10 sm:text-md font-semibold sm:font-bold text-gray-900 line-clamp-2">
+							{{ product.name }}</h3>
+
+						<!-- Price -->
+						<div class="mb-1">
+							<div class="flex items-center space-x-2">
+								<span class="text-xs sm:text-xl font-black text-red-600">KSh
+									{{ product.pivot.sale_price|number_format }}</span>
+								{# {% if product.has_active_offers %} #}
+								<span class="text-[10px] sm:text-sm text-gray-500 line-through">KSh
+									{{ product.price|number_format }}</span>
+								{# {% endif %} #}
+							</div>
+						</div>
+
+						<!-- Stock Progress -->
+						{% set stock_percentage = (product.pivot.quantity - (product.pivot.sold +1) )/
+						product.pivot.quantity * 100 %}
+						<div class="mb-2 sm:mb-2">
+							<div class="flex justify-between text-xs mb-1">
+								<span class="text-gray-600">{{ product.pivot.quantity - (product.pivot.sold ) }}
+									items left</span>
+							</div>
+							<div class="w-full bg-gray-200 rounded-full h-2">
+								<div class="bg-gradient-to-r from-red-500 to-orange-500 h-2 rounded-full"
+									style="width: {{ stock_percentage }}%"></div>
+							</div>
+						</div>
+					</div>
+				</div>
 				{% endfor %}
 			</div>
+			<a href="/sales"
+				class="sm:hidden text-xs text-red-600 font-bold hover:text-red-800 transition duration-200 flex items-center space-x-2 px-4 py-2 hover:border-red-400">
+				<span>View All Deals</span>
+				<i class="fas fa-arrow-right"></i>
+			</a>
+		</div>
+	</div>
+</section>
+{% endif %}
 
-			<!-- View All Brands -->
-			{# <div class="text-center mt-10">
-				<a href="/brands" class="inline-flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold px-6 py-3 rounded-lg transition-colors">
-					<span>View All Brands</span>
-					<i class="fas fa-arrow-right"></i>
+<!-- Categories Menu Bar -->
+<div class="space-y-3">
+	<!-- All Categories -->
+	<div
+		class="max-w-6xl mx-auto my-4 bg-white dark:bg-gray-800 sm:rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+		<div class="p-1 sm:p-4">
+			<div class="grid grid-cols-6 md:grid-cols-6 space-y-3">
+				{% for category in categories %}
+				<a href="/category/{{ category.slug }}">
+					<div class="flex-row items-center justify-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+						<div class="flex items-center justify-center">
+							{% if category.image_url %}
+							<img src="{{ category.image_url }}" alt="{{ category.name }}"
+								class="w-10 h-10 rounded-lg object-cover">
+							{% else %}
+							<div
+								class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+								<i class="fas fa-mobile-alt text-blue-600 dark:text-blue-400"></i>
+							</div>
+							{% endif %}
+						</div>
+						<div class="hidden sm:flex items-center justify-center mt-2">
+							<h4 class="text-xs font-medium text-gray-900 dark:text-white">{{ category.name }}</h4>
+						</div>
+					</div>
 				</a>
-			</div> #}
-		</div>
-	</section>
-
-	<!-- Corey Services -->
-	{# <section class="py-12 bg-gradient-to-br from-blue-50 to-indigo-50">
-		<div class="container mx-auto px-4">
-			<div class="text-center mb-10">
-				<h2 class="text-3xl font-black text-gray-900 mb-3">Corey Services</h2>
-				<p class="text-gray-600">More than just shopping - our ecosystem of services</p>
-			</div>
-
-			<div
-				class="grid grid-cols-1 md:grid-cols-4 gap-6">
-				<!-- CoreyPay -->
-				<div class="service-card group">
-					<div class="service-icon bg-gradient-to-r from-blue-500 to-blue-600">
-						<i class="fas fa-wallet"></i>
-					</div>
-					<div class="service-content">
-						<h3 class="service-title">CoreyPay</h3>
-						<p class="service-description">Fast, secure digital payments with rewards and cashback</p>
-						<div class="service-features">
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>Instant payments</span>
-							</div>
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>Earn points</span>
-							</div>
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>Secure transactions</span>
-							</div>
-						</div>
-					</div>
-					<a href="/services/coreypay" class="service-link group-hover:text-blue-600">
-						Get Started
-						<i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-					</a>
-				</div>
-
-				<!-- Corey Food -->
-				<div class="service-card group">
-					<div class="service-icon bg-gradient-to-r from-green-500 to-green-600">
-						<i class="fas fa-utensils"></i>
-					</div>
-					<div class="service-content">
-						<h3 class="service-title">Corey Food</h3>
-						<p class="service-description">Order food from your favorite restaurants delivered fast</p>
-						<div class="service-features">
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>200+ restaurants</span>
-							</div>
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>60-min delivery</span>
-							</div>
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>Live tracking</span>
-							</div>
-						</div>
-					</div>
-					<a href="/services/corey-food" class="service-link group-hover:text-green-600">
-						Order Now
-						<i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-					</a>
-				</div>
-
-				<!-- Corey Global -->
-				<div class="service-card group">
-					<div class="service-icon bg-gradient-to-r from-purple-500 to-purple-600">
-						<i class="fas fa-globe"></i>
-					</div>
-					<div class="service-content">
-						<h3 class="service-title">Corey Global</h3>
-						<p class="service-description">Shop international brands and products worldwide</p>
-						<div class="service-features">
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>Global shipping</span>
-							</div>
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>Tax-free shopping</span>
-							</div>
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>Price guarantee</span>
-							</div>
-						</div>
-					</div>
-					<a href="/services/corey-global" class="service-link group-hover:text-purple-600">
-						Shop Global
-						<i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-					</a>
-				</div>
-
-				<!-- Corey Logistics -->
-				<div class="service-card group">
-					<div class="service-icon bg-gradient-to-r from-orange-500 to-orange-600">
-						<i class="fas fa-truck"></i>
-					</div>
-					<div class="service-content">
-						<h3 class="service-title">Corey Logistics</h3>
-						<p class="service-description">Reliable delivery and logistics services across Kenya</p>
-						<div class="service-features">
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>Quick-fast delivery</span>
-							</div>
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>Nationwide coverage</span>
-							</div>
-							<div class="feature">
-								<i class="fas fa-check-circle text-green-500"></i>
-								<span>Real-time tracking</span>
-							</div>
-						</div>
-					</div>
-					<a href="/services/corey-logistics" class="service-link group-hover:text-orange-600">
-						Track Delivery
-						<i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-					</a>
-				</div>
+				{% endfor %}
 			</div>
 		</div>
-	</section> #}
+	</div>
+</div>
 
-	<!-- Payment Methods Section -->
-	<section class=" mx-auto py-12 bg-white border-t border-gray-200">
-		<div class="container mx-auto px-4">
-			<div class="text-center mb-10">
-				<h2 class="text-xl sm:text-3xl font-black text-gray-900 mb-3">Payment Options</h2>
-				<p class="text-gray-600">Secure and convenient payment methods</p>
+<!-- Category Showcases Section -->
+<section class="max-w-6xl mx-auto  pb-12 pt-2 sm:pt-6 bg-gray-50">
+	<div class="container mx-auto">
+
+		<!-- Toys & Dolls -->
+		{% if toys_and_dolls|length %}
+		<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
+				<div class="flex justify-between items-center">
+					<div class="flex items-center space-x-4">
+						<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
+							<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
+						</div>
+						<div>
+							<h3 class="text-xs sm:text-2xl font-bold text-white">Toys & Dolls</h3>
+							<p class="text-[10px] sm:text-md text-pink-100">Teddy bears, DIY boards & more</p>
+						</div>
+					</div>
+					<a href="/category/electronics"
+						class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
+						View All
+						<i class="fas fa-arrow-right ml-2"></i>
+					</a>
+				</div>
 			</div>
+			<div class="p-2">
+				<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
 
-			<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
-				{% for payment in payment_methods %}
-					<div class="flex-row border border-bg-gray-700 rounded-lg p-2 {{ payment.color_class }}">
-						<div class="">
-							<i class="{{ payment.icon }} item-center justify-center"></i>
-						</div>
-						<div class="payment-info">
-							<h4 class="payment-name">{{ payment.name }}</h4>
-							<p class="payment-description">{{ payment.description }}</p>
-						</div>
-						{% if payment.is_popular %}
-							<div class="payment-badge">
-								Popular
+					{% if toys_and_dolls|length %}
+					{% for product in toys_and_dolls|slice(0,8) %}
+					<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+						<a href="/products/{{ product.slug }}">
+							<div class="relative overflow-hidden bg-gray-100 mb-3">
+								<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+									class="w-full h-32 sm:h-40 object-cover">
 							</div>
+
+							<h4
+								class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
+								{{ product.name }}
+							</h4>
+						</a>
+
+						<div class="flex items-center justify-between">
+							<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
+								KSh
+								{{ product.price|number_format }}
+							</span>
+
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		{% endif %}
+
+		<!-- Fashion -->
+		{% if fashion|length %}
+		<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
+				<div class="flex justify-between items-center">
+					<div class="flex items-center space-x-4">
+						<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
+							<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
+						</div>
+						<div>
+							<h3 class="text-xs sm:text-2xl font-bold text-white">Fashion</h3>
+							<p class="text-[10px] sm:text-md text-pink-100">Trending outfits, designers & officials</p>
+						</div>
+					</div>
+					<a href="/category/fashion"
+						class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
+						View All
+						<i class="fas fa-arrow-right ml-2"></i>
+					</a>
+				</div>
+			</div>
+			<div class="p-2">
+				<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
+
+					{% if fashion|length %}
+					{% for product in fashion|slice(0,8) %}
+					<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+						<a href="/products/{{ product.slug }}">
+							<div class="relative overflow-hidden bg-gray-100 mb-3">
+								<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+									class="w-full h-32 sm:h-40 object-cover">
+							</div>
+
+							<h4
+								class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
+								{{ product.name }}
+							</h4>
+						</a>
+
+						<div class="flex items-center justify-between">
+							<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
+								KSh
+								{{ product.price|number_format }}
+							</span>
+
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		{% endif %}
+
+		<!-- Car Parts -->
+		{% if car_parts|length %}
+		<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
+				<div class="flex justify-between items-center">
+					<div class="flex items-center space-x-4">
+						<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
+							<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
+						</div>
+						<div>
+							<h3 class="text-xs sm:text-2xl font-bold text-white">Car Parts</h3>
+							<p class="text-[12px] sm:text-md text-pink-100">Engine parts, bearings, bolts & more</p>
+						</div>
+					</div>
+					<a href="/category/car-parts"
+						class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
+						View All
+						<i class="fas fa-arrow-right ml-2"></i>
+					</a>
+				</div>
+			</div>
+			<div class="p-2">
+				<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
+
+					{% if car_parts|length %}
+					{% for product in car_parts|slice(0,8) %}
+					<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+						<a href="/products/{{ product.slug }}">
+							<div class="relative overflow-hidden bg-gray-100 mb-3">
+								<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+									class="w-full h-32 sm:h-40 object-cover">
+							</div>
+
+							<h4
+								class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
+								{{ product.name }}
+							</h4>
+						</a>
+
+						<div class="flex items-center justify-between">
+							<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
+								KSh
+								{{ product.price|number_format }}
+							</span>
+
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		{% endif %}
+
+
+		<!-- Iphone -->
+		{% if iphones|length %}
+		<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
+				<div class="flex justify-between items-center">
+					<div class="flex items-center space-x-4">
+						<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
+							<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
+						</div>
+						<div>
+							<h3 class="text-xs sm:text-2xl font-bold text-white">iPhones</h3>
+							<p class="text-[10px] sm:text-md text-pink-100">Devices, casings, and accessories</p>
+						</div>
+					</div>
+					<a href="/category/iphones"
+						class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
+						View All
+						<i class="fas fa-arrow-right ml-2"></i>
+					</a>
+				</div>
+			</div>
+			<div class="p-2">
+				<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
+
+					{% if iphones|length %}
+					{% for product in iphones|slice(0,8) %}
+					<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+						<a href="/products/{{ product.slug }}">
+							<div class="relative overflow-hidden bg-gray-100 mb-3">
+								<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+									class="w-full h-32 sm:h-40 object-cover">
+							</div>
+
+							<h4
+								class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
+								{{ product.name }}
+							</h4>
+						</a>
+
+						<div class="flex items-center justify-between">
+							<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
+								KSh
+								{{ product.price|number_format }}
+							</span>
+
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		{% endif %}
+
+		<!-- Samsung -->
+		{% if samsung|length %}
+		<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
+				<div class="flex justify-between items-center">
+					<div class="flex items-center space-x-4">
+						<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
+							<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
+						</div>
+						<div>
+							<h3 class="text-xs sm:text-2xl font-bold text-white">Samsung</h3>
+							<p class="text-[12px] sm:text-md text-pink-100">Devices, casings, and accessories</p>
+						</div>
+					</div>
+					<a href="/category/samsung"
+						class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
+						View All
+						<i class="fas fa-arrow-right ml-2"></i>
+					</a>
+				</div>
+			</div>
+			<div class="p-2">
+				<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
+
+					{% if samsung|length %}
+					{% for product in samsung|slice(0,8) %}
+					<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+						<a href="/products/{{ product.slug }}">
+							<div class="relative overflow-hidden bg-gray-100 mb-3">
+								<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+									class="w-full h-32 sm:h-40 object-cover">
+							</div>
+
+							<h4
+								class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
+								{{ product.name }}
+							</h4>
+						</a>
+
+						<div class="flex items-center justify-between">
+							<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
+								KSh
+								{{ product.price|number_format }}
+							</span>
+
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		{% endif %}
+
+		<!-- Cameras & Accessories -->
+		{% if cameras_and_accessories|length %}
+		<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
+				<div class="flex justify-between items-center">
+					<div class="flex items-center space-x-4">
+						<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
+							<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
+						</div>
+						<div>
+							<h3 class="text-xs sm:text-2xl font-bold text-white">Cameras & Accessories</h3>
+							<p class="text-[12px] sm:text-md text-pink-100">Cameras, lens, batteries & stands</p>
+						</div>
+					</div>
+					<a href="/category/cameras-and-accessories"
+						class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
+						View All
+						<i class="fas fa-arrow-right ml-2"></i>
+					</a>
+				</div>
+			</div>
+			<div class="p-2">
+				<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
+
+					{% if cameras_and_accessories|length %}
+					{% for product in cameras_and_accessories|slice(0,8) %}
+					<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+						<a href="/products/{{ product.slug }}">
+							<div class="relative overflow-hidden bg-gray-100 mb-3">
+								<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+									class="w-full h-32 sm:h-40 object-cover">
+							</div>
+
+							<h4
+								class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
+								{{ product.name }}
+							</h4>
+						</a>
+
+						<div class="flex items-center justify-between">
+							<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
+								KSh
+								{{ product.price|number_format }}
+							</span>
+
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		{% endif %}
+
+		<!-- Home & Decor -->
+		{% if home_and_decor|length %}
+		<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
+				<div class="flex justify-between items-center">
+					<div class="flex items-center space-x-4">
+						<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
+							<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
+						</div>
+						<div>
+							<h3 class="text-xs sm:text-2xl font-bold text-white">Home & Decor</h3>
+							<p class="text-[10px] sm:text-md text-pink-100">{# TODO: find home and decor description #}
+							</p>
+						</div>
+					</div>
+					<a href="/category/home-and-decor"
+						class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
+						View All
+						<i class="fas fa-arrow-right ml-2"></i>
+					</a>
+				</div>
+			</div>
+			<div class="p-2">
+				<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
+
+					{% if home_and_decor|length %}
+					{% for product in home_and_decor|slice(0,8) %}
+					<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+						<a href="/products/{{ product.slug }}">
+							<div class="relative overflow-hidden bg-gray-100 mb-3">
+								<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+									class="w-full h-32 sm:h-40 object-cover">
+							</div>
+
+							<h4
+								class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
+								{{ product.name }}
+							</h4>
+						</a>
+
+						<div class="flex items-center justify-between">
+							<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
+								KSh
+								{{ product.price|number_format }}
+							</span>
+
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		{% endif %}
+
+		<!-- Laptops & Macbooks -->
+		{% if laptops_and_macbooks|length %}
+		<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
+				<div class="flex justify-between items-center">
+					<div class="flex items-center space-x-4">
+						<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
+							<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
+						</div>
+						<div>
+							<h3 class="text-xs sm:text-2xl font-bold text-white">Laptops & Macbooks</h3>
+							<p class="text-[10px] sm:text-md text-pink-100">
+								HP, Dell, Lenovo, Macbook Air
+							</p>
+						</div>
+					</div>
+					<a href="/category/laptopts-and-macbooks"
+						class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
+						View All
+						<i class="fas fa-arrow-right ml-2"></i>
+					</a>
+				</div>
+			</div>
+			<div class="p-2">
+				<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
+
+					{% if laptops_and_macbooks|length %}
+					{% for product in laptops_and_macbooks|slice(0,8) %}
+					<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+						<a href="/products/{{ product.slug }}">
+							<div class="relative overflow-hidden bg-gray-100 mb-3">
+								<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+									class="w-full h-32 sm:h-40 object-cover">
+							</div>
+
+							<h4
+								class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
+								{{ product.name }}
+							</h4>
+						</a>
+
+						<div class="flex items-center justify-between">
+							<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
+								KSh
+								{{ product.price|number_format }}
+							</span>
+
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		{% endif %}
+
+		<!-- Antiques & Art -->
+		{% if antiques_and_art|length %}
+		<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
+				<div class="flex justify-between items-center">
+					<div class="flex items-center space-x-4">
+						<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
+							<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
+						</div>
+						<div>
+							<h3 class="text-xs sm:text-2xl font-bold text-white">Antiques & Art</h3>
+							<p class="text-[10px] sm:text-md text-pink-100">
+								Paintings, drawings, collections
+							</p>
+						</div>
+					</div>
+					<a href="/category/antiques-and-art"
+						class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
+						View All
+						<i class="fas fa-arrow-right ml-2"></i>
+					</a>
+				</div>
+			</div>
+			<div class="p-2">
+				<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
+
+					{% if antiques_and_art|length %}
+					{% for product in antiques_and_art|slice(0,8) %}
+					<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+						<a href="/products/{{ product.slug }}">
+							<div class="relative overflow-hidden bg-gray-100 mb-3">
+								<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+									class="w-full h-32 sm:h-40 object-cover">
+							</div>
+
+							<h4
+								class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
+								{{ product.name }}
+							</h4>
+						</a>
+
+						<div class="flex items-center justify-between">
+							<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
+								KSh
+								{{ product.price|number_format }}
+							</span>
+
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		{% endif %}
+
+		<!-- Electronics -->
+		{% if electronics|length %}
+		<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-2 sm:px-6 py-1 sm:py-3">
+				<div class="flex justify-between items-center">
+					<div class="flex items-center space-x-4">
+						<div class="bg-white/20 p-2 sm:p-3 rounded-xl">
+							<i class="fas fa-tshirt text-lg sm:text-2xl text-white"></i>
+						</div>
+						<div>
+							<h3 class="text-xs sm:text-2xl font-bold text-white">Consumer Electronics</h3>
+							<p class="text-[10px] sm:text-md text-pink-100">
+								Sound systems, TVs, fridges
+							</p>
+						</div>
+					</div>
+					<a href="/category/electronics"
+						class="text-white hover:text-pink-200 text-[10px] sm:text-md font-semibold sm:font-bold">
+						View All
+						<i class="fas fa-arrow-right ml-2"></i>
+					</a>
+				</div>
+			</div>
+			<div class="p-2">
+				<div class="flex gap-1 sm:gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
+
+					{% if electronics|length %}
+					{% for product in electronics|slice(0,8) %}
+					<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+						<a href="/products/{{ product.slug }}">
+							<div class="relative overflow-hidden bg-gray-100 mb-3">
+								<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+									class="w-60 sm:w-full h-28 sm:h-40 object-cover">
+							</div>
+
+							<h4
+								class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
+								{{ product.name }}
+							</h4>
+						</a>
+
+						<div class="flex items-center justify-between">
+							<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
+								KSh
+								{{ product.price|number_format }}
+							</span>
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		{% endif %}
+
+		<!-- Phones & Tablets -->
+		{% if phones_and_tablets|length %}
+		<div class="mb-4 sm:mb-8 bg-white  shadow-lg overflow-hidden">
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3">
+				<div class="flex justify-between items-center">
+					<div class="flex items-center space-x-4">
+						<div class="bg-white/20 p-3 rounded-xl">
+							<i class="fas fa-tshirt text-2xl text-white"></i>
+						</div>
+						<div>
+							<h3 class="text-xl sm:text-2xl font-bold text-white">Phones & Tablets</h3>
+							<p class="text-[12px] sm:text-md text-pink-100">
+								Techno, Huawei, Infinix, Oppo
+							</p>
+						</div>
+					</div>
+					<a href="/category/phones-and-tablets"
+						class="text-white hover:text-pink-200 text-[12px] sm:text-md font-semibold sm:font-bold">
+						View All
+						<i class="fas fa-arrow-right ml-2"></i>
+					</a>
+				</div>
+			</div>
+			<div class="p-2">
+				<div class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
+
+					{% if phones_and_tablets|length %}
+					{% for product in phones_and_tablets|slice(0,8) %}
+					<div class="group flex-shrink-0 w-36 sm:w-48 snap-start">
+						<a href="/products/{{ product.slug }}">
+							<div class="relative overflow-hidden bg-gray-100 mb-3">
+								<img src="{{ product.images[0] }}" alt="{{ product.name }}"
+									class="w-full h-32 sm:h-40 object-cover">
+							</div>
+
+							<h4
+								class="text-[12px] min-h-[36px] sm:min-h-[16px] sm:text-md font-semibold sm:font-bold text-gray-900 mb-1 line-clamp-2">
+								{{ product.name }}
+							</h4>
+						</a>
+
+						<div class="flex items-center justify-between">
+							<span class="text-orange-600 text-[10px] sm:text-md font-semibold sm:font-bold">
+								KSh
+								{{ product.price|number_format }}
+							</span>
+
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		{% endif %}
+
+	</div>
+</section>
+
+<!-- Official Stores / Brands -->
+<section class="max-w-6xl mx-auto py-12 bg-white">
+	<div class="container mx-auto px-4">
+		<div class="text-center mb-10">
+			<h2 class="text-xl sm:text-3xl font-black text-gray-900 mb-3">Official Stores & Brands</h2>
+			<p class="text-gray-600">Shop from trusted official brand stores</p>
+		</div>
+
+		<div class="grid grid-cols-4 md:grid-cols-8 gap-1 sm:gap-4">
+			{% for brand in brands|slice(0,8) %}
+			<div class="brand-card group">
+				<a href="/brand/{{brand.slug}}" class="flex flex-col items-center p-4">
+					<div class="justify-center items-center mb-3">
+						{% if brand.logo %}
+						<img src="{{ brand.logo }}" alt="{{ brand.name }}" class="brand-logo">
+						{% else %}
+						<div class="brand-placeholder bg-gray-100 text-gray-400 rounded-lg">
+							<i class="fas fa-store text-2xl"></i>
+						</div>
 						{% endif %}
 					</div>
-				{% endfor %}
+					<span class="brand-name">{{ brand.name }}</span>
+					<span class="brand-products text-xs text-gray-500 mt-1">{{ brand.product_count }}
+						products</span>
+				</a>
+			</div>
+			{% else %}
+			{% for brand_name in ['Samsung', 'Apple', 'Tecno', 'Adidas', 'Nike', 'LG', 'HP', 'Lenovo'] %}
+			<div class="brand-card group">
+				<a href="#" class="flex flex-col items-center p-2 sm:p-4">
+					<div class="flex justify-center items-center mb-3">
+						<div class="flex items-center justify-center p-4 bg-gray-100 text-gray-400 rounded-lg">
+							<i class="fas fa-store text-2xl"></i>
+						</div>
+					</div>
+					<span class="text-[10] sm:text-sm">{{ brand_name }}</span>
+					<span class="brand-products text-xs text-gray-500 mt-1">500+ products</span>
+				</a>
+			</div>
+			{% endfor %}
+			{% endfor %}
+		</div>
+
+		<!-- View All Brands -->
+		{# <div class="text-center mt-10">
+			<a href="/brands"
+				class="inline-flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold px-6 py-3 rounded-lg transition-colors">
+				<span>View All Brands</span>
+				<i class="fas fa-arrow-right"></i>
+			</a>
+		</div> #}
+	</div>
+</section>
+
+<!-- Corey Services -->
+{# <section class="py-12 bg-gradient-to-br from-blue-50 to-indigo-50">
+	<div class="container mx-auto px-4">
+		<div class="text-center mb-10">
+			<h2 class="text-3xl font-black text-gray-900 mb-3">Corey Services</h2>
+			<p class="text-gray-600">More than just shopping - our ecosystem of services</p>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+			<!-- CoreyPay -->
+			<div class="service-card group">
+				<div class="service-icon bg-gradient-to-r from-blue-500 to-blue-600">
+					<i class="fas fa-wallet"></i>
+				</div>
+				<div class="service-content">
+					<h3 class="service-title">CoreyPay</h3>
+					<p class="service-description">Fast, secure digital payments with rewards and cashback</p>
+					<div class="service-features">
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>Instant payments</span>
+						</div>
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>Earn points</span>
+						</div>
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>Secure transactions</span>
+						</div>
+					</div>
+				</div>
+				<a href="/services/coreypay" class="service-link group-hover:text-blue-600">
+					Get Started
+					<i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+				</a>
 			</div>
 
-			<!-- Security Badges -->
-			<div class="mt-12 pt-8 border-t border-gray-200">
-				<div class="flex flex-wrap justify-center items-center gap-8">
-					<div class="flex items-center space-x-3">
-						<i class="fas fa-shield-alt text-3xl text-green-500"></i>
-						<div>
-							<div class="font-bold">SSL Secure</div>
-							<div class="text-sm text-gray-600">256-bit encryption</div>
+			<!-- Corey Food -->
+			<div class="service-card group">
+				<div class="service-icon bg-gradient-to-r from-green-500 to-green-600">
+					<i class="fas fa-utensils"></i>
+				</div>
+				<div class="service-content">
+					<h3 class="service-title">Corey Food</h3>
+					<p class="service-description">Order food from your favorite restaurants delivered fast</p>
+					<div class="service-features">
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>200+ restaurants</span>
+						</div>
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>60-min delivery</span>
+						</div>
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>Live tracking</span>
 						</div>
 					</div>
-					<div class="flex items-center space-x-3">
-						<i class="fas fa-lock text-3xl text-blue-500"></i>
-						<div>
-							<div class="font-bold">PCI DSS Compliant</div>
-							<div class="text-sm text-gray-600">Payment security</div>
+				</div>
+				<a href="/services/corey-food" class="service-link group-hover:text-green-600">
+					Order Now
+					<i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+				</a>
+			</div>
+
+			<!-- Corey Global -->
+			<div class="service-card group">
+				<div class="service-icon bg-gradient-to-r from-purple-500 to-purple-600">
+					<i class="fas fa-globe"></i>
+				</div>
+				<div class="service-content">
+					<h3 class="service-title">Corey Global</h3>
+					<p class="service-description">Shop international brands and products worldwide</p>
+					<div class="service-features">
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>Global shipping</span>
+						</div>
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>Tax-free shopping</span>
+						</div>
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>Price guarantee</span>
 						</div>
 					</div>
-					<div class="flex items-center space-x-3">
-						<i class="fas fa-user-shield text-3xl text-purple-500"></i>
-						<div>
-							<div class="font-bold">Fraud Protection</div>
-							<div class="text-sm text-gray-600">24/7 monitoring</div>
+				</div>
+				<a href="/services/corey-global" class="service-link group-hover:text-purple-600">
+					Shop Global
+					<i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+				</a>
+			</div>
+
+			<!-- Corey Logistics -->
+			<div class="service-card group">
+				<div class="service-icon bg-gradient-to-r from-orange-500 to-orange-600">
+					<i class="fas fa-truck"></i>
+				</div>
+				<div class="service-content">
+					<h3 class="service-title">Corey Logistics</h3>
+					<p class="service-description">Reliable delivery and logistics services across Kenya</p>
+					<div class="service-features">
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>Quick-fast delivery</span>
 						</div>
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>Nationwide coverage</span>
+						</div>
+						<div class="feature">
+							<i class="fas fa-check-circle text-green-500"></i>
+							<span>Real-time tracking</span>
+						</div>
+					</div>
+				</div>
+				<a href="/services/corey-logistics" class="service-link group-hover:text-orange-600">
+					Track Delivery
+					<i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+				</a>
+			</div>
+		</div>
+	</div>
+</section> #}
+
+<!-- Payment Methods Section -->
+<section class=" mx-auto py-12 bg-white border-t border-gray-200">
+	<div class="container mx-auto px-4">
+		<div class="text-center mb-10">
+			<h2 class="text-xl sm:text-3xl font-black text-gray-900 mb-3">Payment Options</h2>
+			<p class="text-gray-600">Secure and convenient payment methods</p>
+		</div>
+
+		<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
+			{% for payment in payment_methods %}
+			<div class="flex-row border border-bg-gray-700 rounded-lg p-2 {{ payment.color_class }}">
+				<div class="">
+					<i class="{{ payment.icon }} item-center justify-center"></i>
+				</div>
+				<div class="payment-info">
+					<h4 class="payment-name">{{ payment.name }}</h4>
+					<p class="payment-description">{{ payment.description }}</p>
+				</div>
+				{% if payment.is_popular %}
+				<div class="payment-badge">
+					Popular
+				</div>
+				{% endif %}
+			</div>
+			{% endfor %}
+		</div>
+
+		<!-- Security Badges -->
+		<div class="mt-12 pt-8 border-t border-gray-200">
+			<div class="flex flex-wrap justify-center items-center gap-8">
+				<div class="flex items-center space-x-3">
+					<i class="fas fa-shield-alt text-3xl text-green-500"></i>
+					<div>
+						<div class="font-bold">SSL Secure</div>
+						<div class="text-sm text-gray-600">256-bit encryption</div>
+					</div>
+				</div>
+				<div class="flex items-center space-x-3">
+					<i class="fas fa-lock text-3xl text-blue-500"></i>
+					<div>
+						<div class="font-bold">PCI DSS Compliant</div>
+						<div class="text-sm text-gray-600">Payment security</div>
+					</div>
+				</div>
+				<div class="flex items-center space-x-3">
+					<i class="fas fa-user-shield text-3xl text-purple-500"></i>
+					<div>
+						<div class="font-bold">Fraud Protection</div>
+						<div class="text-sm text-gray-600">24/7 monitoring</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
+</section>
 
-	<!-- Enhanced Testimonials -->
-	<section class="py-12 bg-gradient-to-br from-gray-50 to-blue-50">
-		<div class="container mx-auto px-4">
-			<h2 class="text-3xl lg:text-4xl font-black text-center mb-4 text-gray-900">
-				What Our Customers Say</h2>
-			<p class="text-center text-gray-600 mb-8 lg:mb-12 text-lg">Join 5000+ satisfied customers across Kenya</p>
+<!-- Enhanced Testimonials -->
+<section class="py-12 bg-gradient-to-br from-gray-50 to-blue-50">
+	<div class="container mx-auto px-4">
+		<h2 class="text-3xl lg:text-4xl font-black text-center mb-4 text-gray-900">
+			What Our Customers Say</h2>
+		<p class="text-center text-gray-600 mb-8 lg:mb-12 text-lg">Join 5000+ satisfied customers across Kenya</p>
 
-			<div
-				class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-				<!-- Testimonial 1 -->
-				<div class="bg-white rounded-xl lg: p-4 lg:p-6 shadow-lg hover:shadow-xl transition duration-300">
-					<div class="flex items-center mb-4">
-						<div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-bold mr-3 lg:mr-4 text-sm lg:text-base">JK</div>
-						<div>
-							<h4 class="font-black text-gray-900 text-sm lg:text-base">John Kamau</h4>
-							<div class="flex text-yellow-400 text-xs lg:text-sm">
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-							</div>
+		<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+			<!-- Testimonial 1 -->
+			<div class="bg-white rounded-xl lg: p-4 lg:p-6 shadow-lg hover:shadow-xl transition duration-300">
+				<div class="flex items-center mb-4">
+					<div
+						class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-bold mr-3 lg:mr-4 text-sm lg:text-base">
+						JK</div>
+					<div>
+						<h4 class="font-black text-gray-900 text-sm lg:text-base">John Kamau</h4>
+						<div class="flex text-yellow-400 text-xs lg:text-sm">
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
 						</div>
-					</div>
-					<p class="text-gray-600 italic mb-4 text-sm lg:text-base">"Sijawai pata spare parts za gari kwa bei nafuu kama hapa Corey Electronics. Hata delivery yao ya bure CBD inasaidia sana. Asante!"</p>
-					<div class="flex items-center text-xs lg:text-sm text-gray-500">
-						<i class="fas fa-check-circle text-green-500 mr-2"></i>
-						Verified Purchase • Car Battery
 					</div>
 				</div>
-
-				<!-- Testimonial 2 -->
-				<div class="bg-white rounded-xl lg: p-4 lg:p-6 shadow-lg hover:shadow-xl transition duration-300">
-					<div class="flex items-center mb-4">
-						<div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-bold mr-3 lg:mr-4 text-sm lg:text-base">MW</div>
-						<div>
-							<h4 class="font-black text-gray-900 text-sm lg:text-base">Mary Wanjiku</h4>
-							<div class="flex text-yellow-400 text-xs lg:text-sm">
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-							</div>
-						</div>
-					</div>
-					<p class="text-gray-600 italic mb-4 text-sm lg:text-base">"Nilinunua TV yangu hapa mwaka jana, bado inafanya kazi vizuri. Bei zao ni nafuu na wana warranty halisi. Nikipata pesa za kununua smartphone, hii ndio duka nitakaporudi."</p>
-					<div class="flex items-center text-xs lg:text-sm text-gray-500">
-						<i class="fas fa-check-circle text-green-500 mr-2"></i>
-						Verified Purchase • Smart TV
-					</div>
-				</div>
-
-				<!-- Testimonial 3 -->
-				<div class="bg-white rounded-xl lg: p-4 lg:p-6 shadow-lg hover:shadow-xl transition duration-300">
-					<div class="flex items-center mb-4">
-						<div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-bold mr-3 lg:mr-4 text-sm lg:text-base">PO</div>
-						<div>
-							<h4 class="font-black text-gray-900 text-sm lg:text-base">Peter Ochieng</h4>
-							<div class="flex text-yellow-400 text-xs lg:text-sm">
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star-half-alt"></i>
-							</div>
-						</div>
-					</div>
-					<p class="text-gray-600 italic mb-4 text-sm lg:text-base">"As a mechanic in Ngara, I trust Corey Electronics for all my spare parts needs. Their products are genuine and their customer service is excellent. Wanajua kusikiliza!"</p>
-					<div class="flex items-center text-xs lg:text-sm text-gray-500">
-						<i class="fas fa-check-circle text-green-500 mr-2"></i>
-						Verified Purchase • Brake Pads
-					</div>
+				<p class="text-gray-600 italic mb-4 text-sm lg:text-base">"Sijawai pata spare parts za gari kwa bei
+					nafuu kama hapa Corey Electronics. Hata delivery yao ya bure CBD inasaidia sana. Asante!"</p>
+				<div class="flex items-center text-xs lg:text-sm text-gray-500">
+					<i class="fas fa-check-circle text-green-500 mr-2"></i>
+					Verified Purchase • Car Battery
 				</div>
 			</div>
 
-			<!-- Trust Metrics -->
-			<div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mt-12 text-center">
-				<div>
-					<div class="text-2xl lg:text-4xl font-black text-blue-600">5K+</div>
-					<div class="text-gray-600 text-sm lg:text-base">Happy Customers</div>
+			<!-- Testimonial 2 -->
+			<div class="bg-white rounded-xl lg: p-4 lg:p-6 shadow-lg hover:shadow-xl transition duration-300">
+				<div class="flex items-center mb-4">
+					<div
+						class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-bold mr-3 lg:mr-4 text-sm lg:text-base">
+						MW</div>
+					<div>
+						<h4 class="font-black text-gray-900 text-sm lg:text-base">Mary Wanjiku</h4>
+						<div class="flex text-yellow-400 text-xs lg:text-sm">
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+						</div>
+					</div>
 				</div>
-				<div>
-					<div class="text-2xl lg:text-4xl font-black text-green-600">98%</div>
-					<div class="text-gray-600 text-sm lg:text-base">Positive Reviews</div>
+				<p class="text-gray-600 italic mb-4 text-sm lg:text-base">"Nilinunua TV yangu hapa mwaka jana, bado
+					inafanya kazi vizuri. Bei zao ni nafuu na wana warranty halisi. Nikipata pesa za kununua smartphone,
+					hii ndio duka nitakaporudi."</p>
+				<div class="flex items-center text-xs lg:text-sm text-gray-500">
+					<i class="fas fa-check-circle text-green-500 mr-2"></i>
+					Verified Purchase • Smart TV
 				</div>
-				<div>
-					<div class="text-2xl lg:text-4xl font-black text-orange-600">24/7</div>
-					<div class="text-gray-600 text-sm lg:text-base">Customer Support</div>
+			</div>
+
+			<!-- Testimonial 3 -->
+			<div class="bg-white rounded-xl lg: p-4 lg:p-6 shadow-lg hover:shadow-xl transition duration-300">
+				<div class="flex items-center mb-4">
+					<div
+						class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 font-bold mr-3 lg:mr-4 text-sm lg:text-base">
+						PO</div>
+					<div>
+						<h4 class="font-black text-gray-900 text-sm lg:text-base">Peter Ochieng</h4>
+						<div class="flex text-yellow-400 text-xs lg:text-sm">
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star-half-alt"></i>
+						</div>
+					</div>
 				</div>
-				<div>
-					<div class="text-2xl lg:text-4xl font-black text-purple-600">2+</div>
-					<div class="text-gray-600 text-sm lg:text-base">Years in Business</div>
+				<p class="text-gray-600 italic mb-4 text-sm lg:text-base">"As a mechanic in Ngara, I trust Corey
+					Electronics for all my spare parts needs. Their products are genuine and their customer service is
+					excellent. Wanajua kusikiliza!"</p>
+				<div class="flex items-center text-xs lg:text-sm text-gray-500">
+					<i class="fas fa-check-circle text-green-500 mr-2"></i>
+					Verified Purchase • Brake Pads
 				</div>
 			</div>
 		</div>
-	</section>
 
-	<!-- Mobile App CTA -->
-	<section class="py-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-		<div class="container mx-auto px-4">
-			<div class="flex flex-col lg:flex-row items-center justify-between">
-				<div class="lg:w-1/2 mb-8 lg:mb-0 text-center lg:text-left">
-					<h2 class="text-3xl lg:text-4xl font-black mb-4">Coming Soon</h2>
-					<p class="text-lg lg:text-xl mb-1 opacity-90">We are working on the Corey Electronics App. Convinience to Shop faster, get exclusive app-only deals, and track your orders on the go!</p>
-					<div class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
-						<a href="#" class="bg-black text-white px-4 lg:px-6 py-3 rounded-lg font-bold hover:bg-gray-800 transition duration-300 flex items-center justify-center text-sm lg:text-base">
-							<i class="fab fa-google-play mr-2"></i>
-							Google Play
-						</a>
-						<a href="#" class="bg-black text-white px-4 lg:px-6 py-3 rounded-lg font-bold hover:bg-gray-800 transition duration-300 flex items-center justify-center text-sm lg:text-base">
-							<i class="fab fa-app-store mr-2"></i>
-							App Store
-						</a>
-					</div>
-				</div>
-				<div class="lg:w-1/2 flex justify-center">
-					<img src="https://images.unsplash.com/photo-1607082350899-7e105aa886ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Mobile App" class="w-48 lg:w-64 transform rotate-3 lg:rotate-6 shadow-2xl ">
-				</div>
+		<!-- Trust Metrics -->
+		<div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mt-12 text-center">
+			<div>
+				<div class="text-2xl lg:text-4xl font-black text-blue-600">5K+</div>
+				<div class="text-gray-600 text-sm lg:text-base">Happy Customers</div>
+			</div>
+			<div>
+				<div class="text-2xl lg:text-4xl font-black text-green-600">98%</div>
+				<div class="text-gray-600 text-sm lg:text-base">Positive Reviews</div>
+			</div>
+			<div>
+				<div class="text-2xl lg:text-4xl font-black text-orange-600">24/7</div>
+				<div class="text-gray-600 text-sm lg:text-base">Customer Support</div>
+			</div>
+			<div>
+				<div class="text-2xl lg:text-4xl font-black text-purple-600">2+</div>
+				<div class="text-gray-600 text-sm lg:text-base">Years in Business</div>
 			</div>
 		</div>
-	</section>
+	</div>
+</section>
 
-	<style>
-		/* Brand Cards */
-		.brand-card {
-			background: white;
-			border: 1px solid #e5e7eb;
-			transition: all 0.3s ease;
+<!-- Mobile App CTA -->
+<section class="py-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+	<div class="container mx-auto px-4">
+		<div class="flex flex-col lg:flex-row items-center justify-between">
+			<div class="lg:w-1/2 mb-8 lg:mb-0 text-center lg:text-left">
+				<h2 class="text-3xl lg:text-4xl font-black mb-4">Coming Soon</h2>
+				<p class="text-lg lg:text-xl mb-1 opacity-90">We are working on the Corey Electronics App. Convinience
+					to Shop faster, get exclusive app-only deals, and track your orders on the go!</p>
+				<div
+					class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
+					<a href="#"
+						class="bg-black text-white px-4 lg:px-6 py-3 rounded-lg font-bold hover:bg-gray-800 transition duration-300 flex items-center justify-center text-sm lg:text-base">
+						<i class="fab fa-google-play mr-2"></i>
+						Google Play
+					</a>
+					<a href="#"
+						class="bg-black text-white px-4 lg:px-6 py-3 rounded-lg font-bold hover:bg-gray-800 transition duration-300 flex items-center justify-center text-sm lg:text-base">
+						<i class="fab fa-app-store mr-2"></i>
+						App Store
+					</a>
+				</div>
+			</div>
+			<div class="lg:w-1/2 flex justify-center">
+				<img src="https://images.unsplash.com/photo-1607082350899-7e105aa886ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+					alt="Mobile App" class="w-48 lg:w-64 transform rotate-3 lg:rotate-6 shadow-2xl ">
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	/* Brand Cards */
+	.brand-card {
+		background: white;
+		border: 1px solid #e5e7eb;
+		transition: all 0.3s ease;
+	}
+
+	.brand-card:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+		border-color: #3b82f6;
+	}
+
+	.brand-logo-container {
+		width: 64px;
+		height: 64px;
+	}
+
+	.brand-logo {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+	.brand-name {
+		font-weight: 600;
+		color: #1f2937;
+		font-size: 14px;
+		text-align: center;
+	}
+
+	.brand-products {
+		opacity: 0;
+		transform: translateY(10px);
+		transition: all 0.3s ease;
+	}
+
+	.brand-card:hover .brand-products {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	/* Payment Cards */
+	.payment-card {
+		background: white;
+		border-radius: 12px;
+		padding: 20px;
+		border: 1px solid #e5e7eb;
+		position: relative;
+		transition: all 0.3s ease;
+	}
+
+	.payment-card:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+	}
+
+	.payment-icon {
+		width: 48px;
+		height: 48px;
+		border-radius: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 24px;
+		margin-bottom: 16px;
+	}
+
+	.payment-name {
+		font-weight: 600;
+		color: #1f2937;
+		font-size: 16px;
+		margin-bottom: 4px;
+	}
+
+	.payment-description {
+		color: #6b7280;
+		font-size: 13px;
+	}
+
+	.payment-badge {
+		position: absolute;
+		top: 12px;
+		right: 12px;
+		background: #10b981;
+		color: white;
+		font-size: 10px;
+		font-weight: bold;
+		padding: 4px 8px;
+		border-radius: 999px;
+	}
+
+	/* Hero Carousel Transitions */
+	.hero-slide {
+		display: none;
+		opacity: 0;
+		transition: opacity 0.5s ease-in-out;
+	}
+
+	.hero-slide.active {
+		display: block;
+		opacity: 1;
+	}
+
+	.hero-caption {
+		display: none;
+		opacity: 0;
+		transition: opacity 0.5s ease-in-out;
+	}
+
+	.hero-caption.active {
+		display: block;
+		opacity: 1;
+	}
+
+	.hero-slide-mobile {
+		display: none;
+		opacity: 0;
+		transition: opacity 0.5s ease-in-out;
+	}
+
+	.hero-slide-mobile.active {
+		display: block;
+		opacity: 1;
+	}
+
+	/* Mobile carousel specific */
+	@media(max-width: 767px) {
+
+		.hero-captions,
+		.hero-carousel-desktop {
+			display: none;
 		}
+	}
 
-		.brand-card:hover {
-			transform: translateY(-4px);
-			box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-			border-color: #3b82f6;
+	@media(min-width: 768px) {
+		.hero-carousel-mobile {
+			display: none;
 		}
+	}
 
-		.brand-logo-container {
-			width: 64px;
-			height: 64px;
-		}
+	.hero-gradient {
+		background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
+	}
 
-		.brand-logo {
-			width: 100%;
-			height: 100%;
-			object-fit: contain;
-		}
+	.pattern-dots {
+		background-image: radial-gradient(currentColor 1px, transparent 1px);
+		background-size: calc(10 * 1px) calc(10 * 1px);
+	}
 
-		.brand-name {
-			font-weight: 600;
-			color: #1f2937;
-			font-size: 14px;
-			text-align: center;
-		}
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
 
-		.brand-products {
+	.scrollbar-hide {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* Category Sidebar */
+	.category-sidebar-item {
+		display: flex;
+		align-items: center;
+		padding: 3px 4px;
+		border-radius: 1px;
+		transition: all 0.3s ease;
+		margin-bottom: 2px;
+	}
+
+	.category-sidebar-item:hover {
+		background: rgba(255, 255, 255, 0.15);
+		transform: translateX(4px);
+	}
+
+	.category-sidebar-icon {
+		width: 32px;
+		height: 32px;
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 6px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-right: 12px;
+		font-size: 14px;
+		transition: all 0.3s ease;
+	}
+
+	.category-sidebar-item:hover .category-sidebar-icon {
+		background: rgba(255, 255, 255, 0.2);
+		transform: scale(1.1);
+	}
+
+	.category-sidebar-name {
+		flex: 1;
+		font-size: 14px;
+		font-weight: 500;
+	}
+
+	.category-sidebar-arrow {
+		opacity: 0;
+		transform: translateX(-10px);
+		transition: all 0.3s ease;
+		color: rgba(255, 255, 255, 0.6);
+	}
+
+	.category-sidebar-item:hover .category-sidebar-arrow {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+	/* Hero Carousel */
+	.hero-slide-desktop {
+		display: none;
+		animation: fadeIn 0.5s ease-in-out;
+	}
+
+	.hero-slide-desktop.active {
+		display: block;
+	}
+
+	.hero-slide-mobile {
+		display: none;
+		animation: fadeIn 0.5s ease-in-out;
+	}
+
+	.hero-slide-mobile.active {
+		display: block;
+	}
+
+	/* Top Deals */
+	.top-deal-item {
+		display: flex;
+		align-items: center;
+		padding: 2px;
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 8px;
+		transition: all 0.3s ease;
+	}
+
+	.top-deal-item:hover {
+		background: rgba(255, 255, 255, 0.2);
+		transform: translateY(-2px);
+	}
+
+	.top-deal-image {
+		width: 60px;
+		height: 60px;
+		flex-shrink: 0;
+		margin-right: 12px;
+	}
+
+	.top-deal-info {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.top-deal-name {
+		font-size: 13px;
+		font-weight: 600;
+		margin-bottom: 4px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.top-deal-price {
+		font-size: 12px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.top-deal-badge {
+		margin-left: 8px;
+	}
+
+	/* Animations */
+	@keyframes fadeIn {
+		from {
 			opacity: 0;
 			transform: translateY(10px);
-			transition: all 0.3s ease;
 		}
 
-		.brand-card:hover .brand-products {
+		to {
 			opacity: 1;
 			transform: translateY(0);
 		}
+	}
 
-		/* Payment Cards */
-		.payment-card {
-			background: white;
-			border-radius: 12px;
-			padding: 20px;
-			border: 1px solid #e5e7eb;
-			position: relative;
-			transition: all 0.3s ease;
-		}
+	.hero-gradient {
+		background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
+	}
 
-		.payment-card:hover {
-			transform: translateY(-4px);
-			box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-		}
-
-		.payment-icon {
-			width: 48px;
-			height: 48px;
-			border-radius: 10px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 24px;
-			margin-bottom: 16px;
-		}
-
-		.payment-name {
-			font-weight: 600;
-			color: #1f2937;
-			font-size: 16px;
-			margin-bottom: 4px;
-		}
-
-		.payment-description {
-			color: #6b7280;
-			font-size: 13px;
-		}
-
-		.payment-badge {
-			position: absolute;
-			top: 12px;
-			right: 12px;
-			background: #10b981;
-			color: white;
-			font-size: 10px;
-			font-weight: bold;
-			padding: 4px 8px;
-			border-radius: 999px;
-		}
-
-		/* Hero Carousel Transitions */
-		.hero-slide {
-			display: none;
-			opacity: 0;
-			transition: opacity 0.5s ease-in-out;
-		}
-
-		.hero-slide.active {
-			display: block;
-			opacity: 1;
-		}
-
-		.hero-caption {
-			display: none;
-			opacity: 0;
-			transition: opacity 0.5s ease-in-out;
-		}
-
-		.hero-caption.active {
-			display: block;
-			opacity: 1;
-		}
-
-		.hero-slide-mobile {
-			display: none;
-			opacity: 0;
-			transition: opacity 0.5s ease-in-out;
-		}
-
-		.hero-slide-mobile.active {
-			display: block;
-			opacity: 1;
-		}
-
-		/* Mobile carousel specific */
-		@media(max-width: 767px) {
-			.hero-captions,
-			.hero-carousel-desktop {
-				display: none;
-			}
-		}
-
-		@media(min-width: 768px) {
-			.hero-carousel-mobile {
-				display: none;
-			}
-		}
-
-		.hero-gradient {
-			background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
-		}
-
-		.pattern-dots {
-			background-image: radial-gradient(currentColor 1px, transparent 1px);
-			background-size: calc(10 * 1px) calc(10 * 1px);
-		}
-
-		.line-clamp-2 {
-			display: -webkit-box;
-			-webkit-line-clamp: 2;
-			-webkit-box-orient: vertical;
-			overflow: hidden;
-		}
-
-		.scrollbar-hide {
-			-ms-overflow-style: none;
-			scrollbar-width: none;
-		}
-
-		.scrollbar-hide::-webkit-scrollbar {
-			display: none;
-		}
-
-		/* Category Sidebar */
-		.category-sidebar-item {
-			display: flex;
-			align-items: center;
-			padding: 3px 4px;
-			border-radius: 1px;
-			transition: all 0.3s ease;
-			margin-bottom: 2px;
-		}
-
-		.category-sidebar-item:hover {
-			background: rgba(255, 255, 255, 0.15);
-			transform: translateX(4px);
-		}
-
-		.category-sidebar-icon {
-			width: 32px;
-			height: 32px;
-			background: rgba(255, 255, 255, 0.1);
-			border-radius: 6px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			margin-right: 12px;
-			font-size: 14px;
-			transition: all 0.3s ease;
-		}
-
-		.category-sidebar-item:hover .category-sidebar-icon {
-			background: rgba(255, 255, 255, 0.2);
-			transform: scale(1.1);
-		}
-
-		.category-sidebar-name {
-			flex: 1;
-			font-size: 14px;
-			font-weight: 500;
-		}
-
-		.category-sidebar-arrow {
-			opacity: 0;
-			transform: translateX(-10px);
-			transition: all 0.3s ease;
-			color: rgba(255, 255, 255, 0.6);
-		}
-
-		.category-sidebar-item:hover .category-sidebar-arrow {
-			opacity: 1;
-			transform: translateX(0);
-		}
-
-		/* Hero Carousel */
+	@media(max-width: 768px) {
 		.hero-slide-desktop {
-			display: none;
-			animation: fadeIn 0.5s ease-in-out;
-		}
-
-		.hero-slide-desktop.active {
-			display: block;
+			display: none !important;
 		}
 
 		.hero-slide-mobile {
 			display: none;
-			animation: fadeIn 0.5s ease-in-out;
 		}
 
 		.hero-slide-mobile.active {
 			display: block;
 		}
-
-		/* Top Deals */
-		.top-deal-item {
-			display: flex;
-			align-items: center;
-			padding: 2px;
-			background: rgba(255, 255, 255, 0.1);
-			border-radius: 8px;
-			transition: all 0.3s ease;
-		}
-
-		.top-deal-item:hover {
-			background: rgba(255, 255, 255, 0.2);
-			transform: translateY(-2px);
-		}
-
-		.top-deal-image {
-			width: 60px;
-			height: 60px;
-			flex-shrink: 0;
-			margin-right: 12px;
-		}
-
-		.top-deal-info {
-			flex: 1;
-			min-width: 0;
-		}
-
-		.top-deal-name {
-			font-size: 13px;
-			font-weight: 600;
-			margin-bottom: 4px;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		.top-deal-price {
-			font-size: 12px;
-			display: flex;
-			flex-direction: column;
-		}
-
-		.top-deal-badge {
-			margin-left: 8px;
-		}
-
-		/* Animations */
-		@keyframes fadeIn {
-			from {
-				opacity: 0;
-				transform: translateY(10px);
-			}
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
-		}
-
-		.hero-gradient {
-			background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
-		}
-
-		@media(max-width: 768px) {
-			.hero-slide-desktop {
-				display: none !important;
-			}
-			.hero-slide-mobile {
-				display: none;
-			}
-			.hero-slide-mobile.active {
-				display: block;
-			}
-		}
-	</style>
+	}
+</style>
 {% endblock %}
 
 {% block scripts %}
-	<script>
+<script>
 
-		const endTime = new Date("{{ flash_offers.end_time }}").getTime();
+	const endTime = new Date("{{ flash_offers.end_time }}").getTime();
 
-function setDigit(id, value) {
-const el = document.getElementById(id);
-if (el && el.textContent !== value) {
-el.textContent = value;
-}
-}
+	function setDigit(id, value) {
+		const el = document.getElementById(id);
+		if (el && el.textContent !== value) {
+			el.textContent = value;
+		}
+	}
 
-function updateCountdown() {
+	function updateCountdown() {
 
-const now = new Date().getTime();
-const diff = endTime - now;
+		const now = new Date().getTime();
+		const diff = endTime - now;
 
-if (diff <= 0) 
-return;
-
-
-
-const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-const d = String(days).padStart(2, "0");
-const h = String(hours).padStart(2, "0");
-const m = String(minutes).padStart(2, "0");
-const s = String(seconds).padStart(2, "0");
-
-setDigit("d1", d[0]);
-setDigit("d2", d[1]);
-
-setDigit("h1", h[0]);
-setDigit("h2", h[1]);
-
-setDigit("m1", m[0]);
-setDigit("m2", m[1]);
-
-setDigit("s1", s[0]);
-setDigit("s2", s[1]);
-}
-
-setInterval(updateCountdown, 1000);
-	</script>
-
-	<script>
-		document.addEventListener('DOMContentLoaded', function () { // Desktop carousel
-const desktopSlides = document.querySelectorAll('.hero-slide-desktop');
-const desktopIndicators = document.querySelectorAll('.hero-indicator-desktop');
-const prevButton = document.querySelector('.hero-prev');
-const nextButton = document.querySelector('.hero-next');
-
-// Mobile carousel
-const mobileSlides = document.querySelectorAll('.hero-slide-mobile');
-const mobileIndicators = document.querySelectorAll('.hero-indicator-mobile');
-
-let currentSlide = 0;
-const totalSlides = desktopSlides.length;
-
-// Auto-rotate slides every 5 seconds
-let slideInterval = setInterval(nextSlide, 5000);
-
-function showSlide(index) { // Hide all slides
-desktopSlides.forEach(slide => slide.classList.remove('active'));
-desktopIndicators.forEach(indicator => {
-indicator.classList.remove('bg-white/100');
-indicator.classList.add('bg-white/30');
-});
-
-mobileSlides.forEach(slide => slide.classList.remove('active'));
-mobileIndicators.forEach(indicator => {
-indicator.classList.remove('bg-white/100');
-indicator.classList.add('bg-white/30');
-});
-
-// Show current slide
-desktopSlides[index].classList.add('active');
-desktopIndicators[index].classList.remove('bg-white/30');
-desktopIndicators[index].classList.add('bg-white/100');
-
-mobileSlides[index].classList.add('active');
-mobileIndicators[index].classList.remove('bg-white/30');
-mobileIndicators[index].classList.add('bg-white/100');
-
-currentSlide = index;
-
-// Reset auto-rotate timer
-clearInterval(slideInterval);
-slideInterval = setInterval(nextSlide, 5000);
-}
-
-function nextSlide() {
-currentSlide = (currentSlide + 1) % totalSlides;
-showSlide(currentSlide);
-}
-
-function prevSlide() {
-currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-showSlide(currentSlide);
-}
-
-// Event listeners for desktop controls
-if (prevButton && nextButton) {
-prevButton.addEventListener('click', prevSlide);
-nextButton.addEventListener('click', nextSlide);
-}
-
-// Event listeners for desktop indicators
-desktopIndicators.forEach((indicator, index) => {
-indicator.addEventListener('click', () => {
-showSlide(index);
-});
-});
-
-// Event listeners for mobile indicators
-mobileIndicators.forEach((indicator, index) => {
-indicator.addEventListener('click', () => {
-showSlide(index);
-});
-});
-
-// Pause auto-rotate on hover
-const heroCarousel = document.querySelector('.hero-carousel-desktop');
-if (heroCarousel) {
-heroCarousel.addEventListener('mouseenter', () => {
-clearInterval(slideInterval);
-});
-
-heroCarousel.addEventListener('mouseleave', () => {
-slideInterval = setInterval(nextSlide, 5000);
-});
-}
-});
-// Hero Carousel Functionality
-document.addEventListener('DOMContentLoaded', function () { // Desktop carousel
-const heroSlides = document.querySelectorAll('.hero-slide');
-const heroCaptions = document.querySelectorAll('.hero-caption');
-const prevButton = document.querySelector('.hero-prev');
-const nextButton = document.querySelector('.hero-next');
-
-// Mobile carousel
-const mobileSlides = document.querySelectorAll('.hero-slide-mobile');
-const mobileIndicators = document.querySelectorAll('.hero-indicator');
-
-let currentSlide = 0;
-const totalSlides = heroSlides.length;
-
-// Auto-rotate slides every 5 seconds
-let slideInterval = setInterval(nextSlide, 5000);
-
-function showSlide(index) { // Hide all slides and captions
-heroSlides.forEach(slide => slide.classList.remove('active'));
-heroCaptions.forEach(caption => caption.classList.remove('active'));
-mobileSlides.forEach(slide => slide.classList.remove('active'));
-mobileIndicators.forEach(indicator => {
-indicator.classList.remove('bg-opacity-100');
-indicator.classList.add('bg-opacity-30');
-});
-
-// Show current slide and caption
-heroSlides[index].classList.add('active');
-heroCaptions[index].classList.add('active');
-mobileSlides[index].classList.add('active');
-mobileIndicators[index].classList.remove('bg-opacity-30');
-mobileIndicators[index].classList.add('bg-opacity-100');
-
-currentSlide = index;
-
-// Reset auto-rotate timer
-clearInterval(slideInterval);
-slideInterval = setInterval(nextSlide, 5000);
-}
-
-function nextSlide() {
-currentSlide = (currentSlide + 1) % totalSlides;
-showSlide(currentSlide);
-}
-
-function prevSlide() {
-currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-showSlide(currentSlide);
-}
-
-// Event listeners for desktop
-if (prevButton && nextButton) {
-prevButton.addEventListener('click', prevSlide);
-nextButton.addEventListener('click', nextSlide);
-}
-
-// Event listeners for mobile indicators
-mobileIndicators.forEach((indicator, index) => {
-indicator.addEventListener('click', () => {
-showSlide(index);
-});
-});
-
-// Pause auto-rotate on hover
-const heroCarousel = document.querySelector('.hero-carousel');
-if (heroCarousel) {
-heroCarousel.addEventListener('mouseenter', () => {
-clearInterval(slideInterval);
-});
-
-heroCarousel.addEventListener('mouseleave', () => {
-slideInterval = setInterval(nextSlide, 5000);
-});
-}
-
-// Flash Sale Countdown Timer
-function updateCountdown() {
-const countdownElement = document.getElementById('countdown');
-if (! countdownElement) 
-return;
+		if (diff <= 0)
+			return;
 
 
 
-// Set end time (2 hours from now)
-const endTime = new Date();
-endTime.setHours(endTime.getHours() + 2);
-endTime.setMinutes(endTime.getMinutes() + 15);
-endTime.setSeconds(endTime.getSeconds() + 38);
+		const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+		const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+		const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+		const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-function update() {
-const now = new Date();
-const diff = endTime - now;
+		const d = String(days).padStart(2, "0");
+		const h = String(hours).padStart(2, "0");
+		const m = String(minutes).padStart(2, "0");
+		const s = String(seconds).padStart(2, "0");
 
-if (diff <= 0) {
-countdownElement.textContent = "00:00:00";
-return;
-}
+		setDigit("d1", d[0]);
+		setDigit("d2", d[1]);
 
-const hours = Math.floor(diff / (1000 * 60 * 60));
-const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+		setDigit("h1", h[0]);
+		setDigit("h2", h[1]);
 
-countdownElement.textContent = `${
-hours.toString().padStart(2, '0')
-}:${
-minutes.toString().padStart(2, '0')
-}:${
-seconds.toString().padStart(2, '0')
-}`;
-}
+		setDigit("m1", m[0]);
+		setDigit("m2", m[1]);
 
-update();
-setInterval(update, 1000);
-}
+		setDigit("s1", s[0]);
+		setDigit("s2", s[1]);
+	}
 
-updateCountdown();
-});
-	</script>
+	setInterval(updateCountdown, 1000);
+</script>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () { // Desktop carousel
+		const desktopSlides = document.querySelectorAll('.hero-slide-desktop');
+		const desktopIndicators = document.querySelectorAll('.hero-indicator-desktop');
+		const prevButton = document.querySelector('.hero-prev');
+		const nextButton = document.querySelector('.hero-next');
+
+		// Mobile carousel
+		const mobileSlides = document.querySelectorAll('.hero-slide-mobile');
+		const mobileIndicators = document.querySelectorAll('.hero-indicator-mobile');
+
+		let currentSlide = 0;
+		const totalSlides = desktopSlides.length;
+
+		// Auto-rotate slides every 5 seconds
+		let slideInterval = setInterval(nextSlide, 5000);
+
+		function showSlide(index) { // Hide all slides
+			desktopSlides.forEach(slide => slide.classList.remove('active'));
+			desktopIndicators.forEach(indicator => {
+				indicator.classList.remove('bg-white/100');
+				indicator.classList.add('bg-white/30');
+			});
+
+			mobileSlides.forEach(slide => slide.classList.remove('active'));
+			mobileIndicators.forEach(indicator => {
+				indicator.classList.remove('bg-white/100');
+				indicator.classList.add('bg-white/30');
+			});
+
+			// Show current slide
+			desktopSlides[index].classList.add('active');
+			desktopIndicators[index].classList.remove('bg-white/30');
+			desktopIndicators[index].classList.add('bg-white/100');
+
+			mobileSlides[index].classList.add('active');
+			mobileIndicators[index].classList.remove('bg-white/30');
+			mobileIndicators[index].classList.add('bg-white/100');
+
+			currentSlide = index;
+
+			// Reset auto-rotate timer
+			clearInterval(slideInterval);
+			slideInterval = setInterval(nextSlide, 5000);
+		}
+
+		function nextSlide() {
+			currentSlide = (currentSlide + 1) % totalSlides;
+			showSlide(currentSlide);
+		}
+
+		function prevSlide() {
+			currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+			showSlide(currentSlide);
+		}
+
+		// Event listeners for desktop controls
+		if (prevButton && nextButton) {
+			prevButton.addEventListener('click', prevSlide);
+			nextButton.addEventListener('click', nextSlide);
+		}
+
+		// Event listeners for desktop indicators
+		desktopIndicators.forEach((indicator, index) => {
+			indicator.addEventListener('click', () => {
+				showSlide(index);
+			});
+		});
+
+		// Event listeners for mobile indicators
+		mobileIndicators.forEach((indicator, index) => {
+			indicator.addEventListener('click', () => {
+				showSlide(index);
+			});
+		});
+
+		// Pause auto-rotate on hover
+		const heroCarousel = document.querySelector('.hero-carousel-desktop');
+		if (heroCarousel) {
+			heroCarousel.addEventListener('mouseenter', () => {
+				clearInterval(slideInterval);
+			});
+
+			heroCarousel.addEventListener('mouseleave', () => {
+				slideInterval = setInterval(nextSlide, 5000);
+			});
+		}
+	});
+	// Hero Carousel Functionality
+	document.addEventListener('DOMContentLoaded', function () { // Desktop carousel
+		const heroSlides = document.querySelectorAll('.hero-slide');
+		const heroCaptions = document.querySelectorAll('.hero-caption');
+		const prevButton = document.querySelector('.hero-prev');
+		const nextButton = document.querySelector('.hero-next');
+
+		// Mobile carousel
+		const mobileSlides = document.querySelectorAll('.hero-slide-mobile');
+		const mobileIndicators = document.querySelectorAll('.hero-indicator');
+
+		let currentSlide = 0;
+		const totalSlides = heroSlides.length;
+
+		// Auto-rotate slides every 5 seconds
+		let slideInterval = setInterval(nextSlide, 5000);
+
+		function showSlide(index) { // Hide all slides and captions
+			heroSlides.forEach(slide => slide.classList.remove('active'));
+			heroCaptions.forEach(caption => caption.classList.remove('active'));
+			mobileSlides.forEach(slide => slide.classList.remove('active'));
+			mobileIndicators.forEach(indicator => {
+				indicator.classList.remove('bg-opacity-100');
+				indicator.classList.add('bg-opacity-30');
+			});
+
+			// Show current slide and caption
+			heroSlides[index].classList.add('active');
+			heroCaptions[index].classList.add('active');
+			mobileSlides[index].classList.add('active');
+			mobileIndicators[index].classList.remove('bg-opacity-30');
+			mobileIndicators[index].classList.add('bg-opacity-100');
+
+			currentSlide = index;
+
+			// Reset auto-rotate timer
+			clearInterval(slideInterval);
+			slideInterval = setInterval(nextSlide, 5000);
+		}
+
+		function nextSlide() {
+			currentSlide = (currentSlide + 1) % totalSlides;
+			showSlide(currentSlide);
+		}
+
+		function prevSlide() {
+			currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+			showSlide(currentSlide);
+		}
+
+		// Event listeners for desktop
+		if (prevButton && nextButton) {
+			prevButton.addEventListener('click', prevSlide);
+			nextButton.addEventListener('click', nextSlide);
+		}
+
+		// Event listeners for mobile indicators
+		mobileIndicators.forEach((indicator, index) => {
+			indicator.addEventListener('click', () => {
+				showSlide(index);
+			});
+		});
+
+		// Pause auto-rotate on hover
+		const heroCarousel = document.querySelector('.hero-carousel');
+		if (heroCarousel) {
+			heroCarousel.addEventListener('mouseenter', () => {
+				clearInterval(slideInterval);
+			});
+
+			heroCarousel.addEventListener('mouseleave', () => {
+				slideInterval = setInterval(nextSlide, 5000);
+			});
+		}
+
+		// Flash Sale Countdown Timer
+		function updateCountdown() {
+			const countdownElement = document.getElementById('countdown');
+			if (!countdownElement)
+				return;
+
+
+
+			// Set end time (2 hours from now)
+			const endTime = new Date();
+			endTime.setHours(endTime.getHours() + 2);
+			endTime.setMinutes(endTime.getMinutes() + 15);
+			endTime.setSeconds(endTime.getSeconds() + 38);
+
+			function update() {
+				const now = new Date();
+				const diff = endTime - now;
+
+				if (diff <= 0) {
+					countdownElement.textContent = "00:00:00";
+					return;
+				}
+
+				const hours = Math.floor(diff / (1000 * 60 * 60));
+				const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+				countdownElement.textContent = `${hours.toString().padStart(2, '0')
+					}:${minutes.toString().padStart(2, '0')
+					}:${seconds.toString().padStart(2, '0')
+					}`;
+			}
+
+			update();
+			setInterval(update, 1000);
+		}
+
+		updateCountdown();
+	});
+</script>
 {% endblock %}
