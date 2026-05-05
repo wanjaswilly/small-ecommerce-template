@@ -1,140 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-		<title>
-			{% block title %}
-				Duka - {{ __('home')|title }} - {{ __('shop')|title }}
-			{% endblock %}
-		</title>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-		<meta name="description" content="{% block description %}{{ __('Your trusted partner for quality products in Kenya') }}{% endblock %}"/>
-		<meta name="author" content="Duka"/>
-		<meta
-		name="keywords" content="electronics, fashion, home, Kenya, Nairobi, smartphones, laptops, traditional crafts"/>
+    <title>
+        {% block title %}
+        Small Ecommerce {{ __('home')|title }} - {{ __('shop')|title }}
+        {% endblock %}
+    </title>
 
-		<!-- Open Graph (OG) Tags for social media -->
-		<meta property="og:title" content="{% block og_title %}Small Ecommerce - Quality Products for day to day use{% endblock %}"/>
-		<meta property="og:description" content="{% block og_description %}Your trusted partner for quality electronics and genuine car spare parts in Ngara, Nairobi. Free CBD delivery available.{% endblock %}"/>
-		<meta property="og:type" content="website"/>
-		<meta property="og:url" content="{{ app_url|default('https://smallecommerce.co.ke') }}"/>
-		<meta property="og:image" content="{% block og_image %}{{ app_url }}/assets/og-image.jpg{% endblock %}"/>
+    <meta name="description"
+        content="{% block description %}{{ __('Your trusted partner for quality products in Kenya') }}{% endblock %}" />
+    <meta name="author" content="Duka" />
+    <meta name="keywords"
+        content="electronics, fashion, home, Kenya, Nairobi, smartphones, laptops, traditional crafts" />
 
-		<!-- Twitter Card -->
-		<meta name="twitter:card" content="summary_large_image"/>
-		<meta name="twitter:title" content="{% block twitter_title %}Small Ecommerce - Quality Products for day to day use{% endblock %}"/>
-		<meta name="twitter:description" content="{% block twitter_description %}Your trusted partner for quality electronics and genuine car spare parts in Ngara, Nairobi. Free CBD delivery available.{% endblock %}"/>
-		<meta name="twitter:image" content="{% block twitter_image %}{{ app_url }}/assets/twitter-card.jpg{% endblock %}"/>
+    <!-- Open Graph (OG) Tags for social media -->
+    <meta property="og:title"
+        content="{% block og_title %}Small Ecommerce - Quality Products for day to day use{% endblock %}" />
+    <meta property="og:description"
+        content="{% block og_description %}Your trusted partner for quality electronics and genuine car spare parts in Ngara, Nairobi. Free CBD delivery available.{% endblock %}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ app_url|default('https://smallecommerce.co.ke') }}" />
+    <meta property="og:image" content="{% block og_image %}{{ app_url }}/assets/og-image.jpg{% endblock %}" />
 
-		<!-- Canonical URL -->
-		<link rel="canonical" href="{% block canonical %}{{ app_url }}{{ request_uri }}{% endblock %}"/>
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title"
+        content="{% block twitter_title %}Small Ecommerce - Quality Products for day to day use{% endblock %}" />
+    <meta name="twitter:description"
+        content="{% block twitter_description %}Your trusted partner for quality electronics and genuine car spare parts in Ngara, Nairobi. Free CBD delivery available.{% endblock %}" />
+    <meta name="twitter:image" content="{% block twitter_image %}{{ app_url }}/assets/twitter-card.jpg{% endblock %}" />
 
-		<!-- Structured Data -->
-		
-<script type="application/ld+json">{% block structured_data %}{% endblock %}</script>	
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{% block canonical %}{{ app_url }}{{ request_uri }}{% endblock %}" />
 
-		<meta name="csrf-token" content="{{ csrf_token() | raw  }}">
-		<!-- Tailwind CSS -->
-		<link rel="stylesheet" href="{{ asset('/build/assets/app.css') }}"/>
-		<script type="module" src="{{ asset('/build/assets/app-CQBL56Kt.js') }}"></script>
+    <!-- Structured Data -->
 
-		<!-- Additional Styles -->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-		<link
-		href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">{% block structured_data %}{% endblock %}</script>
 
-		<!-- Favicon -->
-		<link rel="icon" href="/favicon.ico" type="image/x-icon"/> {% block styles %}{% endblock %}
-		</head>
-		<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans pb-15 sm:pb-0 transition-colors duration-300">
-			{% include 'partials/header.twig' %}
+    <meta name="csrf-token" content="{{ csrf_token() | raw  }}">
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{{ asset('/build/assets/app.css') }}" />
+    <script type="module" src="{{ asset('/build/assets/app-CQBL56Kt.js') }}"></script>
 
-			<main>
-				{% block content %}{% endblock %}
-			</main>
+    <!-- Additional Styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
-{% include 'partials/footer.twig' %}
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" /> {% block styles %}{% endblock %}
+</head>
 
-{% include 'partials/whatsapp.twig' %}
+<body
+    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans pb-15 sm:pb-0 transition-colors duration-300">
+    {% include 'partials/header.twig' %}
 
-{% include 'partials/cookie-banner.twig' %}
+    <main>
+        {% block content %}{% endblock %}
+    </main>
 
-<script>
-// Dark mode toggle
-document.addEventListener('DOMContentLoaded', function() {
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-    const html = document.documentElement;
+    {% include 'partials/footer.twig' %}
 
-    // Check for saved theme preference or default to light mode
-    const currentTheme = localStorage.getItem('theme') || 'light';
+    {% include 'partials/whatsapp.twig' %}
 
-    if (currentTheme === 'dark') {
-        html.classList.add('dark');
-        themeIcon.className = 'fas fa-sun text-lg';
-    } else {
-        html.classList.remove('dark');
-        themeIcon.className = 'fas fa-moon text-lg';
-    }
+    {% include 'partials/cookie-banner.twig' %}
 
-    // Toggle theme
-    if (themeToggle) {
-        themeToggle.addEventListener('click', function() {
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-                themeIcon.className = 'fas fa-moon text-lg';
-            } else {
+    <script>
+        // Dark mode toggle
+        document.addEventListener('DOMContentLoaded', function () {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const html = document.documentElement;
+
+            // Check for saved theme preference or default to light mode
+            const currentTheme = localStorage.getItem('theme') || 'light';
+
+            if (currentTheme === 'dark') {
                 html.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
                 themeIcon.className = 'fas fa-sun text-lg';
+            } else {
+                html.classList.remove('dark');
+                themeIcon.className = 'fas fa-moon text-lg';
+            }
+
+            // Toggle theme
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function () {
+                    if (html.classList.contains('dark')) {
+                        html.classList.remove('dark');
+                        localStorage.setItem('theme', 'light');
+                        themeIcon.className = 'fas fa-moon text-lg';
+                    } else {
+                        html.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                        themeIcon.className = 'fas fa-sun text-lg';
+                    }
+                });
             }
         });
-    }
-});
 
-// Newsletter subscription
-document.addEventListener('DOMContentLoaded', function() {
-    const newsletterForm = document.getElementById('newsletter-form');
-    const newsletterMessage = document.getElementById('newsletter-message');
+        // Newsletter subscription
+        document.addEventListener('DOMContentLoaded', function () {
+            const newsletterForm = document.getElementById('newsletter-form');
+            const newsletterMessage = document.getElementById('newsletter-message');
 
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
 
-            const formData = new FormData(this);
-            const email = formData.get('email');
+                    const formData = new FormData(this);
+                    const email = formData.get('email');
 
-            fetch('/newsletter/subscribe', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                newsletterMessage.className = data.success ? 'mt-2 text-center text-sm text-green-400' : 'mt-2 text-center text-sm text-red-400';
-                newsletterMessage.textContent = data.message;
-                newsletterMessage.classList.remove('hidden');
+                    const response = fetch('/newsletter/subscribe', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                        body: new URLSearchParams(formData)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            newsletterMessage.className = data.success ? 'mt-2 text-center text-sm text-green-400' : 'mt-2 text-center text-sm text-red-400';
+                            newsletterMessage.textContent = data.message;
+                            newsletterMessage.classList.remove('hidden');
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            newsletterMessage.className = 'mt-2 text-center text-sm text-red-400';
+                            newsletterMessage.textContent = 'An error occurred. Please try again.';
+                            newsletterMessage.classList.remove('hidden');
+                        });
 
-                if (data.success) {
-                    newsletterForm.reset();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                newsletterMessage.className = 'mt-2 text-center text-sm text-red-400';
-                newsletterMessage.textContent = 'An error occurred. Please try again.';
-                newsletterMessage.classList.remove('hidden');
-            });
+                    if (response) {
+                        newsletterForm.classList.add('hidden');
+                        
+                        // update csrf token 
+                        const newToken = response.headers.get('X-CSRF-Token');
+                        if (newToken) setCsrfToken(newToken);
+                    }
+                });
+            }
         });
-    }
-});
-</script>
 
-{% block scripts %}{% endblock %}
-		</body>
-	</html>
+
+
+        function setCsrfToken(token) {
+            if (!token) return;
+            const meta = document.querySelector('meta[name="csrf-token"]');
+            if (meta) meta.setAttribute('content', token);
+        }
+
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
