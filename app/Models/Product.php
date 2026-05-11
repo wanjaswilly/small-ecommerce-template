@@ -28,7 +28,8 @@ class Product extends Model
         'featured',
         'new_arrival',
         'special_offer',
-        'product_views'
+        'product_views',
+        'weight',
     ];
 
     protected $casts = [

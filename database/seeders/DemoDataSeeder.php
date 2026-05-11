@@ -8,6 +8,8 @@ use App\Models\Order;
 use App\Models\Review;
 use App\Models\Coupon;
 use App\Models\OrderItem;
+use App\Models\ShippingZone;
+use App\Models\TaxRate;
 
 class DemoDataSeeder
 {
@@ -42,6 +44,10 @@ class DemoDataSeeder
         // Seed reviews
         echo "⭐ Seeding reviews...\n";
         $this->seedReviews();
+
+        // Seed shipping and tax data
+        echo "🚚 Seeding shipping zones and tax rates...\n";
+        $this->seedShippingAndTax();
 
         echo "✅ Demo data seeding completed!\n";
     }
@@ -211,5 +217,23 @@ class DemoDataSeeder
         }
 
         echo "   → Created " . count($reviews) . " product reviews\n";
+    }
+
+    private function seedShippingAndTax()
+    {
+        // Seed shipping zones
+        Capsule::table('shipping_zones')->truncate();
+        foreach (ShippingZone::getDefaultZones() as $zone) {
+            ShippingZone::create($zone);
+        }
+
+        // Seed tax rates
+        Capsule::table('tax_rates')->truncate();
+        foreach (TaxRate::getDefaultRates() as $rate) {
+            TaxRate::create($rate);
+        }
+
+        echo "   → Created " . count(ShippingZone::getDefaultZones()) . " shipping zones\n";
+        echo "   → Created " . count(TaxRate::getDefaultRates()) . " tax rates\n";
     }
 }

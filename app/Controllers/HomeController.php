@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\SiteStat;
 use App\Services\ContactMessageService;
+use App\Services\ProductsService;
 use Carbon\Carbon;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -61,6 +62,12 @@ class HomeController extends BaseController
     public function track(Request $request, Response $response): Response
     {
         return $this->render($request, $response, 'pages/track.twig');
+    }
+
+    public function search(Request $request, Response $response):Response
+    {
+        $productService = new ProductsService();
+        return $this->render($request, $response, 'pages/search.twig', $productService->allProductsData($request));
     }
 
     public function trackOrder(Request $request, Response $response): Response
