@@ -24,6 +24,8 @@ class ProductsService
 
         # Build query for all products
         $productsQuery = Product::with(['category', 'tags'])
+            ->withAvg('approvedReviews', 'rating')
+            ->withCount('approvedReviews as reviews_count')
             ->where('is_active', true);
 
         # Apply search filter
@@ -221,11 +223,13 @@ class ProductsService
         # Get approved reviews for this product
         $reviewService = new \App\Services\ReviewService();
         $reviews = $reviewService->getApprovedReviews($product->id);
+        $ratingDistribution = $reviewService->getRatingDistribution($product->id);
 
         return [
             'product' => $product,
             'related_products' => $relatedProducts,
             'reviews' => $reviews,
+            'rating_distribution' => $ratingDistribution,
         ];
     }
 

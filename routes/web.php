@@ -12,6 +12,7 @@ use App\Controllers\ProductController;
 use App\Controllers\CategoryController;
 use App\Controllers\CheckoutController;
 use App\Controllers\SettingsController;
+use App\Controllers\ReviewController;
 use App\Controllers\CouponController;
 use App\Controllers\ReportController;
 use App\Middleware\AuthMiddleware;
@@ -64,6 +65,7 @@ return function (App $app) {
 
     # product reviews
     $app->post('/products/{id}/review', [ProductController::class, 'review'])->setName('product.review');
+    $app->post('/products/{slug}/{id}/review', [ProductController::class, 'review'])->setName('product.review.slug');
 
     // Checkout routes
     $app->get('/checkout', [CheckoutController::class, 'showCheckout'])->setName('checkout.show')->add(new AuthMiddleware());
@@ -190,9 +192,9 @@ return function (App $app) {
         $group->get('/orders/dispatch/{id}', [OrderController::class, 'dispatchOrder'])->setName('staff.order.dispatch');
 
         # reviews
-        $group->get('/reviews', [OrderController::class, 'adminReviews'])->setName('admin.reviews');
-        $group->post('/reviews/{id}/approve', [OrderController::class, 'approveReview'])->setName('admin.reviews.approve');
-        $group->post('/reviews/{id}/delete', [OrderController::class, 'deleteReview'])->setName('admin.reviews.delete');
+        $group->get('/reviews', [ReviewController::class, 'index'])->setName('admin.reviews');
+        $group->post('/reviews/{id}/approve', [ReviewController::class, 'approve'])->setName('admin.reviews.approve');
+        $group->post('/reviews/{id}/delete', [ReviewController::class, 'destroy'])->setName('admin.reviews.delete');
 
         # coupons
         $group->get('/coupons', [CouponController::class, 'index'])->setName('admin.coupons');

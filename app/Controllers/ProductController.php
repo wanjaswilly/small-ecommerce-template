@@ -85,7 +85,7 @@ class ProductController extends BaseController
         
         $review = $reviewService->createReview(
             (int) $args['id'],
-            $_SESSION['user_id'] ?? null,
+            $_SESSION['user_id'] ?? $_SESSION['id'] ?? null,
             [
                 'rating' => $data['rating'],
                 'title' => $data['title'] ?? null,

@@ -102,16 +102,19 @@
 									</div>
 									<div class="p-1 lg:px-1 py-2 ">
 										<h3 class="font-bold text-[12px] lg:text-sm line-clamp-2 min-h-3">{{ product.name }}</h3>
-										{# <div class="flex items-center">
-											<div class="flex text-yellow-400 text-xs lg:text-sm mr-2">
-												<i class="fas fa-star"></i>
-												<i class="fas fa-star"></i>
-												<i class="fas fa-star"></i>
-												<i class="fas fa-star"></i>
-												<i class="fas fa-star-half-alt"></i>
+										<div class="flex items-center mb-1">
+											<div class="flex text-yellow-400 text-xs mr-1">
+												{% set avgRating = product.avg_rating|default(0)|round(0, 'floor') %}
+												{% for i in 1..5 %}
+													{% if i <= avgRating %}
+														<i class="fas fa-star"></i>
+													{% else %}
+														<i class="far fa-star"></i>
+													{% endif %}
+												{% endfor %}
 											</div>
-											<span class="text-xs lg:text-sm text-gray-600">({{ random(100, 500) }})</span>
-										</div> #}
+											<span class="text-xs text-gray-500">({{ product.reviews_count|default(0) }})</span>
+										</div>
 										<div class="flex items-center justify-between mb-1">
 											<div>
 												{% if product.has_active_offers %}
