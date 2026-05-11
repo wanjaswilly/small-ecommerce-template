@@ -55,7 +55,7 @@ class AdminController extends BaseController
     # Orders List
     public function orders(Request $request, Response $response): Response
     {
-        return $this->render($request, $response, 'admin/orders.twig', $this->adminService->allOrders());
+        return $this->render($request, $response, 'admin/orders.twig', $this->adminService->allOrders($request));
     }
 
     # Customers List

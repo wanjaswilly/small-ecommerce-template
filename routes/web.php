@@ -190,6 +190,7 @@ return function (App $app) {
         $group->post('/orders/{id}/ready', [OrderController::class, 'markReadyForDispatch'])->setName('staff.order.ready');
         $group->get('/orders/dispatchable', [OrderController::class, 'dispatchableOrders'])->setName('staff.order.dispatchable');
         $group->get('/orders/dispatch/{id}', [OrderController::class, 'dispatchOrder'])->setName('staff.order.dispatch');
+        $group->post('/orders/bulk-status', [OrderController::class, 'bulkUpdateStatus'])->setName('admin.orders.bulk-status');
 
         # reviews
         $group->get('/reviews', [ReviewController::class, 'index'])->setName('admin.reviews');

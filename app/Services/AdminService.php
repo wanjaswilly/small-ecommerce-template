@@ -14,15 +14,24 @@ class AdminService
 {
     private StatsService $statsService;
     private ProductsService $productsService;
+    private ReportService $reportService;
 
     public function __construct()
     {
         $this->statsService = new StatsService();
         $this->productsService = new ProductsService();
+        $this->reportService = new ReportService();
     }
 
     public function dashboardData(): array
     {
+        $salesMetrics = $this->reportService->getSalesMetrics();
+        $productSales = Product::with(['category'])
+            ->withAvg('approvedReviews', 'rating')
+            ->withCount('approvedReviews as reviews_count')
+            ->limit(5)
+            ->get();
+
         return array_merge([
             'total_products' => Product::count(),
             'total_categories' => Category::count(),
@@ -32,6 +41,8 @@ class AdminService
             'total_users' => User::count(),
             'total_orders' => Order::count(),
             'recent_orders' => Order::with('user')->latest()->limit(5)->get(),
+            'sales_metrics' => $salesMetrics,
+            'order_metrics' => $this->reportService->getOrderMetrics(),
         ], $this->statsService->aggregatedStats());
     }
 
@@ -43,11 +54,53 @@ class AdminService
         ];
     }
 
-    public function allOrders(): array
+    public function allOrders(ServerRequestInterface $request): array
     {
+        $queryParams = $request->getQueryParams();
+        $status = $queryParams['status'] ?? null;
+        $paymentStatus = $queryParams['payment_status'] ?? null;
+        $search = $queryParams['search'] ?? null;
+
+        $query = Order::with(['user', 'items.product']);
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        if ($paymentStatus) {
+            $query->where('payment_status', $paymentStatus);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                  ->orWhere('customer_name', 'like', "%{$search}%")
+                  ->orWhere('customer_phone', 'like', "%{$search}%");
+            });
+        }
+
         return [
-            'orders' => Order::with(['user', 'items.product'])->latest()->get(),
+            'orders' => $query->latest()->get(),
+            'order_metrics' => $this->reportService->getOrderMetrics(),
+            'filters' => ['status' => $status, 'payment_status' => $paymentStatus, 'search' => $search],
         ];
+    }
+
+    public function bulkUpdateOrderStatus(array $orderIds, string $status, ?string $notes = null): array
+    {
+        $updated = 0;
+        foreach ($orderIds as $id) {
+            $order = Order::find($id);
+            if ($order) {
+                $order->status = $status;
+                if ($notes) {
+                    $order->internal_notes = $notes;
+                }
+                $order->save();
+                $updated++;
+            }
+        }
+        return ['updated' => $updated];
     }
 
     public function allCustomers(): array
@@ -59,7 +112,6 @@ class AdminService
 
     public function inventoryData(ServerRequestInterface $request): array
     {
-
         $queryParams = $request->getQueryParams();
         $page = $queryParams['page'] ?? 1;
         $perPage = 24;

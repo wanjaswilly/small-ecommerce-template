@@ -153,9 +153,9 @@ class OrderController extends BaseController
         return $this->redirect($response, '/admin/reviews');
     }
 
-    /**
-     * Admin - Delete review
-     */
+/**
+      * Admin - Delete review
+      */
     public function deleteReview(ServerRequestInterface $request, ResponseInterface $response, $args): ResponseInterface
     {
         $reviewService = new \App\Services\ReviewService();
@@ -165,8 +165,24 @@ class OrderController extends BaseController
     }
 
     /**
-     * Admin - List COD orders
+     * Bulk update order status
      */
+    public function bulkUpdateStatus(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $data = $request->getParsedBody();
+        $adminService = new \App\Services\AdminService();
+        $result = $adminService->bulkUpdateOrderStatus(
+            $data['order_ids'] ?? [],
+            $data['status'] ?? 'pending',
+            $data['notes'] ?? null
+        );
+        $_SESSION['success'] = "Updated {$result['updated']} orders";
+        return $this->redirect($response, '/admin/orders');
+    }
+
+    /**
+      * Admin - List COD orders
+      */
     public function codOrders(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         return $this->render($request, $response, 'admin/orders/cod.twig', $this->orderService->getCodOrders($request));
