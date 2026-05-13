@@ -23,7 +23,9 @@ class HomeController extends BaseController
 
     public function home(Request $request, Response $response): Response
     {
-        return $this->render($request, $response, 'pages/home.twig');
+        $cmsService = new \App\Services\CMSService();
+        $homepage = $cmsService->getHomepage();
+        return $this->render($request, $response, 'pages/home.twig', ['homepage' => $homepage]);
     }
 
 
