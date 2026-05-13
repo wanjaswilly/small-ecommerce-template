@@ -49,6 +49,10 @@ class DemoDataSeeder
         echo "🚚 Seeding shipping zones and tax rates...\n";
         $this->seedShippingAndTax();
 
+        // Seed pages
+        echo "📄 Seeding pages...\n";
+        $this->seedPages();
+
         echo "✅ Demo data seeding completed!\n";
     }
 
@@ -235,5 +239,14 @@ class DemoDataSeeder
 
         echo "   → Created " . count(ShippingZone::getDefaultZones()) . " shipping zones\n";
         echo "   → Created " . count(TaxRate::getDefaultRates()) . " tax rates\n";
+    }
+
+    private function seedPages()
+    {
+        Capsule::table('pages')->truncate();
+        foreach (\App\Models\Page::getDefaultPages() as $page) {
+            \App\Models\Page::create($page);
+        }
+        echo "   → Created " . count(\App\Models\Page::getDefaultPages()) . " pages\n";
     }
 }

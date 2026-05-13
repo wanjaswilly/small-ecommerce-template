@@ -13,6 +13,7 @@ use App\Controllers\CategoryController;
 use App\Controllers\CheckoutController;
 use App\Controllers\SettingsController;
 use App\Controllers\ReviewController;
+use App\Controllers\CMSController;
 use App\Controllers\CouponController;
 use App\Controllers\ReportController;
 use App\Middleware\AuthMiddleware;
@@ -196,6 +197,14 @@ return function (App $app) {
         $group->get('/reviews', [ReviewController::class, 'index'])->setName('admin.reviews');
         $group->post('/reviews/{id}/approve', [ReviewController::class, 'approve'])->setName('admin.reviews.approve');
         $group->post('/reviews/{id}/delete', [ReviewController::class, 'destroy'])->setName('admin.reviews.delete');
+
+        # pages
+        $group->get('/pages', [CMSController::class, 'index'])->setName('admin.pages');
+        $group->get('/pages/create', [CMSController::class, 'create'])->setName('admin.pages.create');
+        $group->post('/pages', [CMSController::class, 'store'])->setName('admin.pages.store');
+        $group->get('/pages/{id}/edit', [CMSController::class, 'edit'])->setName('admin.pages.edit');
+        $group->post('/pages/{id}', [CMSController::class, 'update'])->setName('admin.pages.update');
+        $group->post('/pages/{id}/delete', [CMSController::class, 'destroy'])->setName('admin.pages.delete');
 
         # coupons
         $group->get('/coupons', [CouponController::class, 'index'])->setName('admin.coupons');
