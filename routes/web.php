@@ -33,13 +33,19 @@ return function (App $app) {
     $app->get('/privacy', [HomeController::class, 'privacy'])->setName('privacy');
     $app->get('/compliance', [HomeController::class, 'compliance'])->setName('compliance');
 
-    # auth routes
-    $app->get('/login', [AuthController::class, 'showLogin'])->setName('login');
-    $app->post('/login', [AuthController::class, 'login'])->setName('login');
-    $app->get('/register', [AuthController::class, 'showRegister'])->setName('register');
-    $app->post('/register', [AuthController::class, 'register'])->setName('register');
-    $app->get('/logout', [AuthController::class, 'logout'])->setName('logout');
-    $app->post('/logout', [AuthController::class, 'logout'])->setName('logout');
+     # auth routes
+     $app->get('/login', [AuthController::class, 'showLogin'])->setName('login');
+     $app->post('/login', [AuthController::class, 'login'])->setName('login');
+     $app->get('/register', [AuthController::class, 'showRegister'])->setName('register');
+     $app->post('/register', [AuthController::class, 'register'])->setName('register');
+     $app->get('/logout', [AuthController::class, 'logout'])->setName('logout');
+     $app->post('/logout', [AuthController::class, 'logout'])->setName('logout');
+
+     # social auth routes
+     $app->get('/login/google', [AuthController::class, 'googleLogin'])->setName('login.google');
+     $app->get('/login/google/callback', [AuthController::class, 'googleCallback'])->setName('login.google.callback');
+     $app->get('/login/apple', [AuthController::class, 'appleLogin'])->setName('login.apple');
+     $app->get('/login/apple/callback', [AuthController::class, 'appleCallback'])->setName('login.apple.callback');
 
     
     # product categories
@@ -49,7 +55,7 @@ return function (App $app) {
     $app->get('/categories/{id}', [CategoryController::class, 'show']);
 
     # unified products
-    $app->get('/products', [ProductController::class, 'all']);
+    $app->get('/products', [ProductController::class, 'allProducts']);
     $app->get('/products/{slug}', [ProductController::class, 'show']);
     $app->get('/search', [HomeController::class, 'search'])->setName('search');
     $app->get('/category/{categorySlug}', [ProductController::class, 'category']);

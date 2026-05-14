@@ -84,7 +84,7 @@ $twig->getEnvironment()->addFilter(
 );
 
 $app->add(new TrackStatsMiddleware());
-$app->add(new App\Middleware\CsrfMiddleware());
+$app->add(new App\Middleware\CSRFMiddleware());
 $app->add(new \App\Middleware\SessionMiddleware());
 
 # add sessions to twig
