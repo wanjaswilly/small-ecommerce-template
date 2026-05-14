@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use League\OAuth2\Client\Provider\Google;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -52,14 +53,14 @@ class SocialAuthService
         $state = $_SESSION['oauth2state'] ?? null;
         unset($_SESSION['oauth2state']);
 
-        if (empty($request->getQueryParam('state')) || ($request->getQueryParam('state') !== $state)) {
+        if (empty($request->getAttribute('state')) || ($request->getAttribute('state') !== $state)) {
             throw new Exception('Invalid state parameter');
         }
 
         try {
             // Get access token
             $accessToken = $this->googleProvider->getAccessToken('authorization_code', [
-                'code' => $request->getQueryParam('code')
+                'code' => $request->getAttribute('code')
             ]);
 
             // Get resource owner (user) details
@@ -83,7 +84,7 @@ class SocialAuthService
             ];
         } catch (IdentityProviderException $e) {
             throw new Exception('Failed to fetch user details from Google: ' . $e->getMessage());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new Exception('Google authentication failed: ' . $e->getMessage());
         }
     }
@@ -121,11 +122,11 @@ class SocialAuthService
         $state = $_SESSION['oauth2state_apple'] ?? null;
         unset($_SESSION['oauth2state_apple']);
 
-        if (empty($request->getQueryParam('state')) || ($request->getQueryParam('state') !== $state)) {
+        if (empty($request->getAttribute('state')) || ($request->getAttribute('state') !== $state)) {
             throw new Exception('Invalid state parameter for Apple');
         }
 
-        $code = $request->getQueryParam('code');
+        $code = $request->getAttribute('code');
         if (!$code) {
             throw new Exception('No code provided by Apple');
         }
@@ -185,7 +186,7 @@ class SocialAuthService
                 'user' => $user,
                 'redirect' => $this->getRedirectUrl()
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new Exception('Apple authentication failed: ' . $e->getMessage());
         }
     }
@@ -219,7 +220,7 @@ class SocialAuthService
             'city' => null,
             'role' => 'customer',
             'is_active' => true,
-            'email_verified_at' => now(), // Consider email verified for social login
+            'email_verified_at' => Carbon::now(), // Consider email verified for social login
         ]);
 
         // TODO: Store provider and provider_id in a separate table (e.g., social_accounts)
