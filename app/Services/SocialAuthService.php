@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use League\OAuth2\Client\Provider\Google;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use App\Models\User;
 use Exception;
 
@@ -66,10 +65,10 @@ class SocialAuthService
             // Get resource owner (user) details
             $resourceOwner = $this->googleProvider->getResourceOwner($accessToken);
 
-            $email = $resourceOwner->getEmail();
-            $firstName = $resourceOwner->getGivenName() ?? '';
-            $lastName = $resourceOwner->getFamilyName() ?? '';
-            $avatar = $resourceOwner->getAvatar();
+            $email = $resourceOwner->toArray()['email'] ?? '';
+            $firstName = $resourceOwner->toArray()['given_name'] ?? '';
+            $lastName = $resourceOwner->toArray()['family_name'] ?? '';
+            $avatar = $resourceOwner->toArray()['picture'] ?? '';
 
             // Find or create user
             $user = $this->findOrCreateUser($email, $firstName, $lastName, $avatar, 'google');
