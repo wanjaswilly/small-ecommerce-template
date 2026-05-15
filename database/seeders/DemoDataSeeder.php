@@ -160,7 +160,7 @@ class DemoDataSeeder
                     $product->slug
                 );
                 if ($localPath) {
-                    $product->images = json_encode([$localPath]);
+                    $product->images = $localPath;
                     $product->save();
                 }
             }

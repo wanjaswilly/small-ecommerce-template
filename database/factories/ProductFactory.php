@@ -85,7 +85,7 @@ class ProductFactory
             'sku' => 'KEN-' . strtoupper($faker->unique()->lexify('????')) . $faker->numberBetween(1000, 9999),
             'stock_quantity' => $faker->numberBetween(5, 100),
             'min_stock_level' => $faker->numberBetween(3, 10),
-            'images' => json_encode([$imageUrl]),
+            'images' => $imageUrl,
             '_image_url' => $imageUrl,   // raw remote URL used by the seeder to download & save the file locally
             'attributes' => json_encode([
                 'brand' => $faker->randomElement(['Kenyan Made', 'Local Artisan', 'Safari Collection', 'Nairobi Design', 'Coastal Crafts']),
