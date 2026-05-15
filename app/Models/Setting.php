@@ -65,16 +65,38 @@ class Setting extends Model
     }
 
     /**
-     * Get OCR credentials for a specific provider
+     * Get OAuth credential configuration for a specific provider.
+     *
+     * Reads from the `settings` table first (persisted by the admin panel),
+     * then falls back to the corresponding UPPERCASE $_ENV / .env variables,
+     * so that credentials are always available even before any row has been seeded.
      */
     public static function getOAuthConfig(string $provider): array
     {
         $all = static::getAll();
 
+        $envUpperMap = [
+            'google'   => ['GOOGLE_CLIENT_ID',     'GOOGLE_CLIENT_SECRET',     'GOOGLE_REDIRECT_URI'],
+            'apple'    => ['APPLE_CLIENT_ID',      'APPLE_CLIENT_SECRET',      'APPLE_REDIRECT_URI'],
+            'facebook' => ['FACEBOOK_CLIENT_ID',   'FACEBOOK_CLIENT_SECRET',   'FACEBOOK_REDIRECT_URI'],
+        ];
+
+        $uppers = $envUpperMap[strtolower($provider)] ?? [];
+
+        $clientId     = $all["{$provider}_client_id"]     ?? $_ENV[$uppers[0]] ?? '';
+        $clientSecret = $all["{$provider}_client_secret"] ?? $_ENV[$uppers[1]] ?? '';
+        $redirectUri  = $all["{$provider}_redirect_uri"]  ?? $_ENV[$uppers[2]]
+            ?? (match (strtolower($provider)) {
+                'google'   => 'http://localhost/login/google/callback',
+                'apple'    => 'http://localhost/login/apple/callback',
+                'facebook' => 'http://localhost/login/facebook/callback',
+                default    => '/',
+            });
+
         return [
-            'client_id'     => $all["{$provider}_client_id"]     ?? '',
-            'client_secret' => $all["{$provider}_client_secret"] ?? '',
-            'redirect_uri'  => $all["{$provider}_redirect_uri"]  ?? '',
+            'client_id'     => trim((string) $clientId),
+            'client_secret' => trim((string) $clientSecret),
+            'redirect_uri'  => trim((string) $redirectUri),
         ];
     }
 

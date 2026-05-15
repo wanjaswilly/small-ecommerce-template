@@ -10,6 +10,7 @@ use App\Models\Coupon;
 use App\Models\OrderItem;
 use App\Models\ShippingZone;
 use App\Models\TaxRate;
+use App\Services\ImageDownloaderService;
 
 class DemoDataSeeder
 {
@@ -136,12 +137,35 @@ class DemoDataSeeder
         Capsule::table('products')->truncate();
 
         $categories = Category::all();
-        $products = [];
+        $products   = [];
+        $downloader = new ImageDownloaderService();
 
         for ($i = 0; $i < 25; $i++) {
             $productData = \Database\Factories\ProductFactory::make();
-            $productData['category_id'] = $categories->random()->id;
-            $products[] = Product::create($productData);
+            $category    = $categories->random();
+            $productData['category_id'] = $category->id;
+
+            unset($productData['_image_url']); // transient — not a Product column
+
+            $product = Product::create($productData);
+
+            // Download remote image → save locally → replace product_images path
+            $imageUrl = $productData['images'] ?? '[]';
+            $imageUrl = json_decode($imageUrl, true)[0] ?? null;
+
+            if ($imageUrl) {
+                $localPath = $downloader->downloadAndSave(
+                    $imageUrl,
+                    $category->slug,
+                    $product->slug
+                );
+                if ($localPath) {
+                    $product->images = json_encode([$localPath]);
+                    $product->save();
+                }
+            }
+
+            $products[] = $product;
         }
 
         echo "   → Created " . count($products) . " products across " . $categories->count() . " categories\n";
