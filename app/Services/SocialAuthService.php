@@ -8,6 +8,7 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Models\User;
 use Exception;
+use GuzzleHttp\Client;
 
 class SocialAuthService
 {
@@ -21,6 +22,11 @@ class SocialAuthService
      */
     protected $appleProvider;
 
+    /**
+     * HTTP client reused by Apple & Facebook token flows
+     */
+    protected $httpClient;
+
     public function __construct()
     {
         // Initialize Google provider
@@ -32,6 +38,9 @@ class SocialAuthService
 
         // Note: For Apple, we'll use a generic OAuth2 provider since there's no official League provider
         // We'll implement Apple login separately in the handleAppleCallback method
+
+        // Shared HTTP client for Apple / Facebook token exchange
+        $this->httpClient = new Client();
     }
 
     /**
@@ -149,9 +158,8 @@ class SocialAuthService
         ];
 
         // Make HTTP request to get token
-        $client = new \GuzzleHttp\Client();
         try {
-            $response = $client->post($tokenUrl, [
+            $response = $this->httpClient->post($tokenUrl, [
                 'form_params' => $tokenParams
             ]);
             $tokenData = json_decode($response->getBody(), true);
@@ -263,6 +271,98 @@ class SocialAuthService
     }
 
     /**
+     * Get Facebook authorization URL (OAuth 2.0 / Graph API)
+     */
+    public function getFacebookAuthorizationUrl(): string
+    {
+        $clientId     = $_FB_CLIENT_ID     ?? getenv('FB_CLIENT_ID');
+        $redirectUri  = $_FB_REDIRECT_URI  ?? getenv('FB_REDIRECT_URI') ?: 'http://localhost/login/facebook/callback';
+        $state        = bin2hex(random_bytes(16));
+        $_SESSION['oauth2state_facebook'] = $state;
+
+        $params = [
+            'client_id'     => $clientId,
+            'redirect_uri'  => $redirectUri,
+            'response_type' => 'code',
+            'scope'         => 'email,public_profile',
+            'state'         => $state,
+        ];
+
+        return 'https://www.facebook.com/v18.0/dialog/oauth?' . http_build_query($params);
+    }
+
+    /**
+     * Handle Facebook callback and exchange code for access token + user profile
+     */
+    public function handleFacebookCallback(ServerRequestInterface $request): array
+    {
+        $state = $_SESSION['oauth2state_facebook'] ?? null;
+        unset($_SESSION['oauth2state_facebook']);
+
+        if (empty($request->getAttribute('state')) || ($request->getAttribute('state') !== $state)) {
+            throw new Exception('Invalid state parameter for Facebook');
+        }
+
+        $code = $request->getAttribute('code');
+        if (!$code) {
+            throw new Exception('No authorization code provided by Facebook');
+        }
+
+        $clientId     = $_FB_CLIENT_ID     ?? getenv('FB_CLIENT_ID');
+        $clientSecret = $_FB_CLIENT_SECRET ?? getenv('FB_CLIENT_SECRET');
+        $redirectUri  = $_FB_REDIRECT_URI  ?? getenv('FB_REDIRECT_URI') ?: 'http://localhost/login/facebook/callback';
+
+        try {
+            // Exchange authorization code for a short-lived access token
+            $tokenResponse = $this->httpClient->post('https://graph.facebook.com/v18.0/oauth/access_token', [
+                'form_params' => [
+                    'client_id'     => $clientId,
+                    'redirect_uri'  => $redirectUri,
+                    'client_secret' => $clientSecret,
+                    'code'          => $code,
+                ],
+            ]);
+            $tokenData = json_decode($tokenResponse->getBody(), true);
+
+            if (empty($tokenData['access_token'])) {
+                throw new Exception('No access token in Facebook response');
+            }
+
+            $accessToken = $tokenData['access_token'];
+
+            // Fetch user profile using the Graph API
+            $profileResponse = $this->httpClient->get('https://graph.facebook.com/me', [
+                'query' => [
+                    'access_token' => $accessToken,
+                    'fields'       => 'id,email,first_name,last_name,picture',
+                ],
+            ]);
+            $profileData = json_decode($profileResponse->getBody(), true);
+
+            $email     = $profileData['email']     ?? null;
+            $firstName = $profileData['first_name'] ?? '';
+            $lastName  = $profileData['last_name']  ?? '';
+
+            if (!$email) {
+                throw new Exception('Facebook did not return an email address. Make sure the email permission is granted.');
+            }
+
+            $avatar = $profileData['picture']['data']['url'] ?? null;
+
+            $user = $this->findOrCreateUser($email, $firstName, $lastName, $avatar, 'facebook');
+            $this->loginUser($user);
+
+            return [
+                'status'  => 'success',
+                'user'    => $user,
+                'redirect'=> $this->getRedirectUrl(),
+            ];
+        } catch (Exception $e) {
+            throw new Exception('Facebook authentication failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Build the list of available social login providers
      */
     public function getSocialProviders(): array
@@ -285,6 +385,15 @@ class SocialAuthService
                 'borderClass'=> 'border border-gray-700 dark:border-gray-500',
                 'textClass'  => 'text-white',
                 'hoverClass' => 'hover:bg-gray-800 dark:hover:bg-gray-700',
+            ],
+            'facebook' => [
+                'label' => 'Facebook',
+                'url'   => $this->getFacebookAuthorizationUrl(),
+                'icon'  => "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3e%3cpath fill='%231877F2' d='M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07c0 6.02 4.39 11.05 10.13 11.93v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.79-4.68 4.53-4.68 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.49h-2.8V24C19.62 23.13 24 18.09 24 12.07z'/%3e%3c/svg%3e",
+                'bgClass'    => 'bg-[#1877F2]',
+                'borderClass'=> 'border border-[#1877F2]',
+                'textClass'  => 'text-white',
+                'hoverClass' => 'hover:bg-[#166fe5]',
             ],
         ];
     }

@@ -44,8 +44,11 @@ return function (App $app) {
      # social auth routes
      $app->get('/login/google', [AuthController::class, 'googleLogin'])->setName('login.google');
      $app->get('/login/google/callback', [AuthController::class, 'googleCallback'])->setName('login.google.callback');
-     $app->get('/login/apple', [AuthController::class, 'appleLogin'])->setName('login.apple');
-     $app->get('/login/apple/callback', [AuthController::class, 'appleCallback'])->setName('login.apple.callback');
+      $app->get('/login/apple', [AuthController::class, 'appleLogin'])->setName('login.apple');
+      $app->get('/login/apple/callback', [AuthController::class, 'appleCallback'])->setName('login.apple.callback');
+
+      $app->get('/login/facebook', [AuthController::class, 'facebookLogin'])->setName('login.facebook');
+      $app->get('/login/facebook/callback', [AuthController::class, 'facebookCallback'])->setName('login.facebook.callback');
 
     
     # product categories

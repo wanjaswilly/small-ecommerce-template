@@ -117,7 +117,33 @@ class AuthController extends BaseController
         try {
             $result = $this->socialAuthService->handleAppleCallback($request);
             if ($result['status'] === 'success') {
-                // Store user in session (already done in service)
+                $_SESSION['success'] = 'Welcome back, ' . $result['user']->first_name . '!';
+                return $response->withHeader('Location', $result['redirect'])->withStatus(302);
+            }
+        } catch (\Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+        }
+
+        return $response->withHeader('Location', '/login')->withStatus(302);
+    }
+
+    /**
+     * Redirect to Facebook for authentication
+     */
+    public function facebookLogin(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $url = $this->socialAuthService->getFacebookAuthorizationUrl();
+        return $response->withHeader('Location', $url)->withStatus(302);
+    }
+
+    /**
+     * Handle Facebook callback
+     */
+    public function facebookCallback(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        try {
+            $result = $this->socialAuthService->handleFacebookCallback($request);
+            if ($result['status'] === 'success') {
                 $_SESSION['success'] = 'Welcome back, ' . $result['user']->first_name . '!';
                 return $response->withHeader('Location', $result['redirect'])->withStatus(302);
             }
