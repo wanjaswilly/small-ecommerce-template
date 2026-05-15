@@ -18,8 +18,14 @@ class ImageDownloaderService
             'allow_redirects' => true,
             'verify' => false,
         ]);
+
+        # $_SERVER['DOCUMENT_ROOT'] is not populated when running from CLI
+        # (e.g. the database seeder).  Fall back to the project's public/ dir
+        # so file writes work in both web and CLI contexts.
+        $docRoot = $_SERVER['DOCUMENT_ROOT'] ?: dirname(__DIR__, 2) . '/public';
+
         $this->baseUploadDir = rtrim(
-            $_SERVER['DOCUMENT_ROOT'] . '/images/products/',
+            rtrim($docRoot, '/') . '/images/products/',
             '/'
         ) . '/';
     }
