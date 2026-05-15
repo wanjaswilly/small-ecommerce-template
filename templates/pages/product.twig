@@ -71,10 +71,11 @@
 					<!-- Product Images -->
 					<div>
 						<div class="bg-gray-100 rounded-xl p-0">
-							{% if product.images and product.images|length > 0 %}
+
+							{% if product.images and product.images is iterable %}
 								<img src="{{ product.images[0] }}" alt="{{ product.name }}" class="w-full h-96 object-cover" id="main-image">
 							{% else %}
-								<img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="{{ product.name }}" class="w-full h-96 object-cover rounded-lg" id="main-image">
+								<img src="{{ product.images }}" alt="{{ product.name }}" class="w-full h-96 object-cover" id="main-image">
 							{% endif %}
 						</div>
 						{% if product.images and product.images|length > 1 %}
