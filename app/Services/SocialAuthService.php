@@ -9,19 +9,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use App\Models\User;
 use Exception;
 use GuzzleHttp\Client;
+use App\Models\Setting;
 
 class SocialAuthService
 {
-    /**
-     * Google provider instance
-     */
-    protected $googleProvider;
-
-    /**
-     * Apple provider instance (we'll implement as generic OAuth2)
-     */
-    protected $appleProvider;
-
     /**
      * HTTP client reused by Apple & Facebook token flows
      */
@@ -29,16 +20,6 @@ class SocialAuthService
 
     public function __construct()
     {
-        // Initialize Google provider
-        $this->googleProvider = new Google([
-            'clientId'     => $_GOOGLE_CLIENT_ID ?? getenv('GOOGLE_CLIENT_ID'),
-            'clientSecret' => $_GOOGLE_CLIENT_SECRET ?? getenv('GOOGLE_CLIENT_SECRET'),
-            'redirectUri'  => $_GOOGLE_REDIRECT_URI ?? getenv('GOOGLE_REDIRECT_URI') ?: 'http://localhost/login/google/callback',
-        ]);
-
-        // Note: For Apple, we'll use a generic OAuth2 provider since there's no official League provider
-        // We'll implement Apple login separately in the handleAppleCallback method
-
         // Shared HTTP client for Apple / Facebook token exchange
         $this->httpClient = new Client();
     }
@@ -48,8 +29,15 @@ class SocialAuthService
      */
     public function getGoogleAuthorizationUrl(): string
     {
-        $authorizationUrl = $this->googleProvider->getAuthorizationUrl();
-        $_SESSION['oauth2state'] = $this->googleProvider->getState();
+        $cfg    = Setting::getOAuthConfig('google');
+        $provider = new Google([
+            'clientId'     => $cfg['client_id'],
+            'clientSecret' => $cfg['client_secret'],
+            'redirectUri'  => $cfg['redirect_uri'],
+        ]);
+
+        $authorizationUrl = $provider->getAuthorizationUrl();
+        $_SESSION['oauth2state'] = $provider->getState();
         return $authorizationUrl;
     }
 
@@ -65,30 +53,31 @@ class SocialAuthService
             throw new Exception('Invalid state parameter');
         }
 
+        $cfg = Setting::getOAuthConfig('google');
+
         try {
-            // Get access token
-            $accessToken = $this->googleProvider->getAccessToken('authorization_code', [
-                'code' => $request->getAttribute('code')
+            $provider = new Google([
+                'clientId'     => $cfg['client_id'],
+                'clientSecret' => $cfg['client_secret'],
+                'redirectUri'  => $cfg['redirect_uri'],
             ]);
 
-            // Get resource owner (user) details
-            $resourceOwner = $this->googleProvider->getResourceOwner($accessToken);
+            $code         = $request->getAttribute('code');
+            $accessToken  = $provider->getAccessToken('authorization_code', ['code' => $code]);
+            $resourceOwner= $provider->getResourceOwner($accessToken);
 
-            $email = $resourceOwner->toArray()['email'] ?? '';
+            $email     = $resourceOwner->toArray()['email']     ?? '';
             $firstName = $resourceOwner->toArray()['given_name'] ?? '';
-            $lastName = $resourceOwner->toArray()['family_name'] ?? '';
-            $avatar = $resourceOwner->toArray()['picture'] ?? '';
+            $lastName  = $resourceOwner->toArray()['family_name']?? '';
+            $avatar    = $resourceOwner->toArray()['picture']   ?? '';
 
-            // Find or create user
-            $user = $this->findOrCreateUser($email, $firstName, $lastName, $avatar, 'google');
-
-            // Log in the user
+            $user  = $this->findOrCreateUser($email, $firstName, $lastName, $avatar, 'google');
             $this->loginUser($user);
 
             return [
-                'status' => 'success',
-                'user' => $user,
-                'redirect' => $this->getRedirectUrl()
+                'status'   => 'success',
+                'user'     => $user,
+                'redirect' => $this->getRedirectUrl(),
             ];
         } catch (IdentityProviderException $e) {
             throw new Exception('Failed to fetch user details from Google: ' . $e->getMessage());
@@ -99,23 +88,20 @@ class SocialAuthService
 
     /**
      * Get Apple authorization URL
-     * Note: Apple requires a different approach - we'll generate the URL manually
      */
     public function getAppleAuthorizationUrl(): string
     {
-        $clientId = $_APPLE_CLIENT_ID ?? getenv('APPLE_CLIENT_ID');
-        $redirectUri = $_APPLE_REDIRECT_URI ?? getenv('APPLE_REDIRECT_URI') ?: 'http://localhost/login/apple/callback';
-        $state = bin2hex(random_bytes(16));
+        $cfg    = Setting::getOAuthConfig('apple');
+        $state  = bin2hex(random_bytes(16));
         $_SESSION['oauth2state_apple'] = $state;
 
         $params = [
-            'client_id' => $clientId,
-            'redirect_uri' => $redirectUri,
+            'client_id'     => $cfg['client_id'],
+            'redirect_uri'  => $cfg['redirect_uri'],
             'response_type' => 'code',
-            'scope' => 'name email',
-            'state' => $state,
-            // Apple requires a response_mode, we'll use form_post
-            'response_mode' => 'form_post'
+            'scope'         => 'name email',
+            'state'         => $state,
+            'response_mode' => 'form_post',
         ];
 
         return 'https://appleid.apple.com/auth/authorize?' . http_build_query($params);
@@ -123,7 +109,6 @@ class SocialAuthService
 
     /**
      * Handle Apple callback
-     * Note: Apple returns user info in the ID token (JWT) and may only return name once
      */
     public function handleAppleCallback(ServerRequestInterface $request): array
     {
@@ -139,25 +124,17 @@ class SocialAuthService
             throw new Exception('No code provided by Apple');
         }
 
-        // Prepare token request
-        $clientId = $_APPLE_CLIENT_ID ?? getenv('APPLE_CLIENT_ID');
-        $clientSecret = $_APPLE_CLIENT_SECRET ?? getenv('APPLE_CLIENT_SECRET');
-        $redirectUri = $_APPLE_REDIRECT_URI ?? getenv('APPLE_REDIRECT_URI') ?: 'http://localhost/login/apple/callback';
+        $cfg = Setting::getOAuthConfig('apple');
 
-        // For Apple, we need to use client secret JWT or use the secret directly if we have it
-        // For simplicity, we'll assume we have a client secret (not the recommended way for production)
-        // In production, you should generate a JWT client secret
-
-        $tokenUrl = 'https://appleid.apple.com/auth/token';
+        $tokenUrl   = 'https://appleid.apple.com/auth/token';
         $tokenParams = [
-            'grant_type' => 'authorization_code',
-            'code' => $code,
-            'redirect_uri' => $redirectUri,
-            'client_id' => $clientId,
-            'client_secret' => $clientSecret,
+            'grant_type'    => 'authorization_code',
+            'code'          => $code,
+            'redirect_uri'  => $cfg['redirect_uri'],
+            'client_id'     => $cfg['client_id'],
+            'client_secret' => $cfg['client_secret'],
         ];
 
-        // Make HTTP request to get token
         try {
             $response = $this->httpClient->post($tokenUrl, [
                 'form_params' => $tokenParams
@@ -168,30 +145,24 @@ class SocialAuthService
                 throw new Exception('No ID token in Apple response');
             }
 
-            // Decode ID token (JWT) to get user info
             $idToken = $tokenData['id_token'];
             $payload = $this->getJwtPayload($idToken);
 
-            $email = $payload['email'] ?? null;
-            // Apple only provides name in the first authentication
+            $email     = $payload['email']     ?? null;
             $firstName = $payload['given_name'] ?? '';
-            $lastName = $payload['family_name'] ?? '';
+            $lastName  = $payload['family_name'] ?? '';
 
-            // If email is null (user didn't share email), we cannot create account
             if (!$email) {
                 throw new Exception('Apple did not return email address. Please check your Apple ID settings.');
             }
 
-            // Find or create user
-            $user = $this->findOrCreateUser($email, $firstName, $lastName, null, 'apple');
-
-            // Log in the user
+            $user  = $this->findOrCreateUser($email, $firstName, $lastName, null, 'apple');
             $this->loginUser($user);
 
             return [
-                'status' => 'success',
-                'user' => $user,
-                'redirect' => $this->getRedirectUrl()
+                'status'   => 'success',
+                'user'     => $user,
+                'redirect' => $this->getRedirectUrl(),
             ];
         } catch (Exception $e) {
             throw new Exception('Apple authentication failed: ' . $e->getMessage());
@@ -275,14 +246,13 @@ class SocialAuthService
      */
     public function getFacebookAuthorizationUrl(): string
     {
-        $clientId     = $_FB_CLIENT_ID     ?? getenv('FB_CLIENT_ID');
-        $redirectUri  = $_FB_REDIRECT_URI  ?? getenv('FB_REDIRECT_URI') ?: 'http://localhost/login/facebook/callback';
-        $state        = bin2hex(random_bytes(16));
+        $cfg    = Setting::getOAuthConfig('facebook');
+        $state  = bin2hex(random_bytes(16));
         $_SESSION['oauth2state_facebook'] = $state;
 
         $params = [
-            'client_id'     => $clientId,
-            'redirect_uri'  => $redirectUri,
+            'client_id'     => $cfg['client_id'],
+            'redirect_uri'  => $cfg['redirect_uri'],
             'response_type' => 'code',
             'scope'         => 'email,public_profile',
             'state'         => $state,
@@ -308,17 +278,14 @@ class SocialAuthService
             throw new Exception('No authorization code provided by Facebook');
         }
 
-        $clientId     = $_FB_CLIENT_ID     ?? getenv('FB_CLIENT_ID');
-        $clientSecret = $_FB_CLIENT_SECRET ?? getenv('FB_CLIENT_SECRET');
-        $redirectUri  = $_FB_REDIRECT_URI  ?? getenv('FB_REDIRECT_URI') ?: 'http://localhost/login/facebook/callback';
+        $cfg = Setting::getOAuthConfig('facebook');
 
         try {
-            // Exchange authorization code for a short-lived access token
             $tokenResponse = $this->httpClient->post('https://graph.facebook.com/v18.0/oauth/access_token', [
                 'form_params' => [
-                    'client_id'     => $clientId,
-                    'redirect_uri'  => $redirectUri,
-                    'client_secret' => $clientSecret,
+                    'client_id'     => $cfg['client_id'],
+                    'redirect_uri'  => $cfg['redirect_uri'],
+                    'client_secret' => $cfg['client_secret'],
                     'code'          => $code,
                 ],
             ]);
@@ -330,7 +297,6 @@ class SocialAuthService
 
             $accessToken = $tokenData['access_token'];
 
-            // Fetch user profile using the Graph API
             $profileResponse = $this->httpClient->get('https://graph.facebook.com/me', [
                 'query' => [
                     'access_token' => $accessToken,
@@ -344,12 +310,12 @@ class SocialAuthService
             $lastName  = $profileData['last_name']  ?? '';
 
             if (!$email) {
-                throw new Exception('Facebook did not return an email address. Make sure the email permission is granted.');
+                throw new Exception('Facebook did not return an email address.');
             }
 
             $avatar = $profileData['picture']['data']['url'] ?? null;
 
-            $user = $this->findOrCreateUser($email, $firstName, $lastName, $avatar, 'facebook');
+            $user  = $this->findOrCreateUser($email, $firstName, $lastName, $avatar, 'facebook');
             $this->loginUser($user);
 
             return [

@@ -65,6 +65,20 @@ class Setting extends Model
     }
 
     /**
+     * Get OCR credentials for a specific provider
+     */
+    public static function getOAuthConfig(string $provider): array
+    {
+        $all = static::getAll();
+
+        return [
+            'client_id'     => $all["{$provider}_client_id"]     ?? '',
+            'client_secret' => $all["{$provider}_client_secret"] ?? '',
+            'redirect_uri'  => $all["{$provider}_redirect_uri"]  ?? '',
+        ];
+    }
+
+    /**
      * Get payment configuration for a specific method
      */
     public static function getPaymentConfig(string $method): array
@@ -238,6 +252,19 @@ class Setting extends Model
             'support_phone' => $_ENV['SUPPORT_PHONE'] ?? '+254 7414 00 006',
             'store_country' => $_ENV['STORE_COUNTRY'] ?? 'Kenya',
             'timezone' => $_ENV['APP_TIMEZONE'] ?? 'Africa/Nairobi',
+
+            # OAuth / Social Login
+            'google_client_id'     => $_ENV['GOOGLE_CLIENT_ID']     ?? '',
+            'google_client_secret' => $_ENV['GOOGLE_CLIENT_SECRET'] ?? '',
+            'google_redirect_uri'  => $_ENV['GOOGLE_REDIRECT_URI']  ?? 'http://localhost/login/google/callback',
+
+            'apple_client_id'     => $_ENV['APPLE_CLIENT_ID']     ?? '',
+            'apple_client_secret' => $_ENV['APPLE_CLIENT_SECRET'] ?? '',
+            'apple_redirect_uri'  => $_ENV['APPLE_REDIRECT_URI']  ?? 'http://localhost/login/apple/callback',
+
+            'facebook_client_id'     => $_ENV['FB_CLIENT_ID']     ?? '',
+            'facebook_client_secret' => $_ENV['FB_CLIENT_SECRET'] ?? '',
+            'facebook_redirect_uri'  => $_ENV['FB_REDIRECT_URI']  ?? 'http://localhost/login/facebook/callback',
         ];
     }
 
