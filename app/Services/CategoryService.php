@@ -119,7 +119,7 @@ class CategoryService
                 if ($newImage) {
                     // Delete old image if exists
                     if ($category->image_url) {
-                        $oldImagePath = $_SERVER['DOCUMENT_ROOT'] . $category->image_url;
+                        $oldImagePath = $this->publicRoot() . $category->image_url;
                         if (file_exists($oldImagePath)) {
                             unlink($oldImagePath);
                         }
@@ -166,7 +166,7 @@ class CategoryService
 
             // Delete category image if exists
             if ($category->image_url) {
-                $imagePath = $_SERVER['DOCUMENT_ROOT'] . $category->image_url;
+                $imagePath = $this->publicRoot() . $category->image_url;
                 if (file_exists($imagePath)) {
                     unlink($imagePath);
                 }
@@ -242,7 +242,7 @@ class CategoryService
             return null;
         }
 
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/images/categories/';
+        $uploadDir = $this->publicRoot() . '/images/categories/';
 
         // Create directory if it doesn't exist
         if (!is_dir($uploadDir)) {
@@ -260,4 +260,24 @@ class CategoryService
         return null;
     }
 
+    /**
+     * Resolve the absolute path to the project's public/ directory.
+     * Falls back to the project root + "/public" when $_SERVER['DOCUMENT_ROOT']
+     * is not populated (CLI / seeder contexts).
+     */
+    private function publicRoot(): string
+    {
+        static $cached = null;
+
+        if ($cached !== null) {
+            return $cached;
+        }
+
+        $cached = rtrim(
+            $_SERVER['DOCUMENT_ROOT'] ?: dirname(__DIR__, 2) . '/public',
+            '/'
+        );
+
+        return $cached;
+    }
 }

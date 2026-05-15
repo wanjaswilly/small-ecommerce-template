@@ -421,7 +421,7 @@ class ProductsService
             # Delete associated images
             if ($product->images) {
                 foreach ($product->images as $image) {
-                    $imagePath = $_SERVER['DOCUMENT_ROOT'] . '/public/' . $image;
+                    $imagePath = $this->publicRoot() . $image;
                     if (file_exists($imagePath)) {
                         unlink($imagePath);
                     }
@@ -464,7 +464,7 @@ class ProductsService
             return $uploadedImages;
         }
 
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/images/products/' . $categorySlug . '/';
+        $uploadDir = $this->publicRoot() . '/images/products/' . $categorySlug . '/';
 
         # Create directory if it doesn't exist
         if (!is_dir($uploadDir)) {
@@ -503,7 +503,7 @@ class ProductsService
     private function handleImageUpdate(ServerRequestInterface $request, Product $product, string $categorySlug, string $slug): array
     {
         $finalImages = [];
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/images/products/' . $categorySlug . '/';
+        $uploadDir = $this->publicRoot() . '/images/products/' . $categorySlug . '/';
 
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
@@ -540,7 +540,7 @@ class ProductsService
         $deletedImages = array_diff($oldImages, $finalImages);
 
         foreach ($deletedImages as $img) {
-            $fullPath = $_SERVER['DOCUMENT_ROOT'] . $img;
+            $fullPath = $this->publicRoot() . $img;
             if (file_exists($fullPath)) {
                 unlink($fullPath);
             }
@@ -581,5 +581,26 @@ class ProductsService
                         ->orWhere('description', 'like', '%' . $searchQuery . '%');
                 })->limit(12)->get(['id', 'name', 'price'])->toArray()
         ];
+    }
+
+    /**
+     * Resolve the absolute path to the project's public/ directory.
+     * Falls back to the project root + "/public" when $_SERVER['DOCUMENT_ROOT']
+     * is not populated (CLI / seeder contexts).
+     */
+    private function publicRoot(): string
+    {
+        static $cached = null;
+
+        if ($cached !== null) {
+            return $cached;
+        }
+
+        $cached = rtrim(
+            $_SERVER['DOCUMENT_ROOT'] ?: dirname(__DIR__, 2) . '/public',
+            '/'
+        );
+
+        return $cached;
     }
 }
