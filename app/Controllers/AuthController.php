@@ -28,7 +28,8 @@ class AuthController extends BaseController
     public function showLogin(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         return $this->render($request, $response, 'pages/login.twig', [
-            'redirect_to' => $request->getQueryParams()['redirect'] ?? '/'
+            'redirect_to'  => $request->getQueryParams()['redirect'] ?? '/',
+            'socialProviders' => $this->socialAuthService->getSocialProviders(),
         ]);
     }
 
@@ -38,7 +39,8 @@ class AuthController extends BaseController
     public function showRegister(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         return $this->render($request, $response, 'pages/register.twig', [
-            'redirect_to' => $request->getQueryParams()['redirect'] ?? '/'
+            'redirect_to'  => $request->getQueryParams()['redirect'] ?? '/',
+            'socialProviders' => $this->socialAuthService->getSocialProviders(),
         ]);
     }
 

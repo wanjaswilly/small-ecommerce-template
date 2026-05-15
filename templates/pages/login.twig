@@ -108,6 +108,31 @@
                     </div>
                     <div class="relative flex justify-center text-sm">
                         <span class="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                            Or continue with
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-2 gap-3">
+                    {% for key, provider in socialProviders %}
+                        <a href="{{ provider.url }}"
+                           class="w-full inline-flex justify-center items-center space-x-2 py-2 px-4 border rounded-md shadow-sm text-sm font-medium transition-colors duration-200 {{ provider.bgClass }} {{ provider.borderClass }} {{ provider.textClass }} {{ provider.hoverClass }}">
+                            <span class="w-5 h-5 flex-shrink-0 pointer-events-none">
+                                <img src="{{ provider.icon }}" alt="{{ provider.label }}" width="20" height="20">
+                            </span>
+                            <span>{{ provider.label }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
                             New to our store?
                         </span>
                     </div>
