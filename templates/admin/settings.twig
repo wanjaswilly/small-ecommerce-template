@@ -37,6 +37,9 @@
                 <a href="#seo" class="nav-item block px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-section="seo">
                     <i class="fas fa-search mr-2"></i>SEO & Social
                 </a>
+                <a href="#oauth" class="nav-item block px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-section="oauth">
+                    <i class="fab fa-google mr-2"></i>OAuth Logins
+                </a>
             </nav>
         </div>
     </div>
@@ -401,6 +404,117 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Twitter Handle</label>
                             <input type="text" name="twitter_handle" value="{{ settings.twitter_handle }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
+                    </div>
+                </div>
+
+                <!-- OAuth / Social Login -->
+                <div id="oauth" class="settings-section p-6 border-b border-gray-200 dark:border-gray-700" style="display: none;">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Social Login Credentials</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                        Configure the OAuth 2.0 credentials for Google, Apple, and Facebook sign-in. 
+                        Keys are read from this settings table on every request. Initially seeded from your <code>.env</code> file.
+                    </p>
+                    <div class="space-y-6">
+
+                        <!-- Google Login -->
+                        <div class="bg-white dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-[#4285F4]/10 rounded-lg flex items-center justify-center">
+                                        <i class="fab fa-google text-[#4285F4]"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">Google Login</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Let customers sign in with their Google account</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="google_enabled" {{ settings.google_enabled ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Client ID</label>
+                                    <input type="text" name="google_client_id" value="{{ settings.google_client_id }}" placeholder="xxxxxxxxxxxx.apps.googleusercontent.com" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Client Secret</label>
+                                    <input type="password" name="google_client_secret" value="{{ settings.google_client_secret }}" placeholder="GOCSPX-..." class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Redirect URI</label>
+                                    <input type="url" name="google_redirect_uri" value="{{ settings.google_redirect_uri }}" placeholder="https://yourdomain.com/login/google/callback" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Apple Login -->
+                        <div class="bg-white dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-black dark:bg-gray-600 rounded-lg flex items-center justify-center">
+                                        <i class="fab fa-apple text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">Apple Login</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Let customers sign in with their Apple ID</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="apple_enabled" {{ settings.apple_enabled ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Client ID (Services ID)</label>
+                                    <input type="text" name="apple_client_id" value="{{ settings.apple_client_id }}" placeholder="com.yourdomain.service" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Client Secret (JWT / Key ID)</label>
+                                    <input type="password" name="apple_client_secret" value="{{ settings.apple_client_secret }}" placeholder="Your Apple client secret JWT" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Redirect URI</label>
+                                    <input type="url" name="apple_redirect_uri" value="{{ settings.apple_redirect_uri }}" placeholder="https://yourdomain.com/login/apple/callback" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Facebook Login -->
+                        <div class="bg-white dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-[#1877F2]/10 rounded-lg flex items-center justify-center">
+                                        <i class="fab fa-facebook-f text-[#1877F2]"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">Facebook Login</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Let customers sign in with their Facebook account</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="facebook_enabled" {{ settings.facebook_enabled ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">App ID</label>
+                                    <input type="text" name="facebook_client_id" value="{{ settings.facebook_client_id }}" placeholder="Your Facebook App ID" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">App Secret</label>
+                                    <input type="password" name="facebook_client_secret" value="{{ settings.facebook_client_secret }}" placeholder="Your Facebook App Secret" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Redirect URI</label>
+                                    <input type="url" name="facebook_redirect_uri" value="{{ settings.facebook_redirect_uri }}" placeholder="https://yourdomain.com/login/facebook/callback" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 

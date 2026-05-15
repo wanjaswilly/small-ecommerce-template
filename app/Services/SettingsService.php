@@ -45,7 +45,10 @@ class SettingsService
                 'card_payments',
                 'email_notifications',
                 'sms_notifications',
-                'low_stock_alerts'
+                'low_stock_alerts',
+                'google_enabled',
+                'apple_enabled',
+                'facebook_enabled',
             ];
 
             foreach ($booleanFields as $field) {
@@ -69,6 +72,9 @@ class SettingsService
 
             # update payment methods settings
             $this->updatePaymentMethods($data);
+
+            # update OAuth / social login settings
+            $this->updateOAuthSettings($data);
 
             DB::commit();
 
@@ -163,6 +169,25 @@ class SettingsService
         # Save updated payment methods configuration
         Setting::setValue('payment_methods', json_encode($existingPaymentMethods), 'payment', 'json');
     }
+
+    /**
+     * Update OAuth / social login credentials from admin form submission
+     */
+    private function updateOAuthSettings(array $data): void
+    {
+        $providers = ['google', 'apple', 'facebook'];
+        $fields    = ['client_id', 'client_secret', 'redirect_uri'];
+
+        foreach ($providers as $provider) {
+            foreach ($fields as $field) {
+                $inputField = "{$provider}_{$field}";
+                if (isset($data[$inputField])) {
+                    Setting::setValue($inputField, trim($data[$inputField]), 'oauth');
+                }
+            }
+        }
+    }
+
     /**
      * API or JS Ajax requests: Get settings
      */

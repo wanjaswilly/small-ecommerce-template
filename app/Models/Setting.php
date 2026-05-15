@@ -257,14 +257,17 @@ class Setting extends Model
             'google_client_id'     => $_ENV['GOOGLE_CLIENT_ID']     ?? '',
             'google_client_secret' => $_ENV['GOOGLE_CLIENT_SECRET'] ?? '',
             'google_redirect_uri'  => $_ENV['GOOGLE_REDIRECT_URI']  ?? 'http://localhost/login/google/callback',
+            'google_enabled'       => filter_var($_ENV['GOOGLE_ENABLED'] ?? true, FILTER_VALIDATE_BOOLEAN),
 
             'apple_client_id'     => $_ENV['APPLE_CLIENT_ID']     ?? '',
             'apple_client_secret' => $_ENV['APPLE_CLIENT_SECRET'] ?? '',
             'apple_redirect_uri'  => $_ENV['APPLE_REDIRECT_URI']  ?? 'http://localhost/login/apple/callback',
+            'apple_enabled'       => filter_var($_ENV['APPLE_ENABLED'] ?? true, FILTER_VALIDATE_BOOLEAN),
 
             'facebook_client_id'     => $_ENV['FB_CLIENT_ID']     ?? '',
             'facebook_client_secret' => $_ENV['FB_CLIENT_SECRET'] ?? '',
             'facebook_redirect_uri'  => $_ENV['FB_REDIRECT_URI']  ?? 'http://localhost/login/facebook/callback',
+            'facebook_enabled'       => filter_var($_ENV['FACEBOOK_ENABLED'] ?? true, FILTER_VALIDATE_BOOLEAN),
         ];
     }
 
